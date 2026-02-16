@@ -1,0 +1,19 @@
+# Dependências
+node_modules/
+
+# Configurações sensíveis
+.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
