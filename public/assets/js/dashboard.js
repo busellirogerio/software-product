@@ -7,14 +7,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       usuario.NomeCompleto || usuario.Login || 'Usuário';
   }
 
-  // Botão sair
-  document.getElementById('btnSair').addEventListener('click', () => {
-    if (confirm('Deseja realmente sair?')) {
-      sessionStorage.removeItem('usuario');
-      window.location.href = 'http://127.0.0.1:3000/pages/login.html';
-    }
-  });
-
   // Carrega estatísticas
   try {
     const usuarios = await apiRequest('/usuarios');

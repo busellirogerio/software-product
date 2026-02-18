@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentPath = window.location.pathname;
     if (!currentPath.includes('login.html')) {
       console.log('🔒 Redirecionando para login');
-      window.location.href = '/pages/login.html';
+      window.location.href = 'http://127.0.0.1:3000/pages/login.html';
     }
   };
 
@@ -117,12 +117,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Pequeno delay para mostrar a mensagem
       setTimeout(() => {
-        window.location.href = '/pages/login.html';
+        window.location.href = 'http://127.0.0.1:3000/pages/login.html';
       }, 1500);
     } catch (error) {
       console.error('❌ Erro no logout:', error);
       clearSession();
-      window.location.href = '/pages/login.html';
+      window.location.href = 'http://127.0.0.1:3000/pages/login.html';
     }
   };
 
