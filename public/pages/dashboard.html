@@ -3,73 +3,448 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Software Product - Dashboard</title>
+    <title>TrocaOleo - Dashboard</title>
+
+    <!-- CSS — style.css primeiro (variáveis globais) -->
     <link rel="stylesheet" href="../assets/css/style.css" />
     <link rel="stylesheet" href="../assets/css/dashboard.css" />
+    <link rel="stylesheet" href="../assets/css/clientes.css" />
   </head>
+
   <body>
-    <!-- Header -->
+    <!-- ===========================
+        HEADER
+    =========================== -->
     <header class="header">
-      <div class="header-content">
-        <h1>🛢️ TROCA DE ÓLEO</h1>
-        <div class="user-info">
-          <span>Bem-vindo, <strong id="nomeUsuario">Usuário</strong></span>
-          <button id="btnSair" class="btn-sair">Sair</button>
-        </div>
+      <div class="header-logo">
+        <h1>🛢 TROCA DE ÓLEO</h1>
+      </div>
+      <div class="user-info">
+        <span>Bem-vindo, <strong id="nomeUsuario">Usuário</strong></span>
+        <button id="btnSair" class="btn-sair">Sair</button>
       </div>
     </header>
 
-    <!-- Conteúdo Principal -->
-    <main class="main-content">
-      <h2>Dashboard</h2>
+    <!-- ===========================
+        APP BODY = SIDEBAR + MAIN
+    =========================== -->
+    <div class="app-body">
+      <!-- ===========================
+          SIDEBAR — MENU LATERAL
+      =========================== -->
+      <nav class="sidebar" id="sidebar">
+        <button
+          class="toggle-btn"
+          id="toggleSidebar"
+          aria-label="Expandir menu"
+        >
+          ☰
+        </button>
 
-      <!-- Cards de Estatísticas -->
-      <div class="stats-container">
-        <div class="stat-card">
-          <div class="stat-icon">👥</div>
-          <h3 id="totalUsuarios">0</h3>
-          <p>CLIENTES</p>
-        </div>
+        <button class="nav-item active" data-section="home" aria-label="Início">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Início</span>
+        </button>
 
-        <div class="stat-card">
-          <div class="stat-icon">📦</div>
-          <h3 id="totalModulos">1</h3>
-          <p>VEÍCULOS</p>
-        </div>
+        <button class="nav-item" data-section="clientes" aria-label="Clientes">
+          <span class="nav-icon">👥</span>
+          <span class="nav-label">Clientes</span>
+        </button>
 
-        <div class="stat-card">
-          <div class="stat-icon">✅</div>
-          <h3 id="totalSistema">100%</h3>
-          <p>SERVIÇOS</p>
-        </div>
-      </div>
+        <button class="nav-item" data-section="veiculos" aria-label="Veículos">
+          <span class="nav-icon">🚗</span>
+          <span class="nav-label">Veículos</span>
+        </button>
 
-      <!-- Menu de Acesso Rápido -->
-      <div class="quick-access">
-        <h3>Acesso Rápido</h3>
-        <div class="quick-buttons">
-          <a href="usuarios.html" class="quick-btn">
-            <span>👥</span>
-            <p>CADATRO CLIENTES</p>
-          </a>
-          <a href="clientes.html" class="quick-btn">
-            <span>🧑‍💼</span>
-            <p>CADASTRO VEÍCULOS</p>
-          </a>
-          <a href="relatorios.html" class="quick-btn">
-            <span>📋</span>
-            <p>HISTÓRICO SERVIÇOS</p>
-          </a>
-          <a href="configuracoes.html" class="quick-btn">
-            <span>⚙️</span>
-            <p>EVENTOS FUTUROS</p>
-          </a>
-        </div>
-      </div>
-    </main>
+        <button class="nav-item" data-section="servicos" aria-label="Serviços">
+          <span class="nav-icon">🔧</span>
+          <span class="nav-label">Serviços</span>
+        </button>
 
+        <button
+          class="nav-item"
+          data-section="eventos"
+          aria-label="Eventos Futuros"
+        >
+          <span class="nav-icon">📅</span>
+          <span class="nav-label">Eventos Futuros</span>
+        </button>
+      </nav>
+
+      <!-- ===========================
+          ÁREA PRINCIPAL — SEÇÕES
+      =========================== -->
+      <main class="main-area">
+        <!-- ===========================
+            SEÇÃO: INÍCIO
+        =========================== -->
+        <section class="section active" id="sec-home">
+          <h2 class="section-title">Indicadores da Oficina</h2>
+          <div class="cards-grid">
+            <div class="card card-total">
+              <span class="card-icon">🚗</span>
+              <span class="card-label">Frota Total</span>
+              <span class="card-value" id="totalFrota">—</span>
+            </div>
+            <div class="card card-alerta">
+              <span class="card-icon">⚠️</span>
+              <span class="card-label"
+                >Sem Relacionamento<br /><small
+                  >(+12 meses sem visita)</small
+                ></span
+              >
+              <span class="card-value" id="totalSemRelacionamento">—</span>
+            </div>
+            <div class="card card-ok">
+              <span class="card-icon">✅</span>
+              <span class="card-label">Com Relacionamento</span>
+              <span class="card-value" id="totalComRelacionamento">—</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===========================
+            SEÇÃO: CLIENTES — AC1
+        =========================== -->
+        <section class="section" id="sec-clientes">
+          <h2 class="section-title">Clientes</h2>
+
+          <div class="accordion">
+            <!-- PAINEL 1: CADASTRAR NOVO -->
+            <div class="acc-item" id="acc-cadastro">
+              <div class="acc-header" data-target="acc-cadastro">
+                <div class="acc-header-left">
+                  <span class="acc-icon">➕</span>
+                  Cadastrar Novo Cliente
+                </div>
+                <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <form id="formCliente">
+                  <!-- ID oculto — usado no modo edição -->
+                  <input type="hidden" id="clienteId" value="" />
+
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="tipo">Tipo</label>
+                      <select id="tipo" name="tipo">
+                        <option value="PF">Pessoa Física (PF)</option>
+                        <option value="PJ">Pessoa Jurídica (PJ)</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="cpfCnpj">CPF / CNPJ</label>
+                      <input
+                        type="text"
+                        id="cpfCnpj"
+                        name="cpfCnpj"
+                        placeholder="Só números"
+                        maxlength="18"
+                      />
+                    </div>
+
+                    <div class="form-group form-group-wide">
+                      <label for="nomeCompleto">Nome Completo</label>
+                      <input
+                        type="text"
+                        id="nomeCompleto"
+                        name="nomeCompleto"
+                        placeholder="Nome completo"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label for="dataNascimento">Data de Nascimento</label>
+                      <input
+                        type="date"
+                        id="dataNascimento"
+                        name="dataNascimento"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label for="genero">Gênero</label>
+                      <select id="genero" name="genero">
+                        <option value="">Selecione</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
+                        <option value="O">Outro</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="telefone">Telefone</label>
+                      <input
+                        type="text"
+                        id="telefone"
+                        name="telefone"
+                        placeholder="(11) 99999-0000"
+                      />
+                    </div>
+
+                    <div class="form-group form-group-check">
+                      <label class="check-label">
+                        <input
+                          type="checkbox"
+                          id="telefoneWhatsApp"
+                          name="telefoneWhatsApp"
+                        />
+                        Este número é WhatsApp
+                      </label>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="email">Email</label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="email@exemplo.com"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label for="cep">CEP</label>
+                      <input
+                        type="text"
+                        id="cep"
+                        name="cep"
+                        placeholder="00000-000"
+                        maxlength="9"
+                        autocomplete="postal-code"
+                      />
+                    </div>
+
+                    <div class="form-group form-group-wide">
+                      <label for="logradouro">Logradouro</label>
+                      <input
+                        type="text"
+                        id="logradouro"
+                        name="logradouro"
+                        placeholder="Rua / Avenida"
+                        autocomplete="street-address"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label for="numero">Número</label>
+                      <input
+                        type="text"
+                        id="numero"
+                        name="numero"
+                        placeholder="Nº"
+                        autocomplete="off"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label for="complemento">Complemento</label>
+                      <input
+                        type="text"
+                        id="complemento"
+                        name="complemento"
+                        placeholder="Apto, sala..."
+                        autocomplete="off"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label for="bairro">Bairro</label>
+                      <input
+                        type="text"
+                        id="bairro"
+                        name="bairro"
+                        autocomplete="off"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label for="cidade">Cidade</label>
+                      <input
+                        type="text"
+                        id="cidade"
+                        name="cidade"
+                        autocomplete="address-level2"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label for="estado">Estado (UF)</label>
+                      <input
+                        type="text"
+                        id="estado"
+                        name="estado"
+                        maxlength="2"
+                        placeholder="SP"
+                        autocomplete="address-level1"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Mensagem de feedback -->
+                  <div
+                    id="formMensagem"
+                    class="form-mensagem"
+                    style="display: none"
+                  ></div>
+
+                  <div class="form-actions">
+                    <button
+                      type="button"
+                      id="btnLimpar"
+                      class="btn btn-secondary"
+                    >
+                      Limpar
+                    </button>
+                    <button
+                      type="submit"
+                      id="btnSalvar"
+                      class="btn btn-primary"
+                    >
+                      Salvar Cliente
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!-- /PAINEL 1 -->
+
+            <!-- PAINEL 2: BUSCAR / EDITAR -->
+            <div class="acc-item" id="acc-busca">
+              <div class="acc-header" data-target="acc-busca">
+                <div class="acc-header-left">
+                  <span class="acc-icon">🔍</span>
+                  Buscar / Editar Cliente
+                </div>
+                <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <div class="busca-row">
+                  <select id="tipoBusca">
+                    <option value="nome">Buscar por Nome</option>
+                    <option value="cpfcnpj">Buscar por CPF/CNPJ</option>
+                    <option value="telefone">Buscar por Telefone</option>
+                  </select>
+                  <input
+                    type="text"
+                    id="valorBusca"
+                    placeholder="Digite para buscar..."
+                  />
+                  <button id="btnBuscar" class="btn btn-primary">Buscar</button>
+                  <button id="btnLimparBusca" class="btn btn-secondary">
+                    Limpar
+                  </button>
+                </div>
+
+                <div
+                  id="resultadoBusca"
+                  class="tabela-wrapper"
+                  style="display: none; margin-top: 16px"
+                >
+                  <table class="tabela-clientes">
+                    <thead>
+                      <tr>
+                        <th id="thNomeBusca" class="th-ordenavel">
+                          Nome <span id="iconeOrdemBusca">▲</span>
+                        </th>
+                        <th>CPF/CNPJ</th>
+                        <th>Telefone</th>
+                        <th>Gênero</th>
+                        <th>Nascimento</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbodyBusca"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- /PAINEL 2 -->
+
+            <!-- PAINEL 3: LISTAR TODOS -->
+            <div class="acc-item" id="acc-lista">
+              <div class="acc-header" data-target="acc-lista">
+                <div class="acc-header-left">
+                  <span class="acc-icon">📋</span>
+                  Listar Todos os Clientes
+                </div>
+                <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <div class="tabela-wrapper">
+                  <table class="tabela-clientes">
+                    <thead>
+                      <tr>
+                        <!-- thNome — clicável para ordenar A→Z / Z→A -->
+                        <th id="thNome" class="th-ordenavel">
+                          Nome <span id="iconeOrdem">▲</span>
+                        </th>
+                        <th>CPF/CNPJ</th>
+                        <th>Telefone</th>
+                        <th>Gênero</th>
+                        <th>Nascimento</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbodyClientes">
+                      <tr>
+                        <td colspan="6" class="tabela-vazia">Carregando...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- /PAINEL 3 -->
+          </div>
+        </section>
+        <!-- /SEÇÃO CLIENTES -->
+
+        <!-- ===========================
+            SEÇÃO: VEÍCULOS — AC2
+        =========================== -->
+        <section class="section" id="sec-veiculos">
+          <h2 class="section-title">Cadastro de Veículos</h2>
+          <div class="placeholder">
+            <div class="placeholder-icon">🚗</div>
+            <h3>Módulo em desenvolvimento</h3>
+            <p>Será implementado no AC2</p>
+          </div>
+        </section>
+
+        <!-- ===========================
+            SEÇÃO: SERVIÇOS — AC3
+        =========================== -->
+        <section class="section" id="sec-servicos">
+          <h2 class="section-title">Serviços</h2>
+          <div class="placeholder">
+            <div class="placeholder-icon">🔧</div>
+            <h3>Módulo em desenvolvimento</h3>
+            <p>Será implementado no AC3</p>
+          </div>
+        </section>
+
+        <!-- ===========================
+            SEÇÃO: EVENTOS FUTUROS — AC4
+        =========================== -->
+        <section class="section" id="sec-eventos">
+          <h2 class="section-title">Eventos Futuros</h2>
+          <div class="placeholder">
+            <div class="placeholder-icon">📅</div>
+            <h3>Módulo em desenvolvimento</h3>
+            <p>Será implementado no AC4</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ===========================
+        SCRIPTS (ordem obrigatória)
+    =========================== -->
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/clientes.js"></script>
   </body>
 </html>

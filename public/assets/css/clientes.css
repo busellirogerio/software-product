@@ -1,0 +1,380 @@
+/* =========================================
+  clientes.css
+  Estilos exclusivos da seção de Clientes
+  Depende de: style.css (variáveis globais)
+   ========================================= */
+
+/* ===========================
+  ACCORDION
+=========================== */
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.acc-item {
+  background: #1e2a45;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* ===========================
+  CABEÇALHO DO PAINEL
+=========================== */
+.acc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition-fast);
+}
+
+.acc-header:hover {
+  background: #243656;
+}
+
+.acc-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #ecf0f1;
+}
+
+.acc-icon {
+  font-size: 1.1rem;
+}
+
+.acc-arrow {
+  color: #718096;
+  font-size: 0.75rem;
+  transition: transform var(--transition-normal);
+}
+
+/* Rotaciona seta quando aberto */
+.acc-item.open .acc-arrow {
+  transform: rotate(180deg);
+}
+
+/* ===========================
+  CORPO DO PAINEL
+  Oculto por padrão
+  Visível quando .open
+=========================== */
+.acc-body {
+  display: none;
+  padding: 20px;
+  border-top: 1px solid #2d3748;
+}
+
+.acc-item.open .acc-body {
+  display: block;
+}
+
+/* ===========================
+  GRID DO FORMULÁRIO
+=========================== */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+/* Campo largo — ocupa 2 colunas quando possível */
+.form-group-wide {
+  grid-column: span 2;
+}
+
+/* Campo checkbox */
+.form-group-check {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 4px;
+}
+
+.check-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #a0aec0;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.check-label input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+/* ===========================
+  BOTÕES DO FORMULÁRIO
+=========================== */
+.form-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.btn {
+  padding: 10px 22px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: #ffffff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #2d3748;
+  color: #a0aec0;
+}
+
+.btn-secondary:hover {
+  background: #3d4f6b;
+  color: #ffffff;
+}
+
+/* ===========================
+  MENSAGEM DE FEEDBACK
+  do formulário
+=========================== */
+.form-mensagem {
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  margin-bottom: 12px;
+  animation: slideIn var(--transition-normal);
+}
+
+.form-mensagem.success {
+  background: rgba(46, 204, 113, 0.15);
+  color: #68d391;
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.form-mensagem.error {
+  background: rgba(231, 76, 60, 0.15);
+  color: #fc8181;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+/* ===========================
+  BARRA DE BUSCA
+=========================== */
+.busca-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.busca-row select {
+  width: 200px;
+  padding: 10px 12px;
+  background: #111827;
+  border: 1px solid #2d3748;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.88rem;
+}
+
+.busca-row input {
+  flex: 1;
+  min-width: 180px;
+  padding: 10px 12px;
+  background: #111827;
+  border: 1px solid #2d3748;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.88rem;
+}
+
+.busca-row input:focus,
+.busca-row select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+}
+
+/* ===========================
+  TABELA DE CLIENTES
+=========================== */
+.tabela-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+}
+
+.tabela-clientes {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.tabela-clientes thead tr {
+  background: #0f1827;
+}
+
+.tabela-clientes th {
+  padding: 10px 14px;
+  text-align: left;
+  color: #718096;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.tabela-clientes td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #1a2438;
+  color: #e2e8f0;
+}
+
+.tabela-clientes tbody tr:hover td {
+  background: #1a2a42;
+}
+
+/* Célula quando tabela vazia */
+.tabela-vazia {
+  text-align: center;
+  color: #4a5568;
+  padding: 32px !important;
+  font-size: 0.9rem;
+}
+
+/* ===========================
+  BADGES DE GÊNERO
+=========================== */
+.badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.badge-M {
+  background: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+}
+.badge-F {
+  background: rgba(155, 89, 182, 0.2);
+  color: #bb8fce;
+}
+.badge-O {
+  background: rgba(127, 140, 141, 0.2);
+  color: #aab7b8;
+}
+
+/* ===========================
+  BOTÕES DE AÇÃO NA TABELA
+=========================== */
+.acoes {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-sm {
+  padding: 5px 12px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-editar {
+  background: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+}
+
+.btn-editar:hover {
+  background: rgba(52, 152, 219, 0.4);
+}
+
+.btn-excluir {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+
+.btn-excluir:hover {
+  background: rgba(231, 76, 60, 0.4);
+}
+
+/* ===========================
+  RESPONSIVO
+=========================== */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .form-group-wide {
+    grid-column: span 1;
+  }
+  .busca-row {
+    flex-direction: column;
+  }
+  .busca-row select,
+  .busca-row input {
+    width: 100%;
+  }
+  .form-actions {
+    flex-direction: column;
+  }
+  .form-actions .btn {
+    width: 100%;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .acc-header {
+    padding: 14px 16px;
+  }
+  .acc-body {
+    padding: 14px;
+  }
+  .tabela-clientes th,
+  .tabela-clientes td {
+    padding: 8px 10px;
+    font-size: 0.78rem;
+  }
+}
+
+/* ===========================
+  HEADER ORDENÁVEL
+  Coluna Nome clicável
+=========================== */
+.th-ordenavel {
+  cursor: pointer;
+  user-select: none;
+  transition: color var(--transition-fast);
+}
+
+.th-ordenavel:hover {
+  color: var(--primary-color);
+}

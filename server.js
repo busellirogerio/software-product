@@ -6,12 +6,13 @@ const path = require('path');
 require('dotenv').config();
 
 const usuarioRoutes = require('./src/routes/usuarioRoutes');
+const clienteRoutes = require('./src/routes/clienteRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 /* ===========================
-   RATE LIMIT
+  RATE LIMIT
 =========================== */
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -22,7 +23,7 @@ const globalLimiter = rateLimit({
 });
 
 /* ===========================
-   CORS
+  CORS
 =========================== */
 const corsOptions = {
   origin: [
@@ -36,7 +37,7 @@ const corsOptions = {
 };
 
 /* ===========================
-   SECURITY HEADERS
+  SECURITY HEADERS
 =========================== */
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -50,12 +51,12 @@ app.use(globalLimiter);
 app.use(cors(corsOptions));
 
 /* ===========================
-   STATIC FILES
+  STATIC FILES
 =========================== */
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* ===========================
-   API VALIDATION
+  API VALIDATION
 =========================== */
 app.use('/api', express.json({ limit: '10mb' }));
 
@@ -72,7 +73,7 @@ app.use('/api', (req, res, next) => {
 });
 
 /* ===========================
-   LOG
+  LOG
 =========================== */
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
@@ -80,12 +81,13 @@ app.use((req, res, next) => {
 });
 
 /* ===========================
-   ROTAS API
+  ROTAS API
 =========================== */
 app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/clientes', clienteRoutes);
 
 /* ===========================
-   ROTAS FRONT (FIX)
+  ROTAS FRONT (FIX)
 =========================== */
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'pages', 'login.html'));
@@ -96,7 +98,7 @@ app.get('/pages/dashboard.html', (req, res) => {
 });
 
 /* ===========================
-   404
+  404
 =========================== */
 app.use((req, res) => {
   if (req.url.startsWith('/api')) {
@@ -107,7 +109,7 @@ app.use((req, res) => {
 });
 
 /* ===========================
-   START
+  START
 =========================== */
 app.listen(PORT, () => {
   console.log('========================================');
