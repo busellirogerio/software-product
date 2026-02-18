@@ -3,6 +3,7 @@ node_modules/
 
 # Configurações sensíveis
 .env
+acs/Token GitHub.txt
 
 # Logs
 *.log
