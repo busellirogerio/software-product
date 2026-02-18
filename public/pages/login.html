@@ -10,32 +10,158 @@
   <body>
     <div class="login-container">
       <div class="login-box">
-        <h1>🔧 SOFTWARE PRODUCT</h1>
-        <h2>Sistema de Gerenciamento</h2>
+        <div class="login-header">
+          <h1>🛢️ TROCA DE ÓLEO</h1>
+          <p>Sistema de Gerenciamento Oficina</p>
+        </div>
 
-        <form id="formLogin">
+        <form id="formLogin" class="login-form">
           <div class="form-group">
-            <label for="email">Email / Login</label>
-            <input type="text" id="email" required autofocus />
+            <label for="email">Usuário</label>
+            <input
+              type="text"
+              id="email"
+              name="email"
+              required
+              autocomplete="username"
+            />
           </div>
-
           <div class="form-group">
             <label for="senha">Senha</label>
-            <div class="senha-container">
-              <input type="password" id="senha" required />
-              <span id="toggleSenha" class="toggle-senha">👁️</span>
+            <div class="password-container">
+              <input
+                type="password"
+                id="senha"
+                name="senha"
+                required
+                autocomplete="current-password"
+              />
+              <button
+                type="button"
+                id="toggleSenha"
+                class="toggle-password"
+                aria-label="Mostrar senha"
+              ></button>
             </div>
           </div>
-
           <button type="submit" class="btn-login">Entrar</button>
-
-          <a href="#" class="esqueci-senha">Esqueci minha senha</a>
+          <div class="form-footer">
+            <a href="#" id="linkEsqueciSenha" class="link-esqueci"
+              >Esqueci minha senha</a
+            >
+          </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Modal Esqueci Senha -->
+    <div id="modalEsqueciSenha" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Recuperar Senha</h3>
+          <button type="button" class="modal-close" id="closeModal">
+            &times;
+          </button>
+        </div>
+        <form id="formResetSenha" class="modal-form">
+          <div class="form-group">
+            <label for="emailReset">Digite seu email:</label>
+            <input
+              type="email"
+              id="emailReset"
+              name="email"
+              required
+              placeholder="seu@email.com"
+            />
+          </div>
+          <div class="modal-buttons">
+            <button type="button" id="btnCancelar" class="btn-cancelar">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-enviar">Enviar Solicitação</button>
+          </div>
+        </form>
+
+        <div id="resetSucesso" class="reset-success" style="display: none">
+          <div class="success-icon">✅</div>
+          <h4>Solicitação Enviada!</h4>
+          <p>Sua nova senha foi gerada com sucesso.</p>
+          <div class="protocolo-info">
+            <strong>Protocolo: <span id="numeroProtocolo"></span></strong>
+            <p class="protocolo-desc">
+              Anote este número para consultas futuras
+            </p>
+          </div>
+          <button type="button" id="btnFecharSucesso" class="btn-fechar">
+            Fechar
+          </button>
+        </div>
       </div>
     </div>
 
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/login.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('modalEsqueciSenha');
+        const linkEsqueci = document.getElementById('linkEsqueciSenha');
+        const closeModal = document.getElementById('closeModal');
+        const btnCancelar = document.getElementById('btnCancelar');
+        const formReset = document.getElementById('formResetSenha');
+        const resetSucesso = document.getElementById('resetSucesso');
+        const btnFecharSucesso = document.getElementById('btnFecharSucesso');
+
+        linkEsqueci.addEventListener('click', (e) => {
+          e.preventDefault();
+          modal.style.display = 'block';
+          document.getElementById('emailReset').focus();
+        });
+
+        const fecharModal = () => {
+          modal.style.display = 'none';
+          formReset.style.display = 'block';
+          resetSucesso.style.display = 'none';
+          formReset.reset();
+        };
+
+        closeModal.addEventListener('click', fecharModal);
+        btnCancelar.addEventListener('click', fecharModal);
+        btnFecharSucesso.addEventListener('click', fecharModal);
+
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) fecharModal();
+        });
+
+        formReset.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const email = document.getElementById('emailReset').value.trim();
+          const btnEnviar = formReset.querySelector('.btn-enviar');
+
+          if (!email) {
+            alert('Digite seu email');
+            return;
+          }
+
+          btnEnviar.disabled = true;
+          btnEnviar.textContent = 'Enviando...';
+
+          try {
+            const response = await apiRequest('/usuarios/reset-senha', {
+              method: 'POST',
+              body: { email },
+            });
+            document.getElementById('numeroProtocolo').textContent =
+              response.protocolo;
+            formReset.style.display = 'none';
+            resetSucesso.style.display = 'block';
+          } catch (error) {
+            alert(error.message || 'Erro ao enviar solicitação');
+          } finally {
+            btnEnviar.disabled = false;
+            btnEnviar.textContent = 'Enviar Solicitação';
+          }
+        });
+      });
+    </script>
   </body>
 </html>
-```

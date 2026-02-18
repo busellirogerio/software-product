@@ -3,14 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard - Software Product</title>
+    <title>Software Product - Dashboard</title>
     <link rel="stylesheet" href="../assets/css/style.css" />
     <link rel="stylesheet" href="../assets/css/dashboard.css" />
   </head>
   <body>
+    <!-- Header -->
     <header class="header">
       <div class="header-content">
-        <h1>🔧 SOFTWARE PRODUCT</h1>
+        <h1>🛢️ TROCA DE ÓLEO</h1>
         <div class="user-info">
           <span>Bem-vindo, <strong id="nomeUsuario">Usuário</strong></span>
           <button id="btnSair" class="btn-sair">Sair</button>
@@ -18,25 +19,57 @@
       </div>
     </header>
 
+    <!-- Conteúdo Principal -->
     <main class="main-content">
       <h2>Dashboard</h2>
 
+      <!-- Cards de Estatísticas -->
       <div class="stats-container">
         <div class="stat-card">
-          <h3>Usuários Ativos</h3>
-          <p class="stat-number">--</p>
+          <div class="stat-icon">👥</div>
+          <h3 id="totalUsuarios">0</h3>
+          <p>CLIENTES</p>
         </div>
 
         <div class="stat-card">
-          <h3>Módulos</h3>
-          <p class="stat-number">1</p>
+          <div class="stat-icon">📦</div>
+          <h3 id="totalModulos">1</h3>
+          <p>VEÍCULOS</p>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <h3 id="totalSistema">100%</h3>
+          <p>SERVIÇOS</p>
         </div>
       </div>
 
-      <p class="info-message">Sistema em desenvolvimento - AC0</p>
+      <!-- Menu de Acesso Rápido -->
+      <div class="quick-access">
+        <h3>Acesso Rápido</h3>
+        <div class="quick-buttons">
+          <a href="usuarios.html" class="quick-btn">
+            <span>👥</span>
+            <p>CADATRO CLIENTES</p>
+          </a>
+          <a href="clientes.html" class="quick-btn">
+            <span>🧑‍💼</span>
+            <p>CADASTRO VEÍCULOS</p>
+          </a>
+          <a href="relatorios.html" class="quick-btn">
+            <span>📋</span>
+            <p>HISTÓRICO SERVIÇOS</p>
+          </a>
+          <a href="configuracoes.html" class="quick-btn">
+            <span>⚙️</span>
+            <p>EVENTOS FUTUROS</p>
+          </a>
+        </div>
+      </div>
     </main>
 
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/dashboard.js"></script>
   </body>
 </html>
