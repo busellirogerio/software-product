@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const usuarioRoutes = require('./src/routes/usuarioRoutes');
 const clienteRoutes = require('./src/routes/clienteRoutes');
+const veiculoRoutes = require('./src/routes/veiculoRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,7 +33,7 @@ const corsOptions = {
     'http://localhost:5500',
     'http://127.0.0.1:5500',
   ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
@@ -85,6 +86,7 @@ app.use((req, res, next) => {
 =========================== */
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/clientes', clienteRoutes);
+app.use('/api/veiculos', veiculoRoutes);
 
 /* ===========================
   ROTAS FRONT (FIX)
