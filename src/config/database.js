@@ -1,3 +1,5 @@
+// database.js | data: 03/03/2026
+
 // src/config/database.js
 const sql = require('mssql');
 require('dotenv').config();

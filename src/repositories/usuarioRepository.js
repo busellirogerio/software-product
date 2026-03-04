@@ -1,3 +1,5 @@
+// usuarioRepository.js | data: 03/03/2026
+
 const { getPool, sql } = require('../config/database');
 const bcrypt = require('bcrypt');
 

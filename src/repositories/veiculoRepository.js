@@ -1,5 +1,5 @@
-// =========================================
-// src/repositories/veiculoRepository.js
+// veiculoRepository.js | data: 03/03/2026
+
 // Camada de acesso ao banco — dbo.Veiculos
 // Toda query SQL centralizada aqui
 // VERSÃO: 1.0 - AC2

@@ -1,3 +1,5 @@
+/* login.css | data: 03/03/2026 */
+
 .login-container {
   display: flex;
   align-items: center;
@@ -372,4 +374,24 @@
   .btn-login {
     padding: 14px;
   }
+}
+
+/* Logo e título do login */
+.login-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+
+.login-header h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 3px;
+  margin: 0 0 4px 0;
+}
+
+.logo-destaque {
+  color: var(--primary-color);
 }

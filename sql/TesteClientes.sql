@@ -22,6 +22,11 @@ GO
 SELECT * FROM dbo.Clientes;
 GO
 
+SELECT * FROM dbo.Clientes
+WHERE ClienteId = 3;
+
+
+
 -- =========================================
 -- 3) INSERIR CLIENTE PF
 -- =========================================

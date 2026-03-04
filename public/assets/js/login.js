@@ -1,3 +1,5 @@
+// login.js | data: 03/03/2026
+
 document.addEventListener('DOMContentLoaded', () => {
   const usuarioLogado = sessionStorage.getItem('usuario');
   if (usuarioLogado) {

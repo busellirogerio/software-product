@@ -1,27 +1,54 @@
+<!-- dashboard.html | data: 03/03/2026 -->
+
 <!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TrocaOleo - Dashboard</title>
+    <title>Re⟳Loop - Dashboard</title>
 
-    <!-- CSS — style.css primeiro (variáveis globais) -->
+    <!-- ===========================
+        CSS — ORDEM OBRIGATÓRIA
+        1. style.css     → variáveis globais e reset
+        2. dashboard.css → layout, sidebar, home IA
+        3. clientes.css  → módulo AC1
+        4. veiculos.css  → módulo AC2
+    =========================== -->
     <link rel="stylesheet" href="../assets/css/style.css" />
     <link rel="stylesheet" href="../assets/css/dashboard.css" />
     <link rel="stylesheet" href="../assets/css/clientes.css" />
+    <link rel="stylesheet" href="../assets/css/veiculos.css" />
   </head>
 
   <body>
     <!-- ===========================
         HEADER
+        - Hambúrguer mobile (canto esquerdo)
+        - Logo Re⟳Loop
+        - Bem-vindo + botão sair (direita)
     =========================== -->
     <header class="header">
-      <div class="header-logo">
-        <h1>🛢 TROCA DE ÓLEO</h1>
+      <div class="header-left">
+        <!-- Hambúrguer — visível apenas no mobile -->
+        <button
+          class="toggle-btn-mobile"
+          id="toggleMobile"
+          aria-label="Menu mobile"
+        >
+          <img src="../assets/image/menu.svg" class="nav-icon" alt="Menu" />
+        </button>
+
+        <!-- Logo da plataforma -->
+        <div class="header-logo">
+          <h2>Re<span class="logo-destaque">⟳</span>Loop</h2>
+        </div>
       </div>
+
       <div class="user-info">
         <span>Bem-vindo, <strong id="nomeUsuario">Usuário</strong></span>
-        <button id="btnSair" class="btn-sair">Sair</button>
+        <button id="btnSair" class="btn-sair">
+          <img src="../assets/image/sair.svg" alt="Sair" />
+        </button>
       </div>
     </header>
 
@@ -31,33 +58,41 @@
     <div class="app-body">
       <!-- ===========================
           SIDEBAR — MENU LATERAL
+          Web: recolhida (56px) ↔ expandida (210px)
+          controlada pela seta na borda direita
+          Mobile: overlay, abre pelo hambúrguer
       =========================== -->
       <nav class="sidebar" id="sidebar">
-        <button
-          class="toggle-btn"
-          id="toggleSidebar"
-          aria-label="Expandir menu"
-        >
-          ☰
-        </button>
-
+        <!-- NAVEGAÇÃO PRINCIPAL -->
         <button class="nav-item active" data-section="home" aria-label="Início">
-          <span class="nav-icon">🏠</span>
+          <img src="../assets/image/home.svg" class="nav-icon" alt="Início" />
           <span class="nav-label">Início</span>
         </button>
 
         <button class="nav-item" data-section="clientes" aria-label="Clientes">
-          <span class="nav-icon">👥</span>
+          <img
+            src="../assets/image/clientes.svg"
+            class="nav-icon"
+            alt="Clientes"
+          />
           <span class="nav-label">Clientes</span>
         </button>
 
         <button class="nav-item" data-section="veiculos" aria-label="Veículos">
-          <span class="nav-icon">🚗</span>
+          <img
+            src="../assets/image/veiculos.svg"
+            class="nav-icon"
+            alt="Veículos"
+          />
           <span class="nav-label">Veículos</span>
         </button>
 
         <button class="nav-item" data-section="servicos" aria-label="Serviços">
-          <span class="nav-icon">🔧</span>
+          <img
+            src="../assets/image/servicos.svg"
+            class="nav-icon"
+            alt="Serviços"
+          />
           <span class="nav-label">Serviços</span>
         </button>
 
@@ -66,256 +101,126 @@
           data-section="eventos"
           aria-label="Eventos Futuros"
         >
-          <span class="nav-icon">📅</span>
+          <img
+            src="../assets/image/eventos.svg"
+            class="nav-icon"
+            alt="Eventos Futuros"
+          />
           <span class="nav-label">Eventos Futuros</span>
+        </button>
+
+        <!-- KPIs — após Eventos Futuros -->
+        <button class="nav-item" data-section="kpis" aria-label="KPIs">
+          <img src="../assets/image/kpi.svg" class="nav-icon" alt="KPIs" />
+          <span class="nav-label">KPIs</span>
+        </button>
+
+        <!-- Espaçador — empurra utilitários para o rodapé -->
+        <div class="nav-spacer"></div>
+
+        <!-- UTILITÁRIOS (rodapé) -->
+        <button
+          class="nav-item"
+          data-section="configuracoes"
+          aria-label="Configurações"
+        >
+          <img
+            src="../assets/image/configuracao.svg"
+            class="nav-icon"
+            alt="Configurações"
+          />
+          <span class="nav-label">Configurações</span>
+        </button>
+
+        <button class="nav-item" data-section="suporte" aria-label="Suporte">
+          <img
+            src="../assets/image/suporte.svg"
+            class="nav-icon"
+            alt="Suporte"
+          />
+          <span class="nav-label">Suporte</span>
+        </button>
+
+        <!-- Seta de colapso — web only, borda direita da sidebar -->
+        <button
+          class="sidebar-toggle-arrow"
+          id="toggleSidebar"
+          aria-label="Expandir/Recolher menu"
+        >
+          ›
         </button>
       </nav>
 
+      <!-- Overlay mobile — fecha sidebar ao clicar fora -->
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
       <!-- ===========================
-          ÁREA PRINCIPAL — SEÇÕES
+          MAIN — ÁREA DE CONTEÚDO
       =========================== -->
       <main class="main-area">
         <!-- ===========================
-            SEÇÃO: INÍCIO
+            SEÇÃO: INÍCIO — IA Re⟳Loop
+            Tela limpa com logo grande e input
+            de chat. Input e botões bloqueados até AC5.
         =========================== -->
         <section class="section active" id="sec-home">
-          <h2 class="section-title">Indicadores da Oficina</h2>
-          <div class="cards-grid">
-            <div class="card card-total">
-              <span class="card-icon">🚗</span>
-              <span class="card-label">Frota Total</span>
-              <span class="card-value" id="totalFrota">—</span>
+          <div class="ia-home">
+            <!-- Logo grande centralizada -->
+            <div class="ia-logo">
+              <h1>Re<span class="logo-destaque">⟳</span>Loop</h1>
+              <span class="ia-badge">.IA</span>
             </div>
-            <div class="card card-alerta">
-              <span class="card-icon">⚠️</span>
-              <span class="card-label"
-                >Sem Relacionamento<br /><small
-                  >(+12 meses sem visita)</small
-                ></span
+
+            <!-- Input de consulta — placeholder AC5 -->
+            <div class="ia-input-wrapper">
+              <input
+                type="text"
+                class="ia-input"
+                placeholder="Pergunte sobre sua oficina..."
+                disabled
+              />
+              <button class="ia-btn-mic" disabled title="Voz — AC5">
+                <img src="../assets/image/microfone.svg" alt="Microfone" />
+              </button>
+              <button
+                class="ia-btn-assistente"
+                disabled
+                title="IA Assistente — AC5"
               >
-              <span class="card-value" id="totalSemRelacionamento">—</span>
+                <img
+                  src="../assets/image/ia_assistente.svg"
+                  alt="IA Assistente"
+                />
+              </button>
             </div>
-            <div class="card card-ok">
-              <span class="card-icon">✅</span>
-              <span class="card-label">Com Relacionamento</span>
-              <span class="card-value" id="totalComRelacionamento">—</span>
+
+            <!-- Botões de ação rápida — placeholder AC5 -->
+            <div class="ia-acoes">
+              <button class="ia-acao-btn" disabled>Rotina</button>
+              <button class="ia-acao-btn" disabled>Tarefas</button>
+              <button class="ia-acao-btn" disabled>Pendências</button>
+              <button class="ia-acao-btn" disabled>Critíco</button>
+              <button class="ia-acao-btn" disabled>Ticket</button>
             </div>
+
+            <p class="ia-hint">
+              Inteligência artificial conectada às tabelas da oficina — AC5
+            </p>
           </div>
         </section>
+        <!-- /SEÇÃO INÍCIO -->
 
         <!-- ===========================
             SEÇÃO: CLIENTES — AC1
         =========================== -->
         <section class="section" id="sec-clientes">
           <h2 class="section-title">Clientes</h2>
-
           <div class="accordion">
-            <!-- PAINEL 1: CADASTRAR NOVO -->
-            <div class="acc-item" id="acc-cadastro">
-              <div class="acc-header" data-target="acc-cadastro">
-                <div class="acc-header-left">
-                  <span class="acc-icon">➕</span>
-                  Cadastrar Novo Cliente
-                </div>
-                <span class="acc-arrow">▼</span>
-              </div>
-              <div class="acc-body">
-                <form id="formCliente">
-                  <!-- ID oculto — usado no modo edição -->
-                  <input type="hidden" id="clienteId" value="" />
-
-                  <div class="form-grid">
-                    <div class="form-group">
-                      <label for="tipo">Tipo</label>
-                      <select id="tipo" name="tipo">
-                        <option value="PF">Pessoa Física (PF)</option>
-                        <option value="PJ">Pessoa Jurídica (PJ)</option>
-                      </select>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="cpfCnpj">CPF / CNPJ</label>
-                      <input
-                        type="text"
-                        id="cpfCnpj"
-                        name="cpfCnpj"
-                        placeholder="Só números"
-                        maxlength="18"
-                      />
-                    </div>
-
-                    <div class="form-group form-group-wide">
-                      <label for="nomeCompleto">Nome Completo</label>
-                      <input
-                        type="text"
-                        id="nomeCompleto"
-                        name="nomeCompleto"
-                        placeholder="Nome completo"
-                      />
-                    </div>
-
-                    <div class="form-group">
-                      <label for="dataNascimento">Data de Nascimento</label>
-                      <input
-                        type="date"
-                        id="dataNascimento"
-                        name="dataNascimento"
-                      />
-                    </div>
-
-                    <div class="form-group">
-                      <label for="genero">Gênero</label>
-                      <select id="genero" name="genero">
-                        <option value="">Selecione</option>
-                        <option value="M">Masculino</option>
-                        <option value="F">Feminino</option>
-                        <option value="O">Outro</option>
-                      </select>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="telefone">Telefone</label>
-                      <input
-                        type="text"
-                        id="telefone"
-                        name="telefone"
-                        placeholder="(11) 99999-0000"
-                      />
-                    </div>
-
-                    <div class="form-group form-group-check">
-                      <label class="check-label">
-                        <input
-                          type="checkbox"
-                          id="telefoneWhatsApp"
-                          name="telefoneWhatsApp"
-                        />
-                        Este número é WhatsApp
-                      </label>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="email">Email</label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="email@exemplo.com"
-                      />
-                    </div>
-
-                    <div class="form-group">
-                      <label for="cep">CEP</label>
-                      <input
-                        type="text"
-                        id="cep"
-                        name="cep"
-                        placeholder="00000-000"
-                        maxlength="9"
-                        autocomplete="postal-code"
-                      />
-                    </div>
-
-                    <div class="form-group form-group-wide">
-                      <label for="logradouro">Logradouro</label>
-                      <input
-                        type="text"
-                        id="logradouro"
-                        name="logradouro"
-                        placeholder="Rua / Avenida"
-                        autocomplete="street-address"
-                      />
-                    </div>
-
-                    <div class="form-group">
-                      <label for="numero">Número</label>
-                      <input
-                        type="text"
-                        id="numero"
-                        name="numero"
-                        placeholder="Nº"
-                        autocomplete="off"
-                      />
-                    </div>
-
-                    <div class="form-group">
-                      <label for="complemento">Complemento</label>
-                      <input
-                        type="text"
-                        id="complemento"
-                        name="complemento"
-                        placeholder="Apto, sala..."
-                        autocomplete="off"
-                      />
-                    </div>
-
-                    <div class="form-group">
-                      <label for="bairro">Bairro</label>
-                      <input
-                        type="text"
-                        id="bairro"
-                        name="bairro"
-                        autocomplete="off"
-                      />
-                    </div>
-
-                    <div class="form-group">
-                      <label for="cidade">Cidade</label>
-                      <input
-                        type="text"
-                        id="cidade"
-                        name="cidade"
-                        autocomplete="address-level2"
-                      />
-                    </div>
-
-                    <div class="form-group">
-                      <label for="estado">Estado (UF)</label>
-                      <input
-                        type="text"
-                        id="estado"
-                        name="estado"
-                        maxlength="2"
-                        placeholder="SP"
-                        autocomplete="address-level1"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Mensagem de feedback -->
-                  <div
-                    id="formMensagem"
-                    class="form-mensagem"
-                    style="display: none"
-                  ></div>
-
-                  <div class="form-actions">
-                    <button
-                      type="button"
-                      id="btnLimpar"
-                      class="btn btn-secondary"
-                    >
-                      Limpar
-                    </button>
-                    <button
-                      type="submit"
-                      id="btnSalvar"
-                      class="btn btn-primary"
-                    >
-                      Salvar Cliente
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-            <!-- /PAINEL 1 -->
-
-            <!-- PAINEL 2: BUSCAR / EDITAR -->
+            <!-- PAINEL 1: BUSCAR / EDITAR -->
             <div class="acc-item" id="acc-busca">
               <div class="acc-header" data-target="acc-busca">
                 <div class="acc-header-left">
-                  <span class="acc-icon">🔍</span>
-                  Buscar / Editar Cliente
+                  <span class="acc-icon">🔍</span> Pesquisa
                 </div>
                 <span class="acc-arrow">▼</span>
               </div>
@@ -336,38 +241,201 @@
                     Limpar
                   </button>
                 </div>
-
-                <div
-                  id="resultadoBusca"
-                  class="tabela-wrapper"
-                  style="display: none; margin-top: 16px"
-                >
-                  <table class="tabela-clientes">
-                    <thead>
-                      <tr>
-                        <th id="thNomeBusca" class="th-ordenavel">
-                          Nome <span id="iconeOrdemBusca">▲</span>
-                        </th>
-                        <th>CPF/CNPJ</th>
-                        <th>Telefone</th>
-                        <th>Gênero</th>
-                        <th>Nascimento</th>
-                        <th>Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody id="tbodyBusca"></tbody>
-                  </table>
-                </div>
+                <div id="resultadoBusca" style="display: none"></div>
               </div>
             </div>
-            <!-- /PAINEL 2 -->
+
+            <!-- PAINEL 2: CADASTRAR NOVO -->
+            <div class="acc-item bloqueado" id="acc-cadastro">
+              <div class="acc-header" data-target="acc-cadastro">
+                <div class="acc-header-left">
+                  <span class="acc-icon">➕</span> Cadastro
+                </div>
+                <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <form id="formCliente">
+                  <input type="hidden" id="clienteId" value="" />
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="tipo">Tipo</label>
+                      <select id="tipo" name="tipo">
+                        <option value="PF">Pessoa Física (PF)</option>
+                        <option value="PJ">Pessoa Jurídica (PJ)</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="cpfCnpj">CPF / CNPJ</label>
+                      <input
+                        type="text"
+                        id="cpfCnpj"
+                        name="cpfCnpj"
+                        placeholder="Só números"
+                        maxlength="18"
+                      />
+                    </div>
+                    <div class="form-group form-group-wide">
+                      <label for="nomeCompleto">Nome Completo</label>
+                      <input
+                        type="text"
+                        id="nomeCompleto"
+                        name="nomeCompleto"
+                        placeholder="Nome completo"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="dataNascimento">Data de Nascimento</label>
+                      <input
+                        type="date"
+                        id="dataNascimento"
+                        name="dataNascimento"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="genero">Gênero</label>
+                      <select id="genero" name="genero">
+                        <option value="">Selecione</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
+                        <option value="O">Outro</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="telefone">Telefone</label>
+                      <input
+                        type="text"
+                        id="telefone"
+                        name="telefone"
+                        placeholder="(11) 99999-0000"
+                      />
+                    </div>
+                    <div class="form-group form-group-check">
+                      <label class="check-label">
+                        <input
+                          type="checkbox"
+                          id="telefoneWhatsApp"
+                          name="telefoneWhatsApp"
+                        />
+                        Este número é WhatsApp
+                      </label>
+                    </div>
+                    <div class="form-group">
+                      <label for="email">Email</label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="email@exemplo.com"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="cep">CEP</label>
+                      <input
+                        type="text"
+                        id="cep"
+                        name="cep"
+                        placeholder="00000-000"
+                        maxlength="9"
+                        autocomplete="postal-code"
+                      />
+                    </div>
+                    <div class="form-group form-group-wide">
+                      <label for="logradouro">Logradouro</label>
+                      <input
+                        type="text"
+                        id="logradouro"
+                        name="logradouro"
+                        placeholder="Rua / Avenida"
+                        autocomplete="street-address"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="numero">Número</label>
+                      <input
+                        type="text"
+                        id="numero"
+                        name="numero"
+                        placeholder="Nº"
+                        autocomplete="off"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="complemento">Complemento</label>
+                      <input
+                        type="text"
+                        id="complemento"
+                        name="complemento"
+                        placeholder="Apto, sala..."
+                        autocomplete="off"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="bairro">Bairro</label>
+                      <input
+                        type="text"
+                        id="bairro"
+                        name="bairro"
+                        autocomplete="off"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="cidade">Cidade</label>
+                      <input
+                        type="text"
+                        id="cidade"
+                        name="cidade"
+                        autocomplete="address-level2"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="estado">Estado (UF)</label>
+                      <input
+                        type="text"
+                        id="estado"
+                        name="estado"
+                        maxlength="2"
+                        placeholder="SP"
+                        autocomplete="address-level1"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    id="formMensagem"
+                    class="form-mensagem"
+                    style="display: none"
+                  ></div>
+                  <div class="form-actions">
+                    <button
+                      type="button"
+                      id="btnCancelar"
+                      class="btn btn-secondary"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="button"
+                      id="btnLimpar"
+                      class="btn btn-secondary"
+                    >
+                      Limpar
+                    </button>
+                    <button
+                      type="submit"
+                      id="btnSalvar"
+                      class="btn btn-primary"
+                    >
+                      Salvar
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
 
             <!-- PAINEL 3: LISTAR TODOS -->
             <div class="acc-item" id="acc-lista">
               <div class="acc-header" data-target="acc-lista">
                 <div class="acc-header-left">
-                  <span class="acc-icon">📋</span>
-                  Listar Todos os Clientes
+                  <span class="acc-icon">📋</span> Lista
                 </div>
                 <span class="acc-arrow">▼</span>
               </div>
@@ -376,7 +444,6 @@
                   <table class="tabela-clientes">
                     <thead>
                       <tr>
-                        <!-- thNome — clicável para ordenar A→Z / Z→A -->
                         <th id="thNome" class="th-ordenavel">
                           Nome <span id="iconeOrdem">▲</span>
                         </th>
@@ -396,7 +463,6 @@
                 </div>
               </div>
             </div>
-            <!-- /PAINEL 3 -->
           </div>
         </section>
         <!-- /SEÇÃO CLIENTES -->
@@ -405,13 +471,466 @@
             SEÇÃO: VEÍCULOS — AC2
         =========================== -->
         <section class="section" id="sec-veiculos">
-          <h2 class="section-title">Cadastro de Veículos</h2>
-          <div class="placeholder">
-            <div class="placeholder-icon">🚗</div>
-            <h3>Módulo em desenvolvimento</h3>
-            <p>Será implementado no AC2</p>
+          <h2 class="section-title">Veículos</h2>
+          <div class="accordion" id="accordion-veiculos">
+            <!-- PAINEL 1: CADASTRAR NOVO -->
+            <div class="acc-item" id="acc-veiculo-cadastro">
+              <div class="acc-header" data-target="acc-veiculo-cadastro">
+                <div class="acc-header-left">
+                  <span class="acc-icon">➕</span> Cadastrar Novo Veículo
+                </div>
+                <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <div id="veiCadVerificar">
+                  <div class="busca-row">
+                    <input
+                      type="text"
+                      id="veiPlacaVerificar"
+                      placeholder="Digite a placa para verificar..."
+                      maxlength="8"
+                    />
+                    <button id="btnVeiVerificarPlaca" class="btn btn-primary">
+                      Verificar
+                    </button>
+                    <button id="btnVeiCadLimpar" class="btn btn-secondary">
+                      Limpar
+                    </button>
+                  </div>
+                </div>
+                <div id="veiCadExisteAtivo" style="display: none">
+                  <div class="vei-aviso vei-aviso-alerta">
+                    <p>
+                      ⚠️ Este veículo já está
+                      <strong>cadastrado e ativo</strong>.
+                    </p>
+                    <p id="veiCadInfoAtivo"></p>
+                    <p>O que deseja fazer?</p>
+                  </div>
+                  <div class="form-actions">
+                    <button
+                      type="button"
+                      id="btnVeiCadCancelarAtivo"
+                      class="btn btn-secondary"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="button"
+                      id="btnVeiCadTrocarProp"
+                      class="btn btn-primary"
+                    >
+                      Trocar Proprietário
+                    </button>
+                    <button
+                      type="button"
+                      id="btnVeiCadInativar"
+                      class="btn btn-danger"
+                    >
+                      Inativar Veículo
+                    </button>
+                  </div>
+                  <div id="veiCadFormTrocarProp" style="display: none">
+                    <div class="form-grid">
+                      <div class="form-group">
+                        <label for="veiCadTrocarCpfCnpj"
+                          >CPF/CNPJ do Novo Proprietário</label
+                        >
+                        <input
+                          type="text"
+                          id="veiCadTrocarCpfCnpj"
+                          placeholder="Só números"
+                          maxlength="18"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label>Proprietário</label>
+                        <input
+                          type="text"
+                          id="veiCadTrocarNomeProp"
+                          readonly
+                          placeholder="Nome confirmado após busca"
+                          class="input-readonly"
+                        />
+                        <input
+                          type="hidden"
+                          id="veiCadTrocarClienteId"
+                          value=""
+                        />
+                      </div>
+                      <div class="form-group vei-btn-buscar-prop">
+                        <label>&nbsp;</label>
+                        <button
+                          type="button"
+                          id="btnVeiCadTrocarBuscarProp"
+                          class="btn btn-secondary"
+                        >
+                          Buscar Proprietário
+                        </button>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button
+                        type="button"
+                        id="btnVeiCadConfirmarTroca"
+                        class="btn btn-primary"
+                      >
+                        Confirmar Troca
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div id="veiCadExisteInativo" style="display: none">
+                  <div class="vei-aviso vei-aviso-info">
+                    <p>
+                      ℹ️ Este veículo está
+                      <strong>inativo / sem proprietário</strong>.
+                    </p>
+                    <p id="veiCadInfoInativo"></p>
+                    <p>Deseja reativar e vincular um proprietário?</p>
+                  </div>
+                  <div class="form-actions">
+                    <button
+                      type="button"
+                      id="btnVeiCadCancelarInativo"
+                      class="btn btn-secondary"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="button"
+                      id="btnVeiCadSimReativar"
+                      class="btn btn-primary"
+                    >
+                      Sim, Reativar
+                    </button>
+                  </div>
+                  <div id="veiCadFormReativar" style="display: none">
+                    <div class="form-grid">
+                      <div class="form-group">
+                        <label for="veiCadReativaCpfCnpj"
+                          >CPF/CNPJ do Proprietário</label
+                        >
+                        <input
+                          type="text"
+                          id="veiCadReativaCpfCnpj"
+                          placeholder="Só números"
+                          maxlength="18"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label>Proprietário</label>
+                        <input
+                          type="text"
+                          id="veiCadReativaNomeProp"
+                          readonly
+                          placeholder="Nome confirmado após busca"
+                          class="input-readonly"
+                        />
+                        <input
+                          type="hidden"
+                          id="veiCadReativaClienteId"
+                          value=""
+                        />
+                      </div>
+                      <div class="form-group vei-btn-buscar-prop">
+                        <label>&nbsp;</label>
+                        <button
+                          type="button"
+                          id="btnVeiCadReativaBuscarProp"
+                          class="btn btn-secondary"
+                        >
+                          Buscar Proprietário
+                        </button>
+                      </div>
+                      <div class="form-group">
+                        <label for="veiCadReativaKm">Km Atual</label>
+                        <input
+                          type="number"
+                          id="veiCadReativaKm"
+                          placeholder="Ex: 45000"
+                          min="0"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button
+                        type="button"
+                        id="btnVeiCadConfirmarReativar"
+                        class="btn btn-primary"
+                      >
+                        Confirmar Reativação
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div id="veiCadFormNovo" style="display: none">
+                  <form id="formVeiculo">
+                    <div class="form-grid">
+                      <div class="form-group">
+                        <label for="veiCpfCnpj"
+                          >CPF / CNPJ do Proprietário</label
+                        >
+                        <input
+                          type="text"
+                          id="veiCpfCnpj"
+                          name="veiCpfCnpj"
+                          placeholder="Só números"
+                          maxlength="18"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label>Proprietário</label>
+                        <input
+                          type="text"
+                          id="veiNomeProprietario"
+                          readonly
+                          placeholder="Nome confirmado após busca"
+                          class="input-readonly"
+                        />
+                        <input type="hidden" id="veiClienteId" value="" />
+                      </div>
+                      <div class="form-group vei-btn-buscar-prop">
+                        <label>&nbsp;</label>
+                        <button
+                          type="button"
+                          id="btnBuscarProprietario"
+                          class="btn btn-secondary"
+                        >
+                          Buscar Proprietário
+                        </button>
+                      </div>
+                      <div class="form-group">
+                        <label for="veiMarca">Marca</label>
+                        <input
+                          type="text"
+                          id="veiMarca"
+                          name="veiMarca"
+                          placeholder="Ex: Toyota"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="veiModelo">Modelo</label>
+                        <input
+                          type="text"
+                          id="veiModelo"
+                          name="veiModelo"
+                          placeholder="Ex: Corolla"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="veiMotorizacao">Motorização</label>
+                        <input
+                          type="text"
+                          id="veiMotorizacao"
+                          name="veiMotorizacao"
+                          placeholder="Ex: 1.8"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="veiAnoModelo">Ano / Modelo</label>
+                        <input
+                          type="text"
+                          id="veiAnoModelo"
+                          name="veiAnoModelo"
+                          placeholder="Ex: 2020/2021"
+                          maxlength="9"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="veiPlaca">Placa</label>
+                        <input
+                          type="text"
+                          id="veiPlaca"
+                          name="veiPlaca"
+                          placeholder="ABC-1234 ou ABC1D23"
+                          maxlength="8"
+                          class="input-readonly"
+                          readonly
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="veiKm">Km Atual</label>
+                        <input
+                          type="number"
+                          id="veiKm"
+                          name="veiKm"
+                          placeholder="Ex: 45000"
+                          min="0"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      id="veiFormMensagem"
+                      class="form-mensagem"
+                      style="display: none"
+                    ></div>
+                    <div class="form-actions">
+                      <button
+                        type="button"
+                        id="btnVeiLimpar"
+                        class="btn btn-secondary"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        id="btnVeiSalvar"
+                        class="btn btn-primary"
+                      >
+                        Salvar Veículo
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- /PAINEL 1 -->
+
+            <!-- PAINEL 2: BUSCAR -->
+            <div class="acc-item" id="acc-veiculo-busca">
+              <div class="acc-header" data-target="acc-veiculo-busca">
+                <div class="acc-header-left">
+                  <span class="acc-icon">🔍</span> Buscar / Editar Veículo
+                </div>
+                <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <div class="busca-row">
+                  <input
+                    type="text"
+                    id="veiPlacaBusca"
+                    placeholder="Digite a placa..."
+                    maxlength="8"
+                  />
+                  <button id="btnVeiBuscar" class="btn btn-primary">
+                    Buscar
+                  </button>
+                  <button id="btnVeiLimparBusca" class="btn btn-secondary">
+                    Limpar
+                  </button>
+                </div>
+                <div style="display: none">
+                  <input type="text" id="veiEditMarca" />
+                  <input type="text" id="veiEditModelo" />
+                  <input type="text" id="veiEditMotorizacao" />
+                  <input type="text" id="veiEditAnoModelo" />
+                  <input type="text" id="veiEditPlaca" />
+                  <input type="number" id="veiEditKm" />
+                  <input type="hidden" id="veiEditClienteId" />
+                  <input type="text" id="veiEditNomeProprietario" />
+                  <input type="text" id="veiEditCpfCnpj" />
+                  <button id="btnVeiAtualizar"></button>
+                  <button id="btnVeiInativarBusca"></button>
+                  <button id="btnVeiEditBuscarProprietario"></button>
+                </div>
+                <div
+                  id="veiFormReativacao"
+                  style="display: none; margin-top: 16px"
+                >
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="veiReativaCpfCnpj"
+                        >CPF/CNPJ do Proprietário</label
+                      >
+                      <input
+                        type="text"
+                        id="veiReativaCpfCnpj"
+                        placeholder="Só números"
+                        maxlength="18"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Proprietário</label>
+                      <input
+                        type="text"
+                        id="veiReativaNomeProprietario"
+                        readonly
+                        placeholder="Nome confirmado após busca"
+                        class="input-readonly"
+                      />
+                      <input type="hidden" id="veiReativaClienteId" value="" />
+                    </div>
+                    <div class="form-group vei-btn-buscar-prop">
+                      <label>&nbsp;</label>
+                      <button
+                        type="button"
+                        id="btnVeiReativaBuscarProp"
+                        class="btn btn-secondary"
+                      >
+                        Buscar Proprietário
+                      </button>
+                    </div>
+                    <div class="form-group">
+                      <label for="veiReativaKm">Km Atual</label>
+                      <input
+                        type="number"
+                        id="veiReativaKm"
+                        placeholder="Ex: 45000"
+                        min="0"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button
+                      type="button"
+                      id="btnVeiSimReativar"
+                      style="display: none"
+                    ></button>
+                    <button
+                      type="button"
+                      id="btnVeiConfirmarReativacao"
+                      class="btn btn-primary"
+                    >
+                      Confirmar Reativação
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /PAINEL 2 -->
+
+            <!-- PAINEL 3: LISTAR TODOS -->
+            <div class="acc-item" id="acc-veiculo-lista">
+              <div class="acc-header" data-target="acc-veiculo-lista">
+                <div class="acc-header-left">
+                  <span class="acc-icon">📋</span> Listar Todos os Veículos
+                </div>
+                <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <div class="tabela-wrapper">
+                  <table class="tabela-veiculos">
+                    <thead>
+                      <tr>
+                        <th id="thMarca" class="th-ordenavel">
+                          Veículo <span id="iconeOrdemVei">▲</span>
+                        </th>
+                        <th>Modelo</th>
+                        <th>Motorização</th>
+                        <th>Ano/Modelo</th>
+                        <th>Placa</th>
+                        <th id="thProprietario" class="th-ordenavel">
+                          Proprietário <span id="iconeOrdemProp">▲</span>
+                        </th>
+                        <th>Última Km</th>
+                        <th>Última Passagem</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbodyVeiculos">
+                      <tr>
+                        <td colspan="9" class="tabela-vazia">Carregando...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <!-- /PAINEL 3 -->
           </div>
         </section>
+        <!-- /SEÇÃO VEÍCULOS -->
 
         <!-- ===========================
             SEÇÃO: SERVIÇOS — AC3
@@ -436,15 +955,193 @@
             <p>Será implementado no AC4</p>
           </div>
         </section>
+
+        <!-- ===========================
+            SEÇÃO: KPIs
+            7 blocos colapsáveis com indicadores
+            e gráficos — conectados na AC5
+        =========================== -->
+        <section class="section" id="sec-kpis">
+          <h2 class="section-title">KPIs</h2>
+
+          <!-- BLOCO 1: INDICADORES DA OFICINA -->
+          <div class="dash-bloco" id="bloco-indicadores">
+            <div class="dash-bloco-header" data-target="bloco-indicadores">
+              <span>📊 Indicadores da Oficina</span>
+              <span class="dash-bloco-arrow">▼</span>
+            </div>
+            <div class="dash-bloco-body">
+              <div class="cards-grid">
+                <div class="card card-total">
+                  <img
+                    src="../assets/image/frota.svg"
+                    class="card-icon"
+                    alt="Frota Total"
+                  />
+                  <span class="card-label"
+                    >Frota Total<br /><small
+                      >(Total de veículos na base)</small
+                    ></span
+                  >
+                  <span class="card-value" id="totalFrota">0</span>
+                </div>
+                <div class="card card-alerta">
+                  <img
+                    src="../assets/image/frota.svg"
+                    class="card-icon"
+                    alt="Fora da Retenção"
+                  />
+                  <span class="card-label"
+                    >Fora da Retenção<br /><small
+                      >(Após 12 meses sem visita)</small
+                    ></span
+                  >
+                  <span class="card-value" id="totalSemRelacionamento">0</span>
+                </div>
+                <div class="card card-ok">
+                  <img
+                    src="../assets/image/frota.svg"
+                    class="card-icon"
+                    alt="Dentro da Retenção"
+                  />
+                  <span class="card-label"
+                    >Dentro da Retenção<br /><small
+                      >(Até 12 meses sem visita)</small
+                    ></span
+                  >
+                  <span class="card-value" id="totalComRelacionamento">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /BLOCO 1 -->
+
+          <!-- BLOCO 2: LVT — AC5 -->
+          <div class="dash-bloco" id="bloco-lvt">
+            <div class="dash-bloco-header" data-target="bloco-lvt">
+              <span>📊 LVT — Lifetime Value por Cliente</span>
+              <span class="dash-bloco-arrow">▼</span>
+            </div>
+            <div class="dash-bloco-body">
+              <div class="placeholder-grafico">
+                <p>Gráfico será implementado no <strong>AC5</strong></p>
+              </div>
+            </div>
+          </div>
+          <!-- /BLOCO 2 -->
+
+          <!-- BLOCO 3: RETENÇÃO POR ANO — AC5 -->
+          <div class="dash-bloco" id="bloco-retencao-ano">
+            <div class="dash-bloco-header" data-target="bloco-retencao-ano">
+              <span>📊 Retenção por Ano</span>
+              <span class="dash-bloco-arrow">▼</span>
+            </div>
+            <div class="dash-bloco-body">
+              <div class="placeholder-grafico">
+                <p>Gráfico será implementado no <strong>AC5</strong></p>
+              </div>
+            </div>
+          </div>
+          <!-- /BLOCO 3 -->
+
+          <!-- BLOCO 4: RETENÇÃO POR MODELO — AC5 -->
+          <div class="dash-bloco" id="bloco-retencao-modelo">
+            <div class="dash-bloco-header" data-target="bloco-retencao-modelo">
+              <span>📊 Retenção por Modelo</span>
+              <span class="dash-bloco-arrow">▼</span>
+            </div>
+            <div class="dash-bloco-body">
+              <div class="placeholder-grafico">
+                <p>Gráfico será implementado no <strong>AC5</strong></p>
+              </div>
+            </div>
+          </div>
+          <!-- /BLOCO 4 -->
+
+          <!-- BLOCO 5: PERFORMANCE CR — AC5 -->
+          <div class="dash-bloco" id="bloco-performance-cr">
+            <div class="dash-bloco-header" data-target="bloco-performance-cr">
+              <span>📊 Performance CR</span>
+              <span class="dash-bloco-arrow">▼</span>
+            </div>
+            <div class="dash-bloco-body">
+              <div class="placeholder-grafico">
+                <p>Gráfico será implementado no <strong>AC5</strong></p>
+              </div>
+            </div>
+          </div>
+          <!-- /BLOCO 5 -->
+
+          <!-- BLOCO 6: PERFORMANCE CIAS — AC5 -->
+          <div class="dash-bloco" id="bloco-performance-cias">
+            <div class="dash-bloco-header" data-target="bloco-performance-cias">
+              <span>📊 Performance CIAS</span>
+              <span class="dash-bloco-arrow">▼</span>
+            </div>
+            <div class="dash-bloco-body">
+              <div class="placeholder-grafico">
+                <p>Gráfico será implementado no <strong>AC5</strong></p>
+              </div>
+            </div>
+          </div>
+          <!-- /BLOCO 6 -->
+
+          <!-- BLOCO 7: CR | METAS OPERADORAS — AC5 -->
+          <div class="dash-bloco" id="bloco-cr-metas">
+            <div class="dash-bloco-header" data-target="bloco-cr-metas">
+              <span>📊 CR | Metas Operadoras</span>
+              <span class="dash-bloco-arrow">▼</span>
+            </div>
+            <div class="dash-bloco-body">
+              <div class="placeholder-grafico">
+                <p>Gráfico será implementado no <strong>AC5</strong></p>
+              </div>
+            </div>
+          </div>
+          <!-- /BLOCO 7 -->
+        </section>
+        <!-- /SEÇÃO KPIs -->
+
+        <!-- ===========================
+            SEÇÃO: CONFIGURAÇÕES — futuro
+        =========================== -->
+        <section class="section" id="sec-configuracoes">
+          <h2 class="section-title">Configurações</h2>
+          <div class="placeholder">
+            <div class="placeholder-icon">⚙️</div>
+            <h3>Módulo em desenvolvimento</h3>
+            <p>A ser definido</p>
+          </div>
+        </section>
+
+        <!-- ===========================
+            SEÇÃO: SUPORTE — futuro
+        =========================== -->
+        <section class="section" id="sec-suporte">
+          <h2 class="section-title">Suporte</h2>
+          <div class="placeholder">
+            <div class="placeholder-icon">🛟</div>
+            <h3>Módulo em desenvolvimento</h3>
+            <p>A ser definido</p>
+          </div>
+        </section>
       </main>
+      <!-- /MAIN -->
     </div>
+    <!-- /APP BODY -->
 
     <!-- ===========================
-        SCRIPTS (ordem obrigatória)
+        SCRIPTS — ORDEM OBRIGATÓRIA
+        1. config.js    → API_BASE_URL e apiRequest()
+        2. auth.js      → verificação de sessão e logout
+        3. dashboard.js → navegação, sidebar, blocos
+        4. clientes.js  → módulo AC1
+        5. veiculos.js  → módulo AC2
     =========================== -->
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/dashboard.js"></script>
     <script src="../assets/js/clientes.js"></script>
+    <script src="../assets/js/veiculos.js"></script>
   </body>
 </html>

@@ -1,0 +1,161 @@
+/* veiculos.css | data: 03/03/2026 */
+
+/* =========================================
+  veiculos.css
+  Estilos exclusivos da seção de Veículos
+  Depende de: style.css + clientes.css (base)
+   ========================================= */
+
+/* ===========================
+  INPUT READONLY
+  Campo nome do proprietário
+=========================== */
+.input-readonly {
+  background: #0f1827 !important;
+  color: #718096 !important;
+  cursor: not-allowed;
+}
+
+/* ===========================
+  BOTÃO BUSCAR PROPRIETÁRIO
+  Alinha verticalmente com inputs
+=========================== */
+.vei-btn-buscar-prop {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* ===========================
+  BOTÃO DANGER — Inativar
+=========================== */
+.btn-danger {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+  padding: 10px 22px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.btn-danger:hover {
+  background: rgba(231, 76, 60, 0.4);
+  transform: translateY(-1px);
+}
+
+/* ===========================
+  BOTÃO INATIVAR NA TABELA
+=========================== */
+.btn-inativar {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+
+.btn-inativar:hover {
+  background: rgba(231, 76, 60, 0.4);
+}
+
+/* ===========================
+  CARD DE RESULTADO
+  Veículo encontrado (ativo)
+=========================== */
+.vei-resultado-card {
+  background: #0f1827;
+  border: 1px solid #2d3748;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  color: #a0aec0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+/* ===========================
+  AVISOS DE RESULTADO
+  Inativo e não encontrado
+=========================== */
+.vei-aviso {
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+/* Alerta — veículo inativo (amarelo) */
+.vei-aviso-alerta {
+  background: rgba(243, 156, 18, 0.1);
+  border: 1px solid rgba(243, 156, 18, 0.3);
+  color: #f6c26b;
+}
+
+/* Info — veículo não encontrado (azul) */
+.vei-aviso-info {
+  background: rgba(52, 152, 219, 0.1);
+  border: 1px solid rgba(52, 152, 219, 0.3);
+  color: #63b3ed;
+}
+
+/* ===========================
+  TABELA DE VEÍCULOS
+=========================== */
+.tabela-veiculos {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.tabela-veiculos thead tr {
+  background: #0f1827;
+}
+
+.tabela-veiculos th {
+  padding: 10px 14px;
+  text-align: left;
+  color: #718096;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.tabela-veiculos td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #1a2438;
+  color: #e2e8f0;
+}
+
+.tabela-veiculos tbody tr:hover td {
+  background: #1a2a42;
+}
+
+/* ===========================
+  RESPONSIVO
+=========================== */
+
+/* Tablet */
+@media (max-width: 768px) {
+  .vei-btn-buscar-prop {
+    justify-content: flex-start;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .tabela-veiculos th,
+  .tabela-veiculos td {
+    padding: 8px 10px;
+    font-size: 0.78rem;
+  }
+}
+
+/* ===========================
+  MAIÚSCULAS AUTOMÁTICAS
+  Campos de texto do módulo veículos
+=========================== */
+#sec-veiculos input[type='text'] {
+  text-transform: uppercase;
+}

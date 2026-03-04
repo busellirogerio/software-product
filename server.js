@@ -1,4 +1,5 @@
-// server.js
+// server.js | data: 03/03/2026
+
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');

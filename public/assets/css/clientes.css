@@ -1,3 +1,5 @@
+/* clientes.css | data: 03/03/2026 */
+
 /* =========================================
   clientes.css
   Estilos exclusivos da seção de Clientes
@@ -377,4 +379,14 @@
 
 .th-ordenavel:hover {
   color: var(--primary-color);
+}
+
+/* ===========================
+  PAINEL BLOQUEADO
+  Cadastro travado até pesquisa
+  data: 03/03/2026
+=========================== */
+.acc-item.bloqueado .acc-header {
+  cursor: not-allowed;
+  opacity: 0.6;
 }

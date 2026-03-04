@@ -1,4 +1,4 @@
-// src/controllers/clienteController.js
+// clienteController.js |data: 03/03/2026
 
 const clienteRepository = require('../repositories/clienteRepository');
 
@@ -66,11 +66,9 @@ class ClienteController {
       } else if (tipo === 'telefone') {
         resultado = await clienteRepository.buscarPorTelefone(valor.trim());
       } else {
-        return res
-          .status(400)
-          .json({
-            erro: 'Tipo de busca inválido. Use: nome, cpfcnpj ou telefone',
-          });
+        return res.status(400).json({
+          erro: 'Tipo de busca inválido. Use: nome, cpfcnpj ou telefone',
+        });
       }
 
       res.json(resultado);

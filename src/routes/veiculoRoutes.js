@@ -1,5 +1,5 @@
-// =========================================
-// src/routes/veiculoRoutes.js
+// veiculoRoutes.js | data: 03/03/2026
+
 // Rotas da API — dbo.Veiculos
 // VERSÃO: 1.0 - AC2
 // =========================================

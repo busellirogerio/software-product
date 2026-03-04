@@ -1,38 +1,26 @@
-// ===============================
-// config.js - Configurações Globais
-// ===============================
+// config.js | data: 03/03/2026
 
-// Configuração base da API
-// - Se o frontend estiver no Node (porta 3000): usa mesma origem
-// - Se estiver no Live Server (porta 5500): aponta para o Node (3000)
 const API_BASE_URL =
   window.location.port === '3000'
     ? `${window.location.origin}/api`
     : 'http://127.0.0.1:3000/api';
 
-// Configurações globais do frontend
 const CONFIG = {
   api: {
     baseURL: API_BASE_URL,
-    timeout: 30000, // 30 segundos
+    timeout: 30000,
     headers: {
       'Content-Type': 'application/json',
     },
   },
-
-  // Configurações de autenticação
   auth: {
     sessionKey: 'usuario',
-    tokenExpiry: 24 * 60 * 60 * 1000, // 24 horas em ms
+    tokenExpiry: 24 * 60 * 60 * 1000,
   },
-
-  // Configurações de validação
   validation: {
     minPasswordLength: 6,
     emailRegex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   },
-
-  // Mensagens padrão
   messages: {
     networkError: 'Erro de conexão. Verifique sua internet.',
     serverError: 'Erro interno do servidor. Tente novamente.',
@@ -41,19 +29,34 @@ const CONFIG = {
   },
 };
 
-// Função para fazer requisições HTTP com configurações padrão
-const apiRequest = async (endpoint, options = {}) => {
+// ===============================
+// apiRequest — suporta dois formatos:
+// 1) apiRequest('/endpoint', { method: 'POST', body: payload })
+// 2) apiRequest('/endpoint', 'POST', payload)
+// ===============================
+const apiRequest = async (endpoint, methodOrOptions = {}, bodyArg) => {
   const url = `${CONFIG.api.baseURL}${endpoint}`;
 
-  const defaultOptions = {
+  let options = {};
+
+  // Formato 2: apiRequest(url, 'METHOD', body)
+  if (typeof methodOrOptions === 'string') {
+    options.method = methodOrOptions;
+    if (bodyArg !== undefined) {
+      options.body = bodyArg;
+    }
+  } else {
+    // Formato 1: apiRequest(url, { method, body })
+    options = { ...methodOrOptions };
+  }
+
+  const finalOptions = {
     method: 'GET',
     headers: { ...CONFIG.api.headers },
-    timeout: CONFIG.api.timeout,
+    ...options,
   };
 
-  const finalOptions = { ...defaultOptions, ...options };
-
-  // Adiciona body se for POST/PUT
+  // Serializa body se for objeto
   if (finalOptions.body && typeof finalOptions.body === 'object') {
     finalOptions.body = JSON.stringify(finalOptions.body);
   }
@@ -61,7 +64,6 @@ const apiRequest = async (endpoint, options = {}) => {
   try {
     const response = await fetch(url, finalOptions);
 
-    // Trata erros HTTP
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.erro || `HTTP ${response.status}`);
@@ -69,7 +71,6 @@ const apiRequest = async (endpoint, options = {}) => {
 
     return await response.json();
   } catch (error) {
-    // Trata erros de rede
     if (error.name === 'TypeError') {
       throw new Error(CONFIG.messages.networkError);
     }
@@ -77,17 +78,11 @@ const apiRequest = async (endpoint, options = {}) => {
   }
 };
 
-// Função para validar email
-const isValidEmail = (email) => {
-  return CONFIG.validation.emailRegex.test(email);
-};
+const isValidEmail = (email) => CONFIG.validation.emailRegex.test(email);
 
-// Função para validar senha
-const isValidPassword = (password) => {
-  return password && password.length >= CONFIG.validation.minPasswordLength;
-};
+const isValidPassword = (password) =>
+  password && password.length >= CONFIG.validation.minPasswordLength;
 
-// Exportar configurações globalmente
 window.CONFIG = CONFIG;
 window.apiRequest = apiRequest;
 window.isValidEmail = isValidEmail;

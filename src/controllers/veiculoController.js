@@ -1,5 +1,5 @@
-// =========================================
-// src/controllers/veiculoController.js
+// veiculoController.js | data: 03/03/2026
+
 // Camada intermediária — validações e respostas HTTP
 // VERSÃO: 1.0 - AC2
 // =========================================

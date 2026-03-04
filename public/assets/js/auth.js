@@ -1,3 +1,5 @@
+// auth.js | data: 03/03/2026
+
 // Proteção de rotas e gerenciamento de autenticação
 document.addEventListener('DOMContentLoaded', () => {
   // Configurações de autenticação

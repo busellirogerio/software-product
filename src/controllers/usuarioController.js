@@ -1,3 +1,5 @@
+// usuarioController.js | data: 03/03/2026
+
 const usuarioRepository = require('../repositories/usuarioRepository');
 
 class UsuarioController {

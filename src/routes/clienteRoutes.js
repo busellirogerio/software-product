@@ -1,4 +1,4 @@
-// src/routes/clienteRoutes.js
+// clienteRoutes.js | data: 03/03/2026
 
 const express = require('express');
 const rateLimit = require('express-rate-limit');
