@@ -1,6 +1,7 @@
 # Re⟳Loop — Sistema de Gerenciamento de Oficina Automotiva
 
-
+<br>
+<br>
 
 📋 O que é o projeto?
 - O **Re⟳Loop** é um sistema de gerenciamento para oficinas de troca de óleo fracionado. Desenvolvido como projeto acadêmico para a 
@@ -8,7 +9,8 @@
 - O nome "Re⟳Loop" representa o ciclo contínuo de relacionamento com 
   cliente: o veículo entra na oficina, recebe o serviço, e retorna periodicamente — criando um **loop de fidelização**.
 
-
+<br>
+<br>
 
 🎯 A que se destina?
 - Oficinas de pequeno e médio porte
@@ -17,7 +19,8 @@
 - Prospecção ativa (eventos futuros)
 - Indicadores de performance (KPIs)
 
-
+<br>
+<br>
 
 📦 Entregas por Etapas
 
@@ -68,7 +71,8 @@
 - Indicadores de retenção
 - Performance de atendimento
 
-
+<br>
+<br>
 
 🛠️ Stack Tecnológica
 
