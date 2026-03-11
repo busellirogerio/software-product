@@ -65,7 +65,7 @@
 Backend
 
 | Tecnologia | Função |
-| --- | --- |
+
 | Node.js | Ambiente de execução JavaScript no servidor |
 | Express.js | Framework web para APIs REST |
 | mssql | Driver de conexão com SQL Server |
@@ -77,7 +77,7 @@ Backend
 Frontend
 
 | Tecnologia | Função |
-| --- | --- |
+
 | HTML5 | Estrutura das páginas |
 | CSS3 | Estilização e responsividade |
 | JavaScript (Vanilla) | Interatividade e consumo de APIs |
@@ -85,14 +85,14 @@ Frontend
 Banco de Dados
 
 | Tecnologia | Função |
-| --- | --- |
+
 | SQL Server 2019+ | Armazenamento relacional |
 | SSMS | Administração do banco |
 
 Ferramentas
 
 | Ferramenta | Função |
-| --- | --- |
+
 | Git / GitHub | Controle de versão |
 | Postman | Testes de API |
 | VS Code | Editor de código |
@@ -127,44 +127,9 @@ HTML + CSS + JS Vanilla
 - Proteção contra ataques
 
 📁 Estrutura de Pastas [EM DESENVOLVIMENTO]
+<img width="737" height="837" alt="image" src="https://github.com/user-attachments/assets/ed9c4967-8880-4c6b-89e2-a92ce32221c5" />
 
-📂 software-product/
-│
-├── 📂 sql/
-│   ├── Usuarios.sql
-│   ├── Clientes.sql
-│   └── Veiculos.sql
-│
-├── 📂 src/
-│   ├── 📂 config/
-│   │   └── database.js
-│   ├── 📂 repositories/
-│   │   ├── usuarioRepository.js
-│   │   ├── clienteRepository.js
-│   │   └── veiculoRepository.js
-│   ├── 📂 controllers/
-│   │   ├── usuarioController.js
-│   │   ├── clienteController.js
-│   │   └── veiculoController.js
-│   └── 📂 routes/
-│       ├── usuarioRoutes.js
-│       ├── clienteRoutes.js
-│       └── veiculoRoutes.js
-│
-├── 📂 public/
-│   ├── 📂 pages/
-│   │   ├── login.html
-│   │   └── dashboard.html
-│   └── 📂 assets/
-│       ├── 📂 css/
-│       ├── 📂 js/
-│       └── 📂 image/
-│
-├── .env
-├── .gitignore
-├── server.js
-├── package.json
-└── README.md
+
 
 
 📄 Arquivos de Configuração
@@ -298,7 +263,7 @@ Clientes
 👤 Autor
 - Buselli Rogerio
 - Ricardo Mendes
-- Gustavo 
+- Gustavo Sampaio de Almeida
 
 Faculdade Impacta — ADS — 2026
 
