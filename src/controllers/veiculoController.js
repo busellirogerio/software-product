@@ -8,8 +8,8 @@ const veiculoRepository = require('../repositories/veiculoRepository');
 
 class VeiculoController {
   /* ===========================
-    LISTAR TODOS
-    Query opcional: ?ordem=ASC ou ?ordem=DESC
+// LISTAR TODOS
+// Query opcional: ?ordem=ASC ou ?ordem=DESC
   =========================== */
   async listarTodos(req, res) {
     try {
@@ -292,7 +292,7 @@ class VeiculoController {
 
   /* ===========================
     REATIVAR VEÍCULO
-    Ativo = 1 + vincula novo ClienteId
+    Ativo = 1 + vincula novo ClienteId + atualiza Km
   =========================== */
   async reativar(req, res) {
     try {
@@ -302,7 +302,7 @@ class VeiculoController {
         return res.status(400).json({ erro: 'ID inválido' });
       }
 
-      const { clienteId } = req.body;
+      const { clienteId, km } = req.body;
 
       if (!clienteId) {
         return res
@@ -319,6 +319,7 @@ class VeiculoController {
       const veiculoReativado = await veiculoRepository.reativar(
         id,
         parseInt(clienteId),
+        km ? parseInt(km) : null,
       );
 
       res.json(veiculoReativado);

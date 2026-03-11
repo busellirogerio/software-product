@@ -1443,7 +1443,7 @@ class ClienteRepository {
     const result = await pool.request().input('id', sql.Int, id).query(`
         SELECT *
         FROM dbo.Clientes
-        WHERE ClienteId = @id AND Ativo = 1
+        WHERE ClienteId = @id
       `);
     return result.recordset[0] || null;
   }
@@ -1466,27 +1466,25 @@ class ClienteRepository {
     return result.recordset;
   }
 
-  /* ===========================
-    BUSCAR POR CPF/CNPJ
-    Remove formatação antes de buscar
-  =========================== */
+  // BUSCAR POR CPF/CNPJ
+  // Remove formatação antes de buscar
+
   async buscarPorCpfCnpj(cpfCnpj) {
     const pool = await getPool();
     const apenasNumeros = cpfCnpj.replace(/[.\-\/]/g, '');
     const result = await pool
       .request()
       .input('cpfCnpj', sql.NVarChar, apenasNumeros).query(`
-        SELECT ClienteId, Tipo, CpfCnpj, NomeCompleto, Genero, Telefone, DataNascimento
+        SELECT ClienteId, Tipo, CpfCnpj, NomeCompleto, Genero, Telefone, DataNascimento, Ativo
         FROM dbo.Clientes
-        WHERE CpfCnpj = @cpfCnpj AND Ativo = 1
+        WHERE CpfCnpj = @cpfCnpj
       `);
     return result.recordset;
   }
 
-  /* ===========================
-    BUSCAR POR TELEFONE
-    Busca parcial
-  =========================== */
+  // BUSCAR POR TELEFONE
+  // Busca parcial
+
   async buscarPorTelefone(telefone) {
     const pool = await getPool();
     const apenasNumeros = telefone.replace(/[\s\-\(\)]/g, '');
@@ -1640,7 +1638,7 @@ class ClienteRepository {
           Bairro           = @bairro,
           Cidade           = @cidade,
           Estado           = @estado
-        WHERE ClienteId = @id AND Ativo = 1
+        WHERE ClienteId = @id
       `);
     return result.rowsAffected[0];
   }

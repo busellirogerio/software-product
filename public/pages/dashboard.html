@@ -176,7 +176,7 @@
               <input
                 type="text"
                 class="ia-input"
-                placeholder="Pergunte sobre sua oficina..."
+                placeholder="Pergunte sobre sua oficina... [CONGELADO - PÓS-GRADUAÇÃO]"
                 disabled
               />
               <button class="ia-btn-mic" disabled title="Voz — AC5">
@@ -204,15 +204,15 @@
             </div>
 
             <p class="ia-hint">
-              Inteligência artificial conectada às tabelas da oficina — AC5
+              Inteligência artificial conectada às tabelas da oficina —
+              CONGELADO PÓS-GRADUAÇÃO
             </p>
           </div>
         </section>
         <!-- /SEÇÃO INÍCIO -->
 
-        <!-- ===========================
-            SEÇÃO: CLIENTES — AC1
-        =========================== -->
+        <!-- SEÇÃO: CLIENTES — AC1 | sec-clientes data: 05/03/2026 -->
+
         <section class="section" id="sec-clientes">
           <h2 class="section-title">Clientes</h2>
           <div class="accordion">
@@ -465,333 +465,18 @@
             </div>
           </div>
         </section>
-        <!-- /SEÇÃO CLIENTES -->
+        <!-- /SEÇÃO CLIENTES - AC1 -->
 
-        <!-- ===========================
-            SEÇÃO: VEÍCULOS — AC2
-        =========================== -->
+        <!-- SEÇÃO: VEÍCULOS — AC2 | sec-veiculos data: 05/03/2026 -->
+
         <section class="section" id="sec-veiculos">
-          <h2 class="section-title">Veículos</h2>
+          <h2 class="section-title">Veículos [EM DESENVOLVIMENTO AC2]</h2>
           <div class="accordion" id="accordion-veiculos">
-            <!-- PAINEL 1: CADASTRAR NOVO -->
-            <div class="acc-item" id="acc-veiculo-cadastro">
-              <div class="acc-header" data-target="acc-veiculo-cadastro">
-                <div class="acc-header-left">
-                  <span class="acc-icon">➕</span> Cadastrar Novo Veículo
-                </div>
-                <span class="acc-arrow">▼</span>
-              </div>
-              <div class="acc-body">
-                <div id="veiCadVerificar">
-                  <div class="busca-row">
-                    <input
-                      type="text"
-                      id="veiPlacaVerificar"
-                      placeholder="Digite a placa para verificar..."
-                      maxlength="8"
-                    />
-                    <button id="btnVeiVerificarPlaca" class="btn btn-primary">
-                      Verificar
-                    </button>
-                    <button id="btnVeiCadLimpar" class="btn btn-secondary">
-                      Limpar
-                    </button>
-                  </div>
-                </div>
-                <div id="veiCadExisteAtivo" style="display: none">
-                  <div class="vei-aviso vei-aviso-alerta">
-                    <p>
-                      ⚠️ Este veículo já está
-                      <strong>cadastrado e ativo</strong>.
-                    </p>
-                    <p id="veiCadInfoAtivo"></p>
-                    <p>O que deseja fazer?</p>
-                  </div>
-                  <div class="form-actions">
-                    <button
-                      type="button"
-                      id="btnVeiCadCancelarAtivo"
-                      class="btn btn-secondary"
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      type="button"
-                      id="btnVeiCadTrocarProp"
-                      class="btn btn-primary"
-                    >
-                      Trocar Proprietário
-                    </button>
-                    <button
-                      type="button"
-                      id="btnVeiCadInativar"
-                      class="btn btn-danger"
-                    >
-                      Inativar Veículo
-                    </button>
-                  </div>
-                  <div id="veiCadFormTrocarProp" style="display: none">
-                    <div class="form-grid">
-                      <div class="form-group">
-                        <label for="veiCadTrocarCpfCnpj"
-                          >CPF/CNPJ do Novo Proprietário</label
-                        >
-                        <input
-                          type="text"
-                          id="veiCadTrocarCpfCnpj"
-                          placeholder="Só números"
-                          maxlength="18"
-                        />
-                      </div>
-                      <div class="form-group">
-                        <label>Proprietário</label>
-                        <input
-                          type="text"
-                          id="veiCadTrocarNomeProp"
-                          readonly
-                          placeholder="Nome confirmado após busca"
-                          class="input-readonly"
-                        />
-                        <input
-                          type="hidden"
-                          id="veiCadTrocarClienteId"
-                          value=""
-                        />
-                      </div>
-                      <div class="form-group vei-btn-buscar-prop">
-                        <label>&nbsp;</label>
-                        <button
-                          type="button"
-                          id="btnVeiCadTrocarBuscarProp"
-                          class="btn btn-secondary"
-                        >
-                          Buscar Proprietário
-                        </button>
-                      </div>
-                    </div>
-                    <div class="form-actions">
-                      <button
-                        type="button"
-                        id="btnVeiCadConfirmarTroca"
-                        class="btn btn-primary"
-                      >
-                        Confirmar Troca
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div id="veiCadExisteInativo" style="display: none">
-                  <div class="vei-aviso vei-aviso-info">
-                    <p>
-                      ℹ️ Este veículo está
-                      <strong>inativo / sem proprietário</strong>.
-                    </p>
-                    <p id="veiCadInfoInativo"></p>
-                    <p>Deseja reativar e vincular um proprietário?</p>
-                  </div>
-                  <div class="form-actions">
-                    <button
-                      type="button"
-                      id="btnVeiCadCancelarInativo"
-                      class="btn btn-secondary"
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      type="button"
-                      id="btnVeiCadSimReativar"
-                      class="btn btn-primary"
-                    >
-                      Sim, Reativar
-                    </button>
-                  </div>
-                  <div id="veiCadFormReativar" style="display: none">
-                    <div class="form-grid">
-                      <div class="form-group">
-                        <label for="veiCadReativaCpfCnpj"
-                          >CPF/CNPJ do Proprietário</label
-                        >
-                        <input
-                          type="text"
-                          id="veiCadReativaCpfCnpj"
-                          placeholder="Só números"
-                          maxlength="18"
-                        />
-                      </div>
-                      <div class="form-group">
-                        <label>Proprietário</label>
-                        <input
-                          type="text"
-                          id="veiCadReativaNomeProp"
-                          readonly
-                          placeholder="Nome confirmado após busca"
-                          class="input-readonly"
-                        />
-                        <input
-                          type="hidden"
-                          id="veiCadReativaClienteId"
-                          value=""
-                        />
-                      </div>
-                      <div class="form-group vei-btn-buscar-prop">
-                        <label>&nbsp;</label>
-                        <button
-                          type="button"
-                          id="btnVeiCadReativaBuscarProp"
-                          class="btn btn-secondary"
-                        >
-                          Buscar Proprietário
-                        </button>
-                      </div>
-                      <div class="form-group">
-                        <label for="veiCadReativaKm">Km Atual</label>
-                        <input
-                          type="number"
-                          id="veiCadReativaKm"
-                          placeholder="Ex: 45000"
-                          min="0"
-                        />
-                      </div>
-                    </div>
-                    <div class="form-actions">
-                      <button
-                        type="button"
-                        id="btnVeiCadConfirmarReativar"
-                        class="btn btn-primary"
-                      >
-                        Confirmar Reativação
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div id="veiCadFormNovo" style="display: none">
-                  <form id="formVeiculo">
-                    <div class="form-grid">
-                      <div class="form-group">
-                        <label for="veiCpfCnpj"
-                          >CPF / CNPJ do Proprietário</label
-                        >
-                        <input
-                          type="text"
-                          id="veiCpfCnpj"
-                          name="veiCpfCnpj"
-                          placeholder="Só números"
-                          maxlength="18"
-                        />
-                      </div>
-                      <div class="form-group">
-                        <label>Proprietário</label>
-                        <input
-                          type="text"
-                          id="veiNomeProprietario"
-                          readonly
-                          placeholder="Nome confirmado após busca"
-                          class="input-readonly"
-                        />
-                        <input type="hidden" id="veiClienteId" value="" />
-                      </div>
-                      <div class="form-group vei-btn-buscar-prop">
-                        <label>&nbsp;</label>
-                        <button
-                          type="button"
-                          id="btnBuscarProprietario"
-                          class="btn btn-secondary"
-                        >
-                          Buscar Proprietário
-                        </button>
-                      </div>
-                      <div class="form-group">
-                        <label for="veiMarca">Marca</label>
-                        <input
-                          type="text"
-                          id="veiMarca"
-                          name="veiMarca"
-                          placeholder="Ex: Toyota"
-                        />
-                      </div>
-                      <div class="form-group">
-                        <label for="veiModelo">Modelo</label>
-                        <input
-                          type="text"
-                          id="veiModelo"
-                          name="veiModelo"
-                          placeholder="Ex: Corolla"
-                        />
-                      </div>
-                      <div class="form-group">
-                        <label for="veiMotorizacao">Motorização</label>
-                        <input
-                          type="text"
-                          id="veiMotorizacao"
-                          name="veiMotorizacao"
-                          placeholder="Ex: 1.8"
-                        />
-                      </div>
-                      <div class="form-group">
-                        <label for="veiAnoModelo">Ano / Modelo</label>
-                        <input
-                          type="text"
-                          id="veiAnoModelo"
-                          name="veiAnoModelo"
-                          placeholder="Ex: 2020/2021"
-                          maxlength="9"
-                        />
-                      </div>
-                      <div class="form-group">
-                        <label for="veiPlaca">Placa</label>
-                        <input
-                          type="text"
-                          id="veiPlaca"
-                          name="veiPlaca"
-                          placeholder="ABC-1234 ou ABC1D23"
-                          maxlength="8"
-                          class="input-readonly"
-                          readonly
-                        />
-                      </div>
-                      <div class="form-group">
-                        <label for="veiKm">Km Atual</label>
-                        <input
-                          type="number"
-                          id="veiKm"
-                          name="veiKm"
-                          placeholder="Ex: 45000"
-                          min="0"
-                        />
-                      </div>
-                    </div>
-                    <div
-                      id="veiFormMensagem"
-                      class="form-mensagem"
-                      style="display: none"
-                    ></div>
-                    <div class="form-actions">
-                      <button
-                        type="button"
-                        id="btnVeiLimpar"
-                        class="btn btn-secondary"
-                      >
-                        Cancelar
-                      </button>
-                      <button
-                        type="submit"
-                        id="btnVeiSalvar"
-                        class="btn btn-primary"
-                      >
-                        Salvar Veículo
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-            <!-- /PAINEL 1 -->
-
-            <!-- PAINEL 2: BUSCAR -->
+            <!-- PAINEL 1: PESQUISA -->
             <div class="acc-item" id="acc-veiculo-busca">
               <div class="acc-header" data-target="acc-veiculo-busca">
                 <div class="acc-header-left">
-                  <span class="acc-icon">🔍</span> Buscar / Editar Veículo
+                  <span class="acc-icon">🔍</span> Pesquisa
                 </div>
                 <span class="acc-arrow">▼</span>
               </div>
@@ -810,32 +495,29 @@
                     Limpar
                   </button>
                 </div>
-                <div style="display: none">
-                  <input type="text" id="veiEditMarca" />
-                  <input type="text" id="veiEditModelo" />
-                  <input type="text" id="veiEditMotorizacao" />
-                  <input type="text" id="veiEditAnoModelo" />
-                  <input type="text" id="veiEditPlaca" />
-                  <input type="number" id="veiEditKm" />
-                  <input type="hidden" id="veiEditClienteId" />
-                  <input type="text" id="veiEditNomeProprietario" />
-                  <input type="text" id="veiEditCpfCnpj" />
-                  <button id="btnVeiAtualizar"></button>
-                  <button id="btnVeiInativarBusca"></button>
-                  <button id="btnVeiEditBuscarProprietario"></button>
+                <div id="resultadoBuscaVei" style="display: none"></div>
+              </div>
+            </div>
+
+            <!-- PAINEL 2: CADASTRO -->
+            <div class="acc-item bloqueado" id="acc-veiculo-cadastro">
+              <div class="acc-header" data-target="acc-veiculo-cadastro">
+                <div class="acc-header-left">
+                  <span class="acc-icon">➕</span> Cadastro
                 </div>
-                <div
-                  id="veiFormReativacao"
-                  style="display: none; margin-top: 16px"
-                >
+                <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <form id="formVeiculo">
+                  <input type="hidden" id="veiculoId" value="" />
+                  <input type="hidden" id="veiReativando" value="" />
                   <div class="form-grid">
                     <div class="form-group">
-                      <label for="veiReativaCpfCnpj"
-                        >CPF/CNPJ do Proprietário</label
-                      >
+                      <label for="veiCpfCnpj">CPF / CNPJ do Proprietário</label>
                       <input
                         type="text"
-                        id="veiReativaCpfCnpj"
+                        id="veiCpfCnpj"
+                        name="veiCpfCnpj"
                         placeholder="Só números"
                         maxlength="18"
                       />
@@ -844,57 +526,118 @@
                       <label>Proprietário</label>
                       <input
                         type="text"
-                        id="veiReativaNomeProprietario"
+                        id="veiNomeProprietario"
                         readonly
                         placeholder="Nome confirmado após busca"
                         class="input-readonly"
                       />
-                      <input type="hidden" id="veiReativaClienteId" value="" />
+                      <input type="hidden" id="veiClienteId" value="" />
                     </div>
-                    <div class="form-group vei-btn-buscar-prop">
+                    <div class="form-group">
                       <label>&nbsp;</label>
                       <button
                         type="button"
-                        id="btnVeiReativaBuscarProp"
+                        id="btnVeiBuscarProprietario"
                         class="btn btn-secondary"
                       >
                         Buscar Proprietário
                       </button>
                     </div>
                     <div class="form-group">
-                      <label for="veiReativaKm">Km Atual</label>
+                      <label for="veiPlaca">Placa</label>
+                      <input
+                        type="text"
+                        id="veiPlaca"
+                        name="veiPlaca"
+                        placeholder="ABC1234 ou ABC1D23"
+                        maxlength="8"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="veiMarca">Marca</label>
+                      <input
+                        type="text"
+                        id="veiMarca"
+                        name="veiMarca"
+                        placeholder="Ex: Toyota"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="veiModelo">Modelo</label>
+                      <input
+                        type="text"
+                        id="veiModelo"
+                        name="veiModelo"
+                        placeholder="Ex: Corolla"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="veiMotorizacao">Motorização</label>
+                      <input
+                        type="text"
+                        id="veiMotorizacao"
+                        name="veiMotorizacao"
+                        placeholder="Ex: 1.8"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="veiAnoModelo">Ano / Modelo</label>
+                      <input
+                        type="text"
+                        id="veiAnoModelo"
+                        name="veiAnoModelo"
+                        placeholder="Ex: 2020/2021"
+                        maxlength="9"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="veiKm">Km Atual</label>
                       <input
                         type="number"
-                        id="veiReativaKm"
+                        id="veiKm"
+                        name="veiKm"
                         placeholder="Ex: 45000"
                         min="0"
                       />
                     </div>
                   </div>
+                  <div
+                    id="veiFormMensagem"
+                    class="form-mensagem"
+                    style="display: none"
+                  ></div>
                   <div class="form-actions">
                     <button
                       type="button"
-                      id="btnVeiSimReativar"
-                      style="display: none"
-                    ></button>
+                      id="btnVeiCancelar"
+                      class="btn btn-secondary"
+                    >
+                      Cancelar
+                    </button>
                     <button
                       type="button"
-                      id="btnVeiConfirmarReativacao"
+                      id="btnVeiLimpar"
+                      class="btn btn-secondary"
+                    >
+                      Limpar
+                    </button>
+                    <button
+                      type="submit"
+                      id="btnVeiSalvar"
                       class="btn btn-primary"
                     >
-                      Confirmar Reativação
+                      Salvar
                     </button>
                   </div>
-                </div>
+                </form>
               </div>
             </div>
-            <!-- /PAINEL 2 -->
 
-            <!-- PAINEL 3: LISTAR TODOS -->
+            <!-- PAINEL 3: LISTA -->
             <div class="acc-item" id="acc-veiculo-lista">
               <div class="acc-header" data-target="acc-veiculo-lista">
                 <div class="acc-header-left">
-                  <span class="acc-icon">📋</span> Listar Todos os Veículos
+                  <span class="acc-icon">📋</span> Lista
                 </div>
                 <span class="acc-arrow">▼</span>
               </div>
@@ -904,30 +647,28 @@
                     <thead>
                       <tr>
                         <th id="thMarca" class="th-ordenavel">
-                          Veículo <span id="iconeOrdemVei">▲</span>
+                          Marca <span id="iconeOrdemVei">▲</span>
                         </th>
                         <th>Modelo</th>
-                        <th>Motorização</th>
-                        <th>Ano/Modelo</th>
                         <th>Placa</th>
                         <th id="thProprietario" class="th-ordenavel">
                           Proprietário <span id="iconeOrdemProp">▲</span>
                         </th>
-                        <th>Última Km</th>
-                        <th>Última Passagem</th>
+                        <th>CPF/CNPJ</th>
+                        <th>Km</th>
+                        <th>Atualização</th>
                         <th>Ações</th>
                       </tr>
                     </thead>
                     <tbody id="tbodyVeiculos">
                       <tr>
-                        <td colspan="9" class="tabela-vazia">Carregando...</td>
+                        <td colspan="8" class="tabela-vazia">Carregando...</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
             </div>
-            <!-- /PAINEL 3 -->
           </div>
         </section>
         <!-- /SEÇÃO VEÍCULOS -->
@@ -936,9 +677,15 @@
             SEÇÃO: SERVIÇOS — AC3
         =========================== -->
         <section class="section" id="sec-servicos">
-          <h2 class="section-title">Serviços</h2>
+          <h2 class="section-title">Serviços [CONGELADO AC3]</h2>
           <div class="placeholder">
-            <div class="placeholder-icon">🔧</div>
+            <div class="placeholder-icon">
+              <img
+                src="../assets/image/servicos.svg"
+                style="width: 50px; height: 50px"
+                alt="Serviços"
+              />
+            </div>
             <h3>Módulo em desenvolvimento</h3>
             <p>Será implementado no AC3</p>
           </div>
@@ -948,9 +695,15 @@
             SEÇÃO: EVENTOS FUTUROS — AC4
         =========================== -->
         <section class="section" id="sec-eventos">
-          <h2 class="section-title">Eventos Futuros</h2>
+          <h2 class="section-title">Eventos [CONGELADO AC4]</h2>
           <div class="placeholder">
-            <div class="placeholder-icon">📅</div>
+            <div class="placeholder-icon">
+              <img
+                src="../assets/image/eventos.svg"
+                style="width: 50px; height: 50px"
+                alt="Eventos"
+              />
+            </div>
             <h3>Módulo em desenvolvimento</h3>
             <p>Será implementado no AC4</p>
           </div>
@@ -962,12 +715,20 @@
             e gráficos — conectados na AC5
         =========================== -->
         <section class="section" id="sec-kpis">
-          <h2 class="section-title">KPIs</h2>
+          <h2 class="section-title">KPIs [CONGELADO AC4]</h2>
 
           <!-- BLOCO 1: INDICADORES DA OFICINA -->
           <div class="dash-bloco" id="bloco-indicadores">
             <div class="dash-bloco-header" data-target="bloco-indicadores">
-              <span>📊 Indicadores da Oficina</span>
+              <span style="display: flex; align-items: center; gap: 8px"
+                ><img
+                  src="../assets/image/kpi.svg"
+                  style="width: 25px; height: 25px"
+                  alt="KPI"
+                /><span style="line-height: 1"
+                  >Indicadores da Oficina</span
+                ></span
+              >
               <span class="dash-bloco-arrow">▼</span>
             </div>
             <div class="dash-bloco-body">
@@ -1019,12 +780,22 @@
           <!-- BLOCO 2: LVT — AC5 -->
           <div class="dash-bloco" id="bloco-lvt">
             <div class="dash-bloco-header" data-target="bloco-lvt">
-              <span>📊 LVT — Lifetime Value por Cliente</span>
+              <span style="display: flex; align-items: center; gap: 8px"
+                ><img
+                  src="../assets/image/kpi.svg"
+                  style="width: 25px; height: 25px"
+                  alt="KPI"
+                /><span style="line-height: 1"
+                  >LVT — Lifetime Value por Cliente [CONGELADO]</span
+                ></span
+              >
               <span class="dash-bloco-arrow">▼</span>
             </div>
             <div class="dash-bloco-body">
               <div class="placeholder-grafico">
-                <p>Gráfico será implementado no <strong>AC5</strong></p>
+                <p>
+                  Gráfico será implementado na <strong>PÓS-GRADUAÇÃO</strong>
+                </p>
               </div>
             </div>
           </div>
@@ -1033,12 +804,22 @@
           <!-- BLOCO 3: RETENÇÃO POR ANO — AC5 -->
           <div class="dash-bloco" id="bloco-retencao-ano">
             <div class="dash-bloco-header" data-target="bloco-retencao-ano">
-              <span>📊 Retenção por Ano</span>
+              <span style="display: flex; align-items: center; gap: 8px"
+                ><img
+                  src="../assets/image/kpi.svg"
+                  style="width: 25px; height: 25px"
+                  alt="KPI"
+                /><span style="line-height: 1"
+                  >Retenção por Ano [CONGELADO]</span
+                ></span
+              >
               <span class="dash-bloco-arrow">▼</span>
             </div>
             <div class="dash-bloco-body">
               <div class="placeholder-grafico">
-                <p>Gráfico será implementado no <strong>AC5</strong></p>
+                <p>
+                  Gráfico será implementado no <strong>PÓS-GRADUAÇÃO</strong>
+                </p>
               </div>
             </div>
           </div>
@@ -1047,12 +828,22 @@
           <!-- BLOCO 4: RETENÇÃO POR MODELO — AC5 -->
           <div class="dash-bloco" id="bloco-retencao-modelo">
             <div class="dash-bloco-header" data-target="bloco-retencao-modelo">
-              <span>📊 Retenção por Modelo</span>
+              <span style="display: flex; align-items: center; gap: 8px"
+                ><img
+                  src="../assets/image/kpi.svg"
+                  style="width: 25px; height: 25px"
+                  alt="KPI"
+                /><span style="line-height: 1"
+                  >Retenção por Modelo [CONGELADO]</span
+                ></span
+              >
               <span class="dash-bloco-arrow">▼</span>
             </div>
             <div class="dash-bloco-body">
               <div class="placeholder-grafico">
-                <p>Gráfico será implementado no <strong>AC5</strong></p>
+                <p>
+                  Gráfico será implementado no <strong>PÓS-GRADUAÇÃO</strong>
+                </p>
               </div>
             </div>
           </div>
@@ -1061,12 +852,22 @@
           <!-- BLOCO 5: PERFORMANCE CR — AC5 -->
           <div class="dash-bloco" id="bloco-performance-cr">
             <div class="dash-bloco-header" data-target="bloco-performance-cr">
-              <span>📊 Performance CR</span>
+              <span style="display: flex; align-items: center; gap: 8px"
+                ><img
+                  src="../assets/image/kpi.svg"
+                  style="width: 25px; height: 25px"
+                  alt="KPI"
+                /><span style="line-height: 1"
+                  >Performance CR [CONGELADO]</span
+                ></span
+              >
               <span class="dash-bloco-arrow">▼</span>
             </div>
             <div class="dash-bloco-body">
               <div class="placeholder-grafico">
-                <p>Gráfico será implementado no <strong>AC5</strong></p>
+                <p>
+                  Gráfico será implementado no <strong>PÓS-GRADUAÇÃO</strong>
+                </p>
               </div>
             </div>
           </div>
@@ -1075,12 +876,22 @@
           <!-- BLOCO 6: PERFORMANCE CIAS — AC5 -->
           <div class="dash-bloco" id="bloco-performance-cias">
             <div class="dash-bloco-header" data-target="bloco-performance-cias">
-              <span>📊 Performance CIAS</span>
+              <span style="display: flex; align-items: center; gap: 8px"
+                ><img
+                  src="../assets/image/kpi.svg"
+                  style="width: 25px; height: 25px"
+                  alt="KPI"
+                /><span style="line-height: 1"
+                  >Performance CIAS [CONGELADO]</span
+                ></span
+              >
               <span class="dash-bloco-arrow">▼</span>
             </div>
             <div class="dash-bloco-body">
               <div class="placeholder-grafico">
-                <p>Gráfico será implementado no <strong>AC5</strong></p>
+                <p>
+                  Gráfico será implementado no <strong>PÓS-GRADUAÇÃO</strong>
+                </p>
               </div>
             </div>
           </div>
@@ -1089,12 +900,22 @@
           <!-- BLOCO 7: CR | METAS OPERADORAS — AC5 -->
           <div class="dash-bloco" id="bloco-cr-metas">
             <div class="dash-bloco-header" data-target="bloco-cr-metas">
-              <span>📊 CR | Metas Operadoras</span>
+              <span style="display: flex; align-items: center; gap: 8px"
+                ><img
+                  src="../assets/image/kpi.svg"
+                  style="width: 25px; height: 25px"
+                  alt="KPI"
+                /><span style="line-height: 1"
+                  >CR | Metas Operadoras [CONGELADO]</span
+                ></span
+              >
               <span class="dash-bloco-arrow">▼</span>
             </div>
             <div class="dash-bloco-body">
               <div class="placeholder-grafico">
-                <p>Gráfico será implementado no <strong>AC5</strong></p>
+                <p>
+                  Gráfico será implementado no <strong>PÓS-GRADUAÇÃO</strong>
+                </p>
               </div>
             </div>
           </div>
@@ -1106,9 +927,15 @@
             SEÇÃO: CONFIGURAÇÕES — futuro
         =========================== -->
         <section class="section" id="sec-configuracoes">
-          <h2 class="section-title">Configurações</h2>
+          <h2 class="section-title">Configurações [CONGELADO AC3]</h2>
           <div class="placeholder">
-            <div class="placeholder-icon">⚙️</div>
+            <div class="placeholder-icon">
+              <img
+                src="../assets/image/configuracao.svg"
+                style="width: 50px; height: 50px"
+                alt="Configurações"
+              />
+            </div>
             <h3>Módulo em desenvolvimento</h3>
             <p>A ser definido</p>
           </div>
@@ -1118,9 +945,15 @@
             SEÇÃO: SUPORTE — futuro
         =========================== -->
         <section class="section" id="sec-suporte">
-          <h2 class="section-title">Suporte</h2>
+          <h2 class="section-title">Suporte [CONGELADO AC2]</h2>
           <div class="placeholder">
-            <div class="placeholder-icon">🛟</div>
+            <div class="placeholder-icon">
+              <img
+                src="../assets/image/suporte.svg"
+                style="width: 50px; height: 50px"
+                alt="Suporte"
+              />
+            </div>
             <h3>Módulo em desenvolvimento</h3>
             <p>A ser definido</p>
           </div>

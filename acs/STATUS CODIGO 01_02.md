@@ -400,11 +400,40 @@ public/pages
         <section class="section" id="sec-clientes">
           <h2 class="section-title">Clientes</h2>
           <div class="accordion">
-            <!-- PAINEL 1: CADASTRAR NOVO -->
-            <div class="acc-item" id="acc-cadastro">
+            <!-- PAINEL 1: BUSCAR / EDITAR -->
+            <div class="acc-item" id="acc-busca">
+              <div class="acc-header" data-target="acc-busca">
+                <div class="acc-header-left">
+                  <span class="acc-icon">🔍</span> Pesquisa
+                </div>
+                <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <div class="busca-row">
+                  <select id="tipoBusca">
+                    <option value="nome">Buscar por Nome</option>
+                    <option value="cpfcnpj">Buscar por CPF/CNPJ</option>
+                    <option value="telefone">Buscar por Telefone</option>
+                  </select>
+                  <input
+                    type="text"
+                    id="valorBusca"
+                    placeholder="Digite para buscar..."
+                  />
+                  <button id="btnBuscar" class="btn btn-primary">Buscar</button>
+                  <button id="btnLimparBusca" class="btn btn-secondary">
+                    Limpar
+                  </button>
+                </div>
+                <div id="resultadoBusca" style="display: none"></div>
+              </div>
+            </div>
+
+            <!-- PAINEL 2: CADASTRAR NOVO -->
+            <div class="acc-item bloqueado" id="acc-cadastro">
               <div class="acc-header" data-target="acc-cadastro">
                 <div class="acc-header-left">
-                  <span class="acc-icon">➕</span> Cadastrar Novo Cliente
+                  <span class="acc-icon">➕</span> Cadastro
                 </div>
                 <span class="acc-arrow">▼</span>
               </div>
@@ -562,6 +591,13 @@ public/pages
                   <div class="form-actions">
                     <button
                       type="button"
+                      id="btnCancelar"
+                      class="btn btn-secondary"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="button"
                       id="btnLimpar"
                       class="btn btn-secondary"
                     >
@@ -572,39 +608,10 @@ public/pages
                       id="btnSalvar"
                       class="btn btn-primary"
                     >
-                      Salvar Cliente
+                      Salvar
                     </button>
                   </div>
                 </form>
-              </div>
-            </div>
-
-            <!-- PAINEL 2: BUSCAR / EDITAR -->
-            <div class="acc-item" id="acc-busca">
-              <div class="acc-header" data-target="acc-busca">
-                <div class="acc-header-left">
-                  <span class="acc-icon">🔍</span> Buscar / Editar Cliente
-                </div>
-                <span class="acc-arrow">▼</span>
-              </div>
-              <div class="acc-body">
-                <div class="busca-row">
-                  <select id="tipoBusca">
-                    <option value="nome">Buscar por Nome</option>
-                    <option value="cpfcnpj">Buscar por CPF/CNPJ</option>
-                    <option value="telefone">Buscar por Telefone</option>
-                  </select>
-                  <input
-                    type="text"
-                    id="valorBusca"
-                    placeholder="Digite para buscar..."
-                  />
-                  <button id="btnBuscar" class="btn btn-primary">Buscar</button>
-                  <button id="btnLimparBusca" class="btn btn-secondary">
-                    Limpar
-                  </button>
-                </div>
-                <div id="resultadoBusca" style="display: none"></div>
               </div>
             </div>
 
@@ -612,7 +619,7 @@ public/pages
             <div class="acc-item" id="acc-lista">
               <div class="acc-header" data-target="acc-lista">
                 <div class="acc-header-left">
-                  <span class="acc-icon">📋</span> Listar Todos os Clientes
+                  <span class="acc-icon">📋</span> Lista
                 </div>
                 <span class="acc-arrow">▼</span>
               </div>
@@ -2979,6 +2986,16 @@ img.card-icon {
   color: var(--primary-color);
 }
 
+/* ===========================
+  PAINEL BLOQUEADO
+  Cadastro travado até pesquisa
+  data: 03/03/2026
+=========================== */
+.acc-item.bloqueado .acc-header {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 ```
 
 ```css
@@ -3706,19 +3723,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const tbodyBusca = document.getElementById('tbodyBusca');
   const tbodyClientes = document.getElementById('tbodyClientes');
 
-  /* ===========================
-    CONTROLE DE ORDENAÇÃO
-    1 = A→Z | -1 = Z→A
-  =========================== */
+  // CONTROLE DE ORDENAÇÃO
+  // 1 = A→Z | -1 = Z→A
+
   let ordemNome = 1;
 
-  /* ===========================
-    ACCORDION — abrir/fechar painéis
-  =========================== */
+  // ACCORDION — abrir/fechar painéis
+  // ALTERADO EM: 03/03/2026
+
   document.querySelectorAll('#sec-clientes .acc-header').forEach((header) => {
     header.addEventListener('click', () => {
       const targetId = header.dataset.target;
       const item = document.getElementById(targetId);
+
+      // Bloqueia painel Cadastro se não pesquisou
+      if (item && item.classList.contains('bloqueado')) {
+        alert('Efetuar a pesquisa antes!');
+        return;
+      }
+
       if (item) item.classList.toggle('open');
     });
   });
@@ -3775,9 +3798,8 @@ document.addEventListener('DOMContentLoaded', () => {
     campoCpfCnpj.focus();
   });
 
-  /* ===========================
-    EXIBIR MENSAGEM NO FORMULÁRIO
-  =========================== */
+  // EXIBIR MENSAGEM NO FORMULÁRIO
+
   const mostrarMensagem = (texto, tipo = 'success') => {
     formMensagem.textContent = texto;
     formMensagem.className = `form-mensagem ${tipo}`;
@@ -3787,22 +3809,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4000);
   };
 
-  /* ===========================
-    LIMPAR FORMULÁRIO
-  =========================== */
+  // LIMPAR FORMULÁRIO
+  // alterado: 03/03/2026
+
   const limparFormulario = () => {
     formCliente.reset();
     clienteId.value = '';
-    btnSalvar.textContent = 'Salvar Cliente';
+    btnSalvar.textContent = 'Salvar';
     formMensagem.style.display = 'none';
   };
 
   btnLimpar.addEventListener('click', limparFormulario);
 
-  /* ===========================
-    CARD DE RESULTADO DA BUSCA
-    reutilizável (criado uma vez)
-  =========================== */
+  // CANCELAR CADASTRO
+  // Limpa, fecha e trava painel
+
+  const cancelarCadastro = () => {
+    formCliente.reset();
+    clienteId.value = '';
+    btnSalvar.textContent = 'Salvar';
+    formMensagem.style.display = 'none';
+
+    // Fecha e bloqueia painel Cadastro
+    const accCadastro = document.getElementById('acc-cadastro');
+    accCadastro.classList.remove('open');
+    accCadastro.classList.add('bloqueado');
+  };
+
+  document
+    .getElementById('btnCancelar')
+    .addEventListener('click', cancelarCadastro);
+
+  // CARD DE RESULTADO DA BUSCA
+  // reutilizável (criado uma vez)
+
   let cardResultado = null;
 
   const ocultarCardResultado = () => {
@@ -3835,12 +3875,17 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
 
     // Cancelar
+    // Alterado em: 03/03/2026
     document.getElementById('btnCliCancelar').addEventListener('click', () => {
       limparBusca();
+      const accCadastro = document.getElementById('acc-cadastro');
+      accCadastro.classList.add('bloqueado');
     });
 
     // Editar — colapsa busca, abre cadastro com dados
     document.getElementById('btnCliEditar').addEventListener('click', () => {
+      const accCadastro = document.getElementById('acc-cadastro');
+      accCadastro.classList.remove('bloqueado');
       editarCliente(cliente.ClienteId);
     });
 
@@ -3898,10 +3943,10 @@ document.addEventListener('DOMContentLoaded', () => {
       .getElementById('btnCliSimCadastrar')
       .addEventListener('click', () => {
         limparBusca();
-        document.getElementById('acc-cadastro').classList.add('open');
-        document
-          .getElementById('acc-cadastro')
-          .scrollIntoView({ behavior: 'smooth' });
+        const accCadastro = document.getElementById('acc-cadastro');
+        accCadastro.classList.remove('bloqueado');
+        accCadastro.classList.add('open');
+        accCadastro.scrollIntoView({ behavior: 'smooth' });
       });
   };
 
@@ -3910,7 +3955,7 @@ document.addEventListener('DOMContentLoaded', () => {
   =========================== */
   const limparBusca = () => {
     valorBusca.value = '';
-    tbodyBusca.innerHTML = '';
+    // tbodyBusca.innerHTML  =''; > removida em 03/03/2026
     resultadoBusca.style.display = 'none';
     ocultarCardResultado();
     document.getElementById('acc-busca').classList.remove('open');
@@ -4031,9 +4076,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (id) {
         await apiRequest(`/clientes/${id}`, { method: 'PUT', body: dados });
         mostrarMensagem('Cliente atualizado com sucesso!', 'success');
+        cancelarCadastro();
       } else {
         await apiRequest('/clientes', { method: 'POST', body: dados });
         mostrarMensagem('Cliente cadastrado com sucesso!', 'success');
+        cancelarCadastro();
       }
 
       limparFormulario();
@@ -4116,6 +4163,47 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   /* ===========================
+    CARD — CLIENTE INATIVO
+    Encontrou mas está inativo
+  =========================== */
+  const exibirClienteInativoEncontrado = (cliente) => {
+    if (!cardResultado) {
+      cardResultado = document.createElement('div');
+      cardResultado.id = 'cardClienteResultado';
+      resultadoBusca.parentNode.insertBefore(
+        cardResultado,
+        resultadoBusca.nextSibling,
+      );
+    }
+
+    cardResultado.className = 'vei-aviso vei-aviso-alerta';
+    cardResultado.style.display = 'block';
+    cardResultado.innerHTML = `
+      <p>⚠️ Cadastro <strong>inativo</strong> encontrado.</p>
+      <p><strong>${cliente.NomeCompleto}</strong> | CPF/CNPJ: <strong>${formatarDocumento(cliente.CpfCnpj)}</strong></p>
+      <p>Deseja reativar?</p>
+      <div class="form-actions" style="margin-top: 12px;">
+        <button type="button" id="btnCliCancelarInativo" class="btn btn-secondary">Cancelar</button>
+        <button type="button" id="btnCliReativar" class="btn btn-primary">Reativar</button>
+      </div>
+    `;
+
+    // Cancelar
+    document
+      .getElementById('btnCliCancelarInativo')
+      .addEventListener('click', () => {
+        limparBusca();
+      });
+
+    // Reativar — abre cadastro com dados para atualizar
+    document.getElementById('btnCliReativar').addEventListener('click', () => {
+      const accCadastro = document.getElementById('acc-cadastro');
+      accCadastro.classList.remove('bloqueado');
+      editarCliente(cliente.ClienteId);
+    });
+  };
+
+  /* ===========================
     BUSCAR CLIENTE
   =========================== */
   btnBuscar.addEventListener('click', async () => {
@@ -4140,7 +4228,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (resultado.length === 0) {
         exibirClienteNaoEncontrado();
       } else {
-        exibirClienteEncontrado(resultado[0]);
+        const cliente = resultado[0];
+        if (cliente.Ativo === false || cliente.Ativo === 0) {
+          exibirClienteInativoEncontrado(cliente);
+        } else {
+          exibirClienteEncontrado(cliente);
+        }
       }
     } catch (error) {
       alert(error.message || 'Erro ao buscar cliente.');

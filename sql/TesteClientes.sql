@@ -22,6 +22,15 @@ GO
 SELECT * FROM dbo.Clientes;
 GO
 
+SELECT
+	CpfCnpj,
+	Ativo
+FROM 
+	dbo.Clientes;
+GO
+
+
+
 SELECT * FROM dbo.Clientes
 WHERE ClienteId = 3;
 

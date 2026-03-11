@@ -312,17 +312,19 @@ class VeiculoRepository {
     Chamado quando frontend detecta veículo inativo
     e usuário confirma reativação
   =========================== */
-  async reativar(id, clienteId) {
+  async reativar(id, clienteId, km) {
     const pool = await getPool();
 
     await pool
       .request()
       .input('id', sql.Int, id)
-      .input('clienteId', sql.Int, clienteId).query(`
+      .input('clienteId', sql.Int, clienteId)
+      .input('km', sql.Int, km).query(`
         UPDATE dbo.Veiculos
         SET
           Ativo     = 1,
-          ClienteId = @clienteId
+          ClienteId = @clienteId,
+          Km        = @km
         WHERE VeiculoId = @id
       `);
 
