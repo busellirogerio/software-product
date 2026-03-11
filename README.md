@@ -68,6 +68,7 @@
     - 📋 Listar
 - Tela de Alterar Senha
 
+<br>
 
 🔜 AC4 — Eventos Futuros e KPIs [EM DESENVOLVIMENTO]
 - Lista de Eventos Futuros (prospecção)
@@ -79,6 +80,8 @@
 <br>
 
 🛠️ Stack Tecnológica
+
+<br>
 
 Backend
 
@@ -92,6 +95,7 @@ Backend
 | express-rate-limit | Proteção contra força bruta |
 | cors | Controle de acesso entre origens |
 
+<br>
 
 Frontend
 
@@ -101,6 +105,7 @@ Frontend
 | CSS3 | Estilização e responsividade |
 | JavaScript (Vanilla) | Interatividade e consumo de APIs |
 
+<br>
 
 Banco de Dados
 
@@ -109,6 +114,7 @@ Banco de Dados
 | SQL Server 2019+ | Armazenamento relacional |
 | SSMS | Administração do banco |
 
+<br>
 
 Ferramentas
 
@@ -119,10 +125,12 @@ Ferramentas
 | VS Code | Editor de código |
 | Nodemon | Reinício automático em dev |
 
-
+<br>
+<br>
 
 🤔 Por que essas tecnologias?
 
+<br>
 
 Node.js + Express.js
 - Uma única linguagem (JS) no front e back
@@ -131,6 +139,7 @@ Node.js + Express.js
 - Leve e rápido
 - Padrão de mercado
 
+<br>
 
 SQL Server
 - Robusto e confiável
@@ -139,6 +148,7 @@ SQL Server
 - Ferramentas visuais (SSMS)
 - Disponível no ambiente acadêmico
 
+<br>
 
 HTML + CSS + JS Vanilla
 - Fundamentos primeiro
@@ -146,13 +156,15 @@ HTML + CSS + JS Vanilla
 - Controle total do código
 - Manutenção simplificada
 
+<br>
 
 #bcrypt + rate-limit
 - Padrão da indústria para senhas
 - Salting automático
 - Proteção contra ataques
 
-
+<br>
+<br>
 
 📁 Estrutura de Pastas [EM DESENVOLVIMENTO]
 
@@ -215,9 +227,12 @@ software-product/
 └── README.md
 ```
 
-
+<br>
+<br>
 
 📄 Arquivos de Configuração
+
+<br>
 
 .env — Variáveis de Ambiente
 Armazena credenciais sensíveis que **nunca** são versionadas:
@@ -226,6 +241,7 @@ Armazena credenciais sensíveis que **nunca** são versionadas:
 - Chaves de API
 ⚠️ **Nunca versionar este arquivo!**
 
+<br>
 
 .gitignore — Arquivos Ignorados
 Lista o que o Git deve ignorar:
@@ -234,6 +250,7 @@ Lista o que o Git deve ignorar:
 - `acs/`
 - Arquivos de sistema
 
+<br>
 
 package.json — Manifesto
 Define o projeto Node.js:
@@ -241,14 +258,19 @@ Define o projeto Node.js:
 - Scripts de execução
 - Lista de dependências
 
+<br>
+<br>
 
 🏗️ Arquitetura Backend
+
+<br>
 
 Cliente → server.js → routes → controller → repository → SQL Server
         
                                     ↓
 Cliente ← server.js ← routes ← controller ← repository ← SQL Server
 
+<br>
 
 | Camada | Responsabilidade |
 | --- | --- |
@@ -258,9 +280,12 @@ Cliente ← server.js ← routes ← controller ← repository ← SQL Server
 | controllers/ | Validações e respostas HTTP |
 | repositories/ | Queries SQL |
 
-
+<br>
+<br>
 
 🧪 Como Testar Localmente
+
+<br>
 
 1. Pré-requisitos
 - Node.js 18+
@@ -268,6 +293,7 @@ Cliente ← server.js ← routes ← controller ← repository ← SQL Server
 - SSMS
 - Git
 
+<br>
 
 2. Passo a Passo
 bash
@@ -275,16 +301,19 @@ Clone o repositório
 git clone https://github.com/busellirogerio/software-product.git
 cd software-product
 
+<br>
 
 Instale dependências
 npm install
 
+<br>
 
 Execute os SQLs no SSMS (na ordem)
 - Usuarios.sql
 - Clientes.sql
 - Veiculos.sql
 
+<br>
 
 Crie o .env na raiz
 PORT=3000
@@ -294,22 +323,27 @@ DB_USER=sa
 DB_PASSWORD=SuaSenhaAqui
 DB_PORT=1433
 
+<br>
 
 Inicie o servidor
 npm run dev
 
+<br>
 
 Acesse
 http://127.0.0.1:3000
 
+<br>
 
 3. Credenciais de Teste
 - **Usuário:** admin
 - **Senha:** Senha@123
 
+<br>
 
 ⚠️ O que Alterar para Ambiente Local
 
+<br>
 
 | Arquivo | Alterar |
 | --- | --- |
@@ -318,13 +352,16 @@ http://127.0.0.1:3000
 | .env | DB_PASSWORD — sua senha |
 | .env | DB_PORT — porta (padrão 1433) |
 
+<br>
 
 💡 **SQL Server Express?**
 Use: `DB_SERVER=localhost\SQLEXPRESS`
 
+<br>
 
 📡 Endpoints da API
 
+<br>
 
 Usuários
 | Método | Endpoint | Descrição |
@@ -336,6 +373,7 @@ Usuários
 | PUT | /api/usuarios/:id | Atualizar |
 | DELETE | /api/usuarios/:id | Inativar |
 
+<br>
 
 Clientes
 | Método | Endpoint | Descrição |
@@ -348,6 +386,7 @@ Clientes
 | DELETE | /api/clientes/:id | Inativar |
 | PATCH | /api/clientes/:id/reativar | Reativar |
 
+<br>
 
 Veículos
 | Método | Endpoint | Descrição |
@@ -361,14 +400,21 @@ Veículos
 | PATCH | /api/veiculos/:id/inativar | Inativar |
 | PATCH | /api/veiculos/:id/reativar | Reativar |
 
+<br>
 
 👤 Autor
 - Buselli Rogerio
 - Ricardo Mendes
 - Gustavo Sampaio de Almeida
 
+<br>
+
 Faculdade Impacta — ADS — 2026
 
+<br>
+
 📜 Licença
+<br>
 
 Projeto acadêmico — uso educacional.
+EM CONSTRUÇÃO...
