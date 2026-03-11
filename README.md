@@ -134,7 +134,7 @@ software-product/
 ├── sql/
 │   ├── Usuarios.sql
 │   ├── Clientes.sql
-│   └── Veiculos.sql
+│   └── Veiculos.sql [EM DESENVOLVIMENTO]
 │
 ├── src/
 │   ├── config/
@@ -143,38 +143,38 @@ software-product/
 │   ├── repositories/
 │   │   ├── usuarioRepository.js
 │   │   ├── clienteRepository.js
-│   │   └── veiculoRepository.js
+│   │   └── veiculoRepository.js [EM DESENVOLVIMENTO]
 │   │
 │   ├── controllers/
 │   │   ├── usuarioController.js
 │   │   ├── clienteController.js
-│   │   └── veiculoController.js
+│   │   └── veiculoController.js [EM DESENVOLVIMENTO]
 │   │
 │   └── routes/
 │       ├── usuarioRoutes.js
 │       ├── clienteRoutes.js
-│       └── veiculoRoutes.js
+│       └── veiculoRoutes.js [EM DESENVOLVIMENTO]
 │
 ├── public/
 │   ├── pages/
 │   │   ├── login.html
-│   │   └── dashboard.html
+│   │   └── dashboard.html [EM DESENVOLVIMENTO]
 │   │
 │   └── assets/
 │       ├── css/
 │       │   ├── style.css
 │       │   ├── login.css
-│       │   ├── dashboard.css
+│       │   ├── dashboard.css [EM DESENVOLVIMENTO]
 │       │   ├── clientes.css
-│       │   └── veiculos.css
+│       │   └── veiculos.css [EM DESENVOLVIMENTO]
 │       │
 │       ├── js/
 │       │   ├── config.js
 │       │   ├── auth.js
 │       │   ├── login.js
-│       │   ├── dashboard.js
+│       │   ├── dashboard.js [EM DESENVOLVIMENTO]
 │       │   ├── clientes.js
-│       │   └── veiculos.js
+│       │   └── veiculos.js [EM DESENVOLVIMENTO]
 │       │
 │       └── image/
 │
