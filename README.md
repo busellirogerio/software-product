@@ -1,11 +1,14 @@
 # Re⟳Loop — Sistema de Gerenciamento de Oficina Automotiva
 
----
+
 
 📋 O que é o projeto?
 - O **Re⟳Loop** é um sistema de gerenciamento para oficinas de troca de óleo fracionado. Desenvolvido como projeto acadêmico para a 
-  disciplina de Software Product na **Faculdade Impacta — ADS**. O nome "Re⟳Loop" representa o ciclo contínuo de relacionamento com 
+  disciplina de Software Product na **Faculdade Impacta — ADS**.
+- O nome "Re⟳Loop" representa o ciclo contínuo de relacionamento com 
   cliente: o veículo entra na oficina, recebe o serviço, e retorna periodicamente — criando um **loop de fidelização**.
+
+
 
 🎯 A que se destina?
 - Oficinas de pequeno e médio porte
@@ -13,6 +16,8 @@
 - Controle de retenção (clientes sem retorno há +12 meses)
 - Prospecção ativa (eventos futuros)
 - Indicadores de performance (KPIs)
+
+
 
 📦 Entregas por Etapas
 
@@ -24,6 +29,7 @@
 - Dashboard base com navegação
 - Versionamento Git/GitHub
 
+
 ✅ AC1 — Cadastro de Clientes
 - Criptografia de senhas (bcrypt)
 - Módulo Clientes:
@@ -33,6 +39,7 @@
     - 🚫 Inativar (soft delete)
     - 📋 Listar com ordenação
     - ♻️ Reativar
+
 
 🔜 AC2 — Cadastro de Veículos [EM DESENVOLVIMENTO]
 - Módulo Veículos:
@@ -44,6 +51,7 @@
     - ♻️ Reativar
 - Formulário de Suporte
 
+
 🔜 AC3 — Cadastro de Serviços [EM DESENVOLVIMENTO]
 - Módulo Serviços:
     - 🔍 Buscar
@@ -53,12 +61,14 @@
     - 📋 Listar
 - Tela de Alterar Senha
 
+
 🔜 AC4 — Eventos Futuros e KPIs [EM DESENVOLVIMENTO]
 - Lista de Eventos Futuros (prospecção)
 - Relatório KPI geral
 - Indicadores de retenção
 - Performance de atendimento
-</toggle>
+
+
 
 🛠️ Stack Tecnológica
 
@@ -74,6 +84,7 @@ Backend
 | express-rate-limit | Proteção contra força bruta |
 | cors | Controle de acesso entre origens |
 
+
 Frontend
 
 | Tecnologia | Função |
@@ -82,12 +93,14 @@ Frontend
 | CSS3 | Estilização e responsividade |
 | JavaScript (Vanilla) | Interatividade e consumo de APIs |
 
+
 Banco de Dados
 
 | Tecnologia | Função |
 
 | SQL Server 2019+ | Armazenamento relacional |
 | SSMS | Administração do banco |
+
 
 Ferramentas
 
@@ -99,7 +112,9 @@ Ferramentas
 | Nodemon | Reinício automático em dev |
 
 
+
 🤔 Por que essas tecnologias?
+
 
 Node.js + Express.js
 - Uma única linguagem (JS) no front e back
@@ -108,6 +123,7 @@ Node.js + Express.js
 - Leve e rápido
 - Padrão de mercado
 
+
 SQL Server
 - Robusto e confiável
 - Suporte a triggers (auditoria automática)
@@ -115,16 +131,20 @@ SQL Server
 - Ferramentas visuais (SSMS)
 - Disponível no ambiente acadêmico
 
+
 HTML + CSS + JS Vanilla
 - Fundamentos primeiro
 - Sem dependências externas
 - Controle total do código
 - Manutenção simplificada
 
+
 #bcrypt + rate-limit
 - Padrão da indústria para senhas
 - Salting automático
 - Proteção contra ataques
+
+
 
 📁 Estrutura de Pastas [EM DESENVOLVIMENTO]
 
@@ -187,6 +207,8 @@ software-product/
 └── README.md
 ```
 
+
+
 📄 Arquivos de Configuração
 
 .env — Variáveis de Ambiente
@@ -196,6 +218,7 @@ Armazena credenciais sensíveis que **nunca** são versionadas:
 - Chaves de API
 ⚠️ **Nunca versionar este arquivo!**
 
+
 .gitignore — Arquivos Ignorados
 Lista o que o Git deve ignorar:
 - `node_modules/`
@@ -203,17 +226,21 @@ Lista o que o Git deve ignorar:
 - `acs/`
 - Arquivos de sistema
 
+
 package.json — Manifesto
 Define o projeto Node.js:
 - Nome e versão
 - Scripts de execução
 - Lista de dependências
 
+
 🏗️ Arquitetura Backend
 
 Cliente → server.js → routes → controller → repository → SQL Server
+        
                                     ↓
 Cliente ← server.js ← routes ← controller ← repository ← SQL Server
+
 
 | Camada | Responsabilidade |
 | --- | --- |
@@ -224,6 +251,7 @@ Cliente ← server.js ← routes ← controller ← repository ← SQL Server
 | repositories/ | Queries SQL |
 
 
+
 🧪 Como Testar Localmente
 
 1. Pré-requisitos
@@ -232,19 +260,23 @@ Cliente ← server.js ← routes ← controller ← repository ← SQL Server
 - SSMS
 - Git
 
+
 2. Passo a Passo
 bash
 Clone o repositório
 git clone https://github.com/busellirogerio/software-product.git
 cd software-product
 
+
 Instale dependências
 npm install
+
 
 Execute os SQLs no SSMS (na ordem)
 - Usuarios.sql
 - Clientes.sql
 - Veiculos.sql
+
 
 Crie o .env na raiz
 PORT=3000
@@ -254,17 +286,22 @@ DB_USER=sa
 DB_PASSWORD=SuaSenhaAqui
 DB_PORT=1433
 
+
 Inicie o servidor
 npm run dev
 
+
 Acesse
 http://127.0.0.1:3000
+
 
 3. Credenciais de Teste
 - **Usuário:** admin
 - **Senha:** Senha@123
 
+
 ⚠️ O que Alterar para Ambiente Local
+
 
 | Arquivo | Alterar |
 | --- | --- |
@@ -273,10 +310,13 @@ http://127.0.0.1:3000
 | .env | DB_PASSWORD — sua senha |
 | .env | DB_PORT — porta (padrão 1433) |
 
+
 💡 **SQL Server Express?**
 Use: `DB_SERVER=localhost\SQLEXPRESS`
 
+
 📡 Endpoints da API
+
 
 Usuários
 | Método | Endpoint | Descrição |
@@ -288,6 +328,7 @@ Usuários
 | PUT | /api/usuarios/:id | Atualizar |
 | DELETE | /api/usuarios/:id | Inativar |
 
+
 Clientes
 | Método | Endpoint | Descrição |
 | --- | --- | --- |
@@ -298,11 +339,9 @@ Clientes
 | PUT | /api/clientes/:id | Atualizar |
 | DELETE | /api/clientes/:id | Inativar |
 | PATCH | /api/clientes/:id/reativar | Reativar |
-</toggle>
 
-<toggle>
-### Veículos
 
+Veículos
 | Método | Endpoint | Descrição |
 | --- | --- | --- |
 | GET | /api/veiculos | Listar |
@@ -313,7 +352,7 @@ Clientes
 | PUT | /api/veiculos/:id | Atualizar |
 | PATCH | /api/veiculos/:id/inativar | Inativar |
 | PATCH | /api/veiculos/:id/reativar | Reativar |
-</toggle>
+
 
 👤 Autor
 - Buselli Rogerio
