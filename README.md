@@ -128,35 +128,34 @@ HTML + CSS + JS Vanilla
 
 📁 Estrutura de Pastas [EM DESENVOLVIMENTO]
 
+```
 software-product/
 │
-├── sql/                              ← Scripts SQL
+├── sql/
 │   ├── Usuarios.sql
 │   ├── Clientes.sql
 │   └── Veiculos.sql
 │
-├── src/                              ← Backend (Node.js)
-│   │
+├── src/
 │   ├── config/
-│   │   └── database.js               ← Pool de conexão
+│   │   └── database.js
 │   │
-│   ├── repositories/                 ← Queries SQL
+│   ├── repositories/
 │   │   ├── usuarioRepository.js
 │   │   ├── clienteRepository.js
 │   │   └── veiculoRepository.js
 │   │
-│   ├── controllers/                  ← Validações HTTP
+│   ├── controllers/
 │   │   ├── usuarioController.js
 │   │   ├── clienteController.js
 │   │   └── veiculoController.js
 │   │
-│   └── routes/                       ← Rotas da API
+│   └── routes/
 │       ├── usuarioRoutes.js
 │       ├── clienteRoutes.js
 │       └── veiculoRoutes.js
 │
-├── public/                           ← Frontend
-│   │
+├── public/
 │   ├── pages/
 │   │   ├── login.html
 │   │   └── dashboard.html
@@ -177,17 +176,16 @@ software-product/
 │       │   ├── clientes.js
 │       │   └── veiculos.js
 │       │
-│       └── image/                    ← Ícones SVG/PNG
+│       └── image/
 │
-├── acs/                              ← Tokens (NÃO versionar)
-│
-├── .env                              ← Credenciais (NÃO versionar)
-├── .gitignore                        ← Arquivos ignorados pelo Git
-├── package.json                      ← Dependências do projeto
-├── package-lock.json                 ← Lock de versões
-├── server.js                         ← Entrada da aplicação
-└── README.md                         ← Documentação
-
+├── acs/
+├── .env
+├── .gitignore
+├── package.json
+├── package-lock.json
+├── server.js
+└── README.md
+```
 
 📄 Arquivos de Configuração
 
