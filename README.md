@@ -127,9 +127,66 @@ HTML + CSS + JS Vanilla
 - Proteção contra ataques
 
 📁 Estrutura de Pastas [EM DESENVOLVIMENTO]
-<img width="737" height="837" alt="image" src="https://github.com/user-attachments/assets/ed9c4967-8880-4c6b-89e2-a92ce32221c5" />
 
-
+software-product/
+│
+├── sql/                              ← Scripts SQL
+│   ├── Usuarios.sql
+│   ├── Clientes.sql
+│   └── Veiculos.sql
+│
+├── src/                              ← Backend (Node.js)
+│   │
+│   ├── config/
+│   │   └── database.js               ← Pool de conexão
+│   │
+│   ├── repositories/                 ← Queries SQL
+│   │   ├── usuarioRepository.js
+│   │   ├── clienteRepository.js
+│   │   └── veiculoRepository.js
+│   │
+│   ├── controllers/                  ← Validações HTTP
+│   │   ├── usuarioController.js
+│   │   ├── clienteController.js
+│   │   └── veiculoController.js
+│   │
+│   └── routes/                       ← Rotas da API
+│       ├── usuarioRoutes.js
+│       ├── clienteRoutes.js
+│       └── veiculoRoutes.js
+│
+├── public/                           ← Frontend
+│   │
+│   ├── pages/
+│   │   ├── login.html
+│   │   └── dashboard.html
+│   │
+│   └── assets/
+│       ├── css/
+│       │   ├── style.css
+│       │   ├── login.css
+│       │   ├── dashboard.css
+│       │   ├── clientes.css
+│       │   └── veiculos.css
+│       │
+│       ├── js/
+│       │   ├── config.js
+│       │   ├── auth.js
+│       │   ├── login.js
+│       │   ├── dashboard.js
+│       │   ├── clientes.js
+│       │   └── veiculos.js
+│       │
+│       └── image/                    ← Ícones SVG/PNG
+│
+├── acs/                              ← Tokens (NÃO versionar)
+│
+├── .env                              ← Credenciais (NÃO versionar)
+├── .gitignore                        ← Arquivos ignorados pelo Git
+├── package.json                      ← Dependências do projeto
+├── package-lock.json                 ← Lock de versões
+├── server.js                         ← Entrada da aplicação
+└── README.md                         ← Documentação
 
 
 📄 Arquivos de Configuração
