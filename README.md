@@ -405,7 +405,7 @@ Veículos
 👤 Autor
 - Buselli Rogerio
 - Ricardo Mendes
-- Gustavo Sampaio de Almeida
+- Gustavo Sampaio
 
 <br>
 
