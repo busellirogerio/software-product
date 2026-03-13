@@ -88,11 +88,17 @@ Backend
 | Tecnologia | Função |
 
 | Node.js | Ambiente de execução JavaScript no servidor |
+
 | Express.js | Framework web para APIs REST |
+
 | mssql | Driver de conexão com SQL Server |
+
 | bcrypt | Criptografia de senhas |
+
 | dotenv | Variáveis de ambiente |
+
 | express-rate-limit | Proteção contra força bruta |
+
 | cors | Controle de acesso entre origens |
 
 <br>
