@@ -23,8 +23,6 @@
 <br>
 <br>
 
-📦 Entregas por Etapas
-
 ✅ AC0 — Estrutura Inicial
 - Estrutura de pastas e arquivos
 - Configuração do ambiente (Node.js, SQL Server)
@@ -34,6 +32,8 @@
 - Versionamento Git/GitHub
 
 <br>
+
+📦 Entregas por Etapas
 
 ✅ AC1 — Cadastro de Clientes
 - Criptografia de senhas (bcrypt)
