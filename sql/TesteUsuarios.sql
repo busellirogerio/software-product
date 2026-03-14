@@ -14,12 +14,23 @@ GO
 SELECT * FROM dbo.Usuarios;
 GO
 
+SELECT UsuarioId, Login, Email, Ativo FROM dbo.Usuarios;
+
 --------------------------------------------------
 -- 3) CRIAR (teste – mesmo que não use agora)
---------------------------------------------------
+-- Senha: 123456 (já com hash bcrypt)
 INSERT INTO dbo.Usuarios (Login, Senha, NomeCompleto, Email, Ativo)
-VALUES ('admin', 'Senha@123', 'Teste01', 'teste01@email.com', 1);
+VALUES (
+  'userteste01',
+  '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZRGdjGj/n3.wMVh7aYJbW.VFi/6y6',
+  'USER TESTE 01',
+  'user01@teste.com',
+  1
+);
 GO
+
+-- DELETAR O TESTE
+DELETE FROM dbo.Usuarios WHERE UsuarioId = 4;
 
 --------------------------------------------------
 -- 4) ALTERAR (teste – mesmo que não use agora)
@@ -34,5 +45,6 @@ GO
 --------------------------------------------------
 UPDATE dbo.Usuarios
 SET Ativo = 0
-WHERE Login = 'admin';
+WHERE Login = 'turtle';
 GO
+
