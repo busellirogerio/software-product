@@ -1,4 +1,4 @@
-// clienteRoutes.js | data: 03/03/2026
+// clienteRoutes.js | última revisão data: 13/03/2026
 
 const express = require('express');
 const rateLimit = require('express-rate-limit');
@@ -20,10 +20,10 @@ const generalLimiter = rateLimit({
 
 /* ===========================
   VALIDAÇÃO DE BODY
-  Rejeita POST/PUT sem body
+  Rejeita POST/PUT/PATCH sem body
 =========================== */
 const validateJSON = (req, res, next) => {
-  if (['POST', 'PUT'].includes(req.method)) {
+  if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
     if (!req.body || Object.keys(req.body).length === 0) {
       return res
         .status(400)
@@ -52,6 +52,14 @@ router.post('/', generalLimiter, validateJSON, clienteController.criar);
 
 // Atualizar cliente
 router.put('/:id', generalLimiter, validateJSON, clienteController.atualizar);
+
+// Reativar cliente (Ativo = 1 + atualiza dados)
+router.patch(
+  '/:id/reativar',
+  generalLimiter,
+  validateJSON,
+  clienteController.reativar,
+);
 
 // Soft delete
 router.delete('/:id', generalLimiter, clienteController.deletar);

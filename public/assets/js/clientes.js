@@ -1,9 +1,8 @@
-// clientes.js | data: 03/03/2026
+// clientes.js | última revisão data: 13/03/2026
 
 document.addEventListener('DOMContentLoaded', () => {
-  /* ===========================
-    ELEMENTOS DO DOM
-  =========================== */
+  //  ELEMENTOS DO DOM
+
   const formCliente = document.getElementById('formCliente');
   const clienteId = document.getElementById('clienteId');
   const btnLimpar = document.getElementById('btnLimpar');
@@ -20,8 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // CONTROLE DE ORDENAÇÃO
   // 1 = A→Z | -1 = Z→A
-
   let ordemNome = 1;
+
+  // CONTROLE DE REATIVAÇÃO
+  let cliReativando = null;
 
   // ACCORDION — abrir/fechar painéis
   // ALTERADO EM: 03/03/2026
@@ -110,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const limparFormulario = () => {
     formCliente.reset();
     clienteId.value = '';
+    cliReativando = null;
     btnSalvar.textContent = 'Salvar';
     formMensagem.style.display = 'none';
   };
@@ -122,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const cancelarCadastro = () => {
     formCliente.reset();
     clienteId.value = '';
+    cliReativando = null;
     btnSalvar.textContent = 'Salvar';
     formMensagem.style.display = 'none';
 
@@ -237,10 +240,19 @@ document.addEventListener('DOMContentLoaded', () => {
     document
       .getElementById('btnCliSimCadastrar')
       .addEventListener('click', () => {
+        // Captura ANTES de limpar
+        const cpfCnpjDigitado = valorBusca.value.replace(/\D/g, '');
+        const tipoDocumento = cpfCnpjDigitado.length <= 11 ? 'PF' : 'PJ';
         limparBusca();
         const accCadastro = document.getElementById('acc-cadastro');
         accCadastro.classList.remove('bloqueado');
         accCadastro.classList.add('open');
+        // Preenche formulário com documento digitado
+        document.getElementById('tipo').value = tipoDocumento;
+        document.getElementById('cpfCnpj').value =
+          tipoDocumento === 'PF'
+            ? formatarCpf(cpfCnpjDigitado)
+            : formatarCnpj(cpfCnpjDigitado);
         accCadastro.scrollIntoView({ behavior: 'smooth' });
       });
   };
@@ -250,7 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
   =========================== */
   const limparBusca = () => {
     valorBusca.value = '';
-    // tbodyBusca.innerHTML  =''; > removida em 03/03/2026
     resultadoBusca.style.display = 'none';
     ocultarCardResultado();
     document.getElementById('acc-busca').classList.remove('open');
@@ -368,21 +379,32 @@ document.addEventListener('DOMContentLoaded', () => {
     btnSalvar.textContent = 'Salvando...';
 
     try {
-      if (id) {
+      // REATIVAR — PATCH /reativar
+      if (cliReativando) {
+        await apiRequest(`/clientes/${cliReativando}/reativar`, {
+          method: 'PATCH',
+          body: dados,
+        });
+        alert('Cliente reativado com sucesso!');
+        cliReativando = null;
+      }
+      // ATUALIZAR — PUT
+      else if (id) {
         await apiRequest(`/clientes/${id}`, { method: 'PUT', body: dados });
         mostrarMensagem('Cliente atualizado com sucesso!', 'success');
-        cancelarCadastro();
-      } else {
+      }
+      // CRIAR — POST
+      else {
         await apiRequest('/clientes', { method: 'POST', body: dados });
         mostrarMensagem('Cliente cadastrado com sucesso!', 'success');
-        cancelarCadastro();
       }
 
+      cancelarCadastro();
       limparFormulario();
       carregarClientes();
 
       document.getElementById('acc-cadastro').classList.remove('open');
-      document.getElementById('acc-lista').classList.add('open');
+      //document.getElementById('acc-lista').classList.add('open');
     } catch (error) {
       mostrarMensagem(error.message || 'Erro ao salvar cliente.', 'error');
     } finally {
@@ -490,11 +512,13 @@ document.addEventListener('DOMContentLoaded', () => {
         limparBusca();
       });
 
-    // Reativar — abre cadastro com dados para atualizar
+    // Reativar — marca flag e abre cadastro com dados
     document.getElementById('btnCliReativar').addEventListener('click', () => {
+      cliReativando = cliente.ClienteId;
       const accCadastro = document.getElementById('acc-cadastro');
       accCadastro.classList.remove('bloqueado');
       editarCliente(cliente.ClienteId);
+      btnSalvar.textContent = 'Reativar Cliente';
     });
   };
 

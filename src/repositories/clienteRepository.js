@@ -1,13 +1,12 @@
-// clienteRepository.js | data: 03/03/2026
+// clienteRepository.js | última revisão data: 13/03/2026
 
 const { getPool, sql } = require('../config/database');
 
 class ClienteRepository {
-  /* ===========================
-    LISTAR TODOS
-    Retorna apenas clientes ativos
-    ordenados por nome
-  =========================== */
+  //  LISTAR TODOS
+  //  Retorna apenas clientes ativos
+  //  ordenados por nome
+
   async listarTodos() {
     const pool = await getPool();
     const result = await pool.request().query(`
@@ -22,9 +21,8 @@ class ClienteRepository {
     return result.recordset;
   }
 
-  /* ===========================
-    BUSCAR POR ID
-  =========================== */
+  //  BUSCAR POR ID
+
   async buscarPorId(id) {
     const pool = await getPool();
     const result = await pool.request().input('id', sql.Int, id).query(`
@@ -35,11 +33,8 @@ class ClienteRepository {
     return result.recordset[0] || null;
   }
 
-  /* ===========================
-    BUSCAR POR NOME
-    Busca parcial — considera espaços
-    Converte input para maiúsculo
-  =========================== */
+  //  BUSCAR POR NOME
+
   async buscarPorNome(nome) {
     const pool = await getPool();
     const result = await pool
@@ -54,7 +49,6 @@ class ClienteRepository {
   }
 
   // BUSCAR POR CPF/CNPJ
-  // Remove formatação antes de buscar
 
   async buscarPorCpfCnpj(cpfCnpj) {
     const pool = await getPool();
@@ -69,31 +63,13 @@ class ClienteRepository {
     return result.recordset;
   }
 
-  // BUSCAR POR TELEFONE
-  // Busca parcial
+  //  CRIAR
+  //  Se CPF/CNPJ já existe com Ativo = 0
+  //  reativa e atualiza os dados (2 passos)
+  //  Se não existe — INSERT normal
+  //  ATENÇÃO: UPDATE sem OUTPUT direto
+  //  pois a tabela tem trigger ativo
 
-  async buscarPorTelefone(telefone) {
-    const pool = await getPool();
-    const apenasNumeros = telefone.replace(/[\s\-\(\)]/g, '');
-    const result = await pool
-      .request()
-      .input('telefone', sql.NVarChar, '%' + apenasNumeros + '%').query(`
-        SELECT ClienteId, Tipo, CpfCnpj, NomeCompleto, Genero, Telefone, DataNascimento
-        FROM dbo.Clientes
-        WHERE Telefone LIKE @telefone AND Ativo = 1
-        ORDER BY NomeCompleto
-      `);
-    return result.recordset;
-  }
-
-  /* ===========================
-    CRIAR
-    Se CPF/CNPJ já existe com Ativo = 0
-    reativa e atualiza os dados (2 passos)
-    Se não existe — INSERT normal
-    ATENÇÃO: UPDATE sem OUTPUT direto
-    pois a tabela tem trigger ativo
-  =========================== */
   async criar(dados) {
     const pool = await getPool();
 
@@ -189,9 +165,8 @@ class ClienteRepository {
     return result.recordset[0];
   }
 
-  /* ===========================
-    ATUALIZAR
-  =========================== */
+  //  ATUALIZAR
+
   async atualizar(id, dados) {
     const pool = await getPool();
     const result = await pool
@@ -230,10 +205,9 @@ class ClienteRepository {
     return result.rowsAffected[0];
   }
 
-  /* ===========================
-    DELETAR (soft delete)
-    Ativo = 0 — registro permanece
-  =========================== */
+  //  DELETAR (soft delete)
+  //  Ativo = 0 — registro permanece
+
   async deletar(id) {
     const pool = await getPool();
     const result = await pool.request().input('id', sql.Int, id).query(`
@@ -242,6 +216,56 @@ class ClienteRepository {
         WHERE ClienteId = @id
       `);
     return result.rowsAffected[0];
+  }
+
+  //  REATIVAR
+  //  Ativo = 1 + atualiza dados
+  //  Usado pela rota PATCH /:id/reativar
+
+  async reativar(id, dados) {
+    const pool = await getPool();
+
+    await pool
+      .request()
+      .input('id', sql.Int, id)
+      .input('nomeCompleto', sql.NVarChar, dados.nomeCompleto)
+      .input('dataNascimento', sql.Date, dados.dataNascimento || null)
+      .input('genero', sql.Char, dados.genero || null)
+      .input('telefone', sql.NVarChar, dados.telefone || null)
+      .input('telefoneWhatsApp', sql.Bit, dados.telefoneWhatsApp ? 1 : 0)
+      .input('email', sql.NVarChar, dados.email || null)
+      .input('cep', sql.Char, dados.cep || null)
+      .input('logradouro', sql.NVarChar, dados.logradouro || null)
+      .input('numero', sql.NVarChar, dados.numero || null)
+      .input('complemento', sql.NVarChar, dados.complemento || null)
+      .input('bairro', sql.NVarChar, dados.bairro || null)
+      .input('cidade', sql.NVarChar, dados.cidade || null)
+      .input('estado', sql.Char, dados.estado || null).query(`
+        UPDATE dbo.Clientes
+        SET
+          Ativo            = 1,
+          NomeCompleto     = @nomeCompleto,
+          DataNascimento   = @dataNascimento,
+          Genero           = @genero,
+          Telefone         = @telefone,
+          TelefoneWhatsApp = @telefoneWhatsApp,
+          Email            = @email,
+          Cep              = @cep,
+          Logradouro       = @logradouro,
+          Numero           = @numero,
+          Complemento      = @complemento,
+          Bairro           = @bairro,
+          Cidade           = @cidade,
+          Estado           = @estado
+        WHERE ClienteId = @id
+      `);
+
+    const reativado = await pool
+      .request()
+      .input('id', sql.Int, id)
+      .query(`SELECT * FROM dbo.Clientes WHERE ClienteId = @id`);
+
+    return reativado.recordset[0];
   }
 }
 

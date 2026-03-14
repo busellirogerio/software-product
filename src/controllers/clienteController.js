@@ -1,4 +1,4 @@
-// clienteController.js |data: 03/03/2026
+// clienteController.js | última revisão data: 13/03/2026
 
 const clienteRepository = require('../repositories/clienteRepository');
 
@@ -63,8 +63,6 @@ class ClienteController {
         resultado = await clienteRepository.buscarPorNome(valor.trim());
       } else if (tipo === 'cpfcnpj') {
         resultado = await clienteRepository.buscarPorCpfCnpj(valor.trim());
-      } else if (tipo === 'telefone') {
-        resultado = await clienteRepository.buscarPorTelefone(valor.trim());
       } else {
         return res.status(400).json({
           erro: 'Tipo de busca inválido. Use: nome, cpfcnpj ou telefone',
@@ -259,6 +257,80 @@ class ClienteController {
       res.json({ mensagem: 'Cliente excluído com sucesso' });
     } catch (error) {
       console.error('Erro ao deletar cliente:', error);
+      res.status(500).json({ erro: 'Erro interno do servidor' });
+    }
+  }
+
+  /* ===========================
+    REATIVAR
+    Ativo = 1 + atualiza dados
+    Rota: PATCH /api/clientes/:id/reativar
+  =========================== */
+  async reativar(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id || isNaN(id)) {
+        return res.status(400).json({ erro: 'ID inválido' });
+      }
+
+      const {
+        nomeCompleto,
+        dataNascimento,
+        genero,
+        telefone,
+        telefoneWhatsApp,
+        email,
+        cep,
+        logradouro,
+        numero,
+        complemento,
+        bairro,
+        cidade,
+        estado,
+      } = req.body;
+
+      // Nome é obrigatório
+      if (!nomeCompleto) {
+        return res.status(400).json({ erro: 'Nome Completo é obrigatório' });
+      }
+
+      // Valida gênero se informado
+      if (genero && !['M', 'F', 'O'].includes(genero.toUpperCase())) {
+        return res.status(400).json({ erro: 'Gênero deve ser M, F ou O' });
+      }
+
+      // Valida email se informado
+      if (email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          return res.status(400).json({ erro: 'Formato de email inválido' });
+        }
+      }
+
+      const dadosLimpos = {
+        nomeCompleto: nomeCompleto.trim().toUpperCase(),
+        dataNascimento: dataNascimento || null,
+        genero: genero ? genero.toUpperCase() : null,
+        telefone: telefone ? telefone.trim() : null,
+        telefoneWhatsApp: telefoneWhatsApp ? true : false,
+        email: email ? email.trim().toUpperCase() : null,
+        cep: cep ? cep.replace(/\D/g, '') : null,
+        logradouro: logradouro ? logradouro.trim().toUpperCase() : null,
+        numero: numero ? numero.trim() : null,
+        complemento: complemento ? complemento.trim().toUpperCase() : null,
+        bairro: bairro ? bairro.trim().toUpperCase() : null,
+        cidade: cidade ? cidade.trim().toUpperCase() : null,
+        estado: estado ? estado.trim().toUpperCase() : null,
+      };
+
+      const cliente = await clienteRepository.reativar(id, dadosLimpos);
+      if (!cliente) {
+        return res.status(404).json({ erro: 'Cliente não encontrado' });
+      }
+
+      res.json({ mensagem: 'Cliente reativado com sucesso', cliente });
+    } catch (error) {
+      console.error('Erro ao reativar cliente:', error);
       res.status(500).json({ erro: 'Erro interno do servidor' });
     }
   }
