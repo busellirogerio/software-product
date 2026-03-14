@@ -141,7 +141,7 @@ Node.js + Express.js
 
 <br>
 
-SQL Server
+SQL Server 
 - Robusto e confiável
 - Suporte a triggers (auditoria automática)
 - Transações ACID
