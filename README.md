@@ -23,7 +23,7 @@
 <br>
 <br>
 
-✅ AC0 — Estrutura Inicial
+✅ Estrutura Inicial
 - Estrutura de pastas e arquivos
 - Configuração do ambiente (Node.js, SQL Server)
 - Banco de dados com tabela Usuarios
@@ -33,10 +33,10 @@
 
 <br>
 
-📦 Entregas por Etapas
+📦 *** ENTREGAS POR ETAPAS ***
 
 ✅ AC1 — Cadastro de Clientes
-- Criptografia de senhas (bcrypt)
+- Login - Criptografia de senhas (bcrypt)
 - Módulo Clientes:
     - 🔍 Buscar (nome, CPF/CNPJ)
     - ➕ Cadastrar
