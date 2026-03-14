@@ -86,7 +86,7 @@
 Backend
 
 | Tecnologia | Função |
-
+|---|---|
 | Node.js | Ambiente de execução JavaScript no servidor |
 | Express.js | Framework web para APIs REST |
 | mssql | Driver de conexão com SQL Server |
@@ -100,7 +100,7 @@ Backend
 Frontend
 
 | Tecnologia | Função |
-
+|---|---|
 | HTML5 | Estrutura das páginas |
 | CSS3 | Estilização e responsividade |
 | JavaScript (Vanilla) | Interatividade e consumo de APIs |
@@ -110,7 +110,7 @@ Frontend
 Banco de Dados
 
 | Tecnologia | Função |
-
+|---|---|
 | SQL Server 2019+ | Armazenamento relacional |
 | SSMS | Administração do banco |
 
@@ -119,7 +119,7 @@ Banco de Dados
 Ferramentas
 
 | Ferramenta | Função |
-
+|---|---|
 | Git / GitHub | Controle de versão |
 | Postman | Testes de API |
 | VS Code | Editor de código |
@@ -388,7 +388,7 @@ Clientes
 
 <br>
 
-Veículos
+Veículos [EM DESENVOLVIMENTO...]
 | Método | Endpoint | Descrição |
 | --- | --- | --- |
 | GET | /api/veiculos | Listar |
