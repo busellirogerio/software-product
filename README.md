@@ -23,6 +23,10 @@
 <br>
 <br>
 
+✅ DeadLine do Projeto [KANBAN]: https://github.com/users/busellirogerio/projects/2
+
+<br>
+
 ✅ Estrutura Inicial
 - Estrutura de pastas e arquivos
 - Configuração do ambiente (Node.js, SQL Server)
@@ -36,13 +40,14 @@
 📦 *** ENTREGAS POR ETAPAS ***
 
 ✅ AC1 — Cadastro de Clientes
+✅ Video AC1 - 
 - Login - Criptografia de senhas (bcrypt)
 - Módulo Clientes:
     - 🔍 Buscar (nome, CPF/CNPJ)
     - ➕ Cadastrar
+    - 📋 Listar com ordenação
     - ✏️ Editar
     - 🚫 Inativar (soft delete)
-    - 📋 Listar com ordenação
     - ♻️ Reativar
 
 <br>
@@ -51,11 +56,11 @@
 - Módulo Veículos:
     - 🔍 Buscar (placa)
     - ➕ Cadastrar (vinculado a proprietário)
-    - ✏️ Editar
-    - 🚫 Inativar (soft delete)
     - 📋 Listar com ordenação
+    - ✏️ Editar (Atualizar Km)
+    - 🚫 Inativar (soft delete)
     - ♻️ Reativar
-- Formulário de Suporte
+- Módulo Suporte: Formulário de Suporte
 
 <br>
 
@@ -63,18 +68,19 @@
 - Módulo Serviços:
     - 🔍 Buscar
     - ➕ Cadastrar
-    - ✏️ Editar
-    - 🚫 Inativar
     - 📋 Listar
-- Tela de Alterar Senha
+    - ✏️ Editar 
+    - 🚫 Excluir (soft delete)
+- Módulo Settings: Tela de Alterar Senha
 
 <br>
 
 🔜 AC4 — Eventos Futuros e KPIs [EM DESENVOLVIMENTO]
-- Lista de Eventos Futuros (prospecção)
-- Relatório KPI geral
-- Indicadores de retenção
-- Performance de atendimento
+- Módulo Prospect:
+  - Lista de Eventos Futuros (prospecção)
+- Módulo KPI´s:
+  - Relatório KPI geral
+  - Indicadores de retenção
 
 <br>
 <br>
@@ -403,9 +409,9 @@ Veículos [EM DESENVOLVIMENTO...]
 <br>
 
 👤 Autor
-- Buselli Rogerio
-- Mendes Ricardo 
-- Sampaio de Almeida Gustavo 
+- Rogerio Buselli 
+- Ricardo Mendes  
+- Gustavo Sampaio de Almeida  
 
 <br>
 
