@@ -37,9 +37,9 @@
 
 <br>
 
-📦 *** ENTREGAS POR ETAPAS ***
+## **ENTREGAS POR ETAPAS**
 
-✅ AC1 — Cadastro de Clientes
+✅ AC1 — Cadastro de Clientes<br>
 ✅ Video AC1 - 
 - Login - Criptografia de senhas (bcrypt)
 - Módulo Clientes:
@@ -85,7 +85,7 @@
 <br>
 <br>
 
-🛠️ Stack Tecnológica
+## **Stack Tecnológica**
 
 <br>
 
@@ -134,7 +134,7 @@ Ferramentas
 <br>
 <br>
 
-🤔 Por que essas tecnologias?
+## **Por que essas tecnologias?**
 
 <br>
 
@@ -172,7 +172,27 @@ HTML + CSS + JS Vanilla
 <br>
 <br>
 
-📁 Estrutura de Pastas [EM DESENVOLVIMENTO]
+## **Estura do Projeto**
+
+MVC — padrão que separa Modelo (dados), Visão (telas) e Controle (regras)<br>
+sql/ — scripts de criação das tabelas do banco<br>
+src/config/ — configuração de conexão com banco<br>
+src/repositories/ — acesso direto ao banco (SELECT, INSERT, UPDATE)<br>
+src/controllers/ — regras de negócio e validações<br>
+src/routes/ — define os endpoints da API<br>
+public/pages/ — páginas HTML<br>
+public/assets/css/ — estilos visuais<br>
+public/assets/js/ — lógica do frontend<br>
+public/assets/image/ — imagens e ícones<br>
+server.js — ponto de entrada, inicia o servidor<br>
+package.json — dependências do projeto (Express, bcrypt, etc.)<br>
+package-lock.json — trava as versões exatas das dependências instaladas<br>
+.env — variáveis sensíveis (senhas) — não vai pro GitHub<br>
+.gitignore — lista de arquivos ignorados pelo Git<br>
+<br>
+<br>
+
+## **Estrutura de Pastas [EM DESENVOLVIMENTO]**
 
 ```
 software-product/
@@ -236,7 +256,7 @@ software-product/
 <br>
 <br>
 
-📄 Arquivos de Configuração
+## **Arquivos de Configuração**
 
 <br>
 
@@ -244,8 +264,8 @@ software-product/
 Armazena credenciais sensíveis que **nunca** são versionadas:
 - Porta do servidor
 - Credenciais do banco
-- Chaves de API
-⚠️ **Nunca versionar este arquivo!**
+- Chaves de API<br>
+**Nunca versionar este arquivo!**
 
 <br>
 
@@ -265,17 +285,25 @@ Define o projeto Node.js:
 - Lista de dependências
 
 <br>
+
+package-lock.json — Trava as versões exatas das dependências instaladas:
+- Garante que todos usem as mesmas versões
+- Gerado automaticamente pelo npm install
+
+<br>
 <br>
 
-🏗️ Arquitetura Backend
+## **Arquitetura Backend**
 
 <br>
 
+```
 Cliente → server.js → routes → controller → repository → SQL Server
-        
-                                    ↓
-Cliente ← server.js ← routes ← controller ← repository ← SQL Server
 
+                              ↓
+
+Cliente ← server.js ← routes ← controller ← repository ← SQL Server
+```
 <br>
 
 | Camada | Responsabilidade |
@@ -289,7 +317,7 @@ Cliente ← server.js ← routes ← controller ← repository ← SQL Server
 <br>
 <br>
 
-🧪 Como Testar Localmente
+## **Como Testar Localmente**
 
 <br>
 
@@ -365,7 +393,7 @@ Use: `DB_SERVER=localhost\SQLEXPRESS`
 
 <br>
 
-📡 Endpoints da API
+## **Endpoints da API**
 
 <br>
 
@@ -408,7 +436,7 @@ Veículos [EM DESENVOLVIMENTO...]
 
 <br>
 
-👤 Autor
+## **Autor**
 - Rogerio Buselli 
 - Ricardo Mendes  
 - Gustavo Sampaio de Almeida  
@@ -419,7 +447,7 @@ Faculdade Impacta — ADS — 2026
 
 <br>
 
-📜 Licença
+## **Licença**
 <br>
 
 Projeto acadêmico — uso educacional.
