@@ -40,7 +40,7 @@
 ## **ENTREGAS POR ETAPAS**
 
 ✅ AC1 — Cadastro de Clientes<br>
-✅ Video AC1 - 
+✅ Video AC1 - https://youtu.be/F-0jzuyJsrQ?si=tgquGjNbaCiLo40x
 - Login - Criptografia de senhas (bcrypt)
 - Módulo Clientes:
     - 🔍 Buscar (nome, CPF/CNPJ)
