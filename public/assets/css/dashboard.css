@@ -1,15 +1,15 @@
 /* dashboard.css | data: 03/03/2026 */
 
 /* =========================================
-   dashboard.css
-   Estilos exclusivos do dashboard Re⟳Loop
-   Depende de: style.css (variáveis globais)
+  dashboard.css
+  Estilos exclusivos do dashboard Re⟳Loop
+  Depende de: style.css (variáveis globais)
    ========================================= */
 
 /* ===========================
-   LAYOUT GERAL
-   html/body ocupam 100% da tela
-   sem scroll na página inteira
+  LAYOUT GERAL
+  html/body ocupam 100% da tela
+  sem scroll na página inteira
 =========================== */
 html,
 body {
@@ -25,10 +25,10 @@ body {
 }
 
 /* ===========================
-   HEADER
-   Linha superior fixa com 3 zonas:
-   .header-left  → hambúrguer (mobile) + logo
-   .user-info    → bem-vindo + botão sair
+  HEADER
+  Linha superior fixa com 3 zonas:
+  .header-left  → hambúrguer (mobile) + logo
+  .user-info    → bem-vindo + botão sair
 =========================== */
 .header {
   height: 56px;
@@ -49,8 +49,8 @@ body {
 }
 
 /* ===========================
-   LOGO Re⟳Loop — HEADER
-   .logo-destaque → colore o ⟳
+  LOGO Re⟳Loop — HEADER
+  .logo-destaque → colore o ⟳
 =========================== */
 .header-logo h2 {
   font-size: 1.2rem;
@@ -65,8 +65,8 @@ body {
 }
 
 /* ===========================
-   HAMBÚRGUER — apenas mobile
-   Oculta/desoculta a sidebar como overlay
+  HAMBÚRGUER — apenas mobile
+  Oculta/desoculta a sidebar como overlay
 =========================== */
 .toggle-btn-mobile {
   display: none; /* oculto no desktop */
@@ -127,10 +127,10 @@ body {
 }
 
 /* ===========================
-   SIDEBAR — MENU LATERAL
-   Web recolhida: 56px (só ícones)
-   Web expandida: 210px (ícone + label)
-   Mobile: overlay com translateX
+  SIDEBAR — MENU LATERAL
+  Web recolhida: 56px (só ícones)
+  Web expandida: 210px (ícone + label)
+  Mobile: overlay com translateX
 =========================== */
 .sidebar {
   width: 56px;
@@ -155,10 +155,10 @@ body {
 }
 
 /* ===========================
-   SETA DE COLAPSO — WEB ONLY
-   Na borda direita da sidebar
-   Centralizada verticalmente
-   Alterna › e ‹ via JS
+  SETA DE COLAPSO — WEB ONLY
+  Na borda direita da sidebar
+  Centralizada verticalmente
+  Alterna › e ‹ via JS
 =========================== */
 .sidebar-toggle-arrow {
   position: absolute;
@@ -190,9 +190,9 @@ body {
 }
 
 /* ===========================
-   OVERLAY MOBILE
-   Fundo escuro atrás da sidebar
-   Fecha ao clicar
+  OVERLAY MOBILE
+  Fundo escuro atrás da sidebar
+  Fecha ao clicar
 =========================== */
 .sidebar-overlay {
   display: none;
@@ -207,9 +207,9 @@ body {
 }
 
 /* ===========================
-   ITENS DO MENU
-   Recolhido: 40x40 centralizado
-   Expandido: largura total com label
+  ITENS DO MENU
+  Recolhido: 40x40 centralizado
+  Expandido: largura total com label
 =========================== */
 .nav-item {
   width: 40px;
@@ -280,8 +280,8 @@ body {
 }
 
 /* ===========================
-   ÁREA PRINCIPAL
-   Scroll interno independente
+  ÁREA PRINCIPAL
+  Scroll interno independente
 =========================== */
 .main-area {
   flex: 1;
@@ -291,8 +291,8 @@ body {
 }
 
 /* ===========================
-   SEÇÕES
-   Apenas .active é visível
+  SEÇÕES
+  Apenas .active é visível
 =========================== */
 .section {
   display: none;
@@ -310,10 +310,10 @@ body {
 }
 
 /* ===========================
-   HOME IA — Re⟳Loop.IA
-   Tela limpa centralizada
-   Logo grande + badge .IA + input chat
-   Input desabilitado até AC5
+  HOME IA — Re⟳Loop.IA
+  Tela limpa centralizada
+  Logo grande + badge .IA + input chat
+  Input desabilitado até AC5
 =========================== */
 .ia-home {
   display: flex;
@@ -353,10 +353,10 @@ body {
 }
 
 /* ===========================
-   INPUT CHAT
-   Caixa alta — texto no topo, ícones no rodapé
-   align-items: flex-end → ícones colados embaixo
-   Desabilitado até AC5
+  INPUT CHAT
+  Caixa alta — texto no topo, ícones no rodapé
+  align-items: flex-end → ícones colados embaixo
+  Desabilitado até AC5
 =========================== */
 .ia-input-wrapper {
   display: flex;
@@ -396,9 +396,9 @@ body {
 }
 
 /* ===========================
-   BOTÕES MICROFONE E IA ASSISTENTE
-   Alinhados no rodapé direito do input
-   Desabilitados até AC5
+  BOTÕES MICROFONE E IA ASSISTENTE
+  Alinhados no rodapé direito do input
+  Desabilitados até AC5
 =========================== */
 .ia-btn-mic,
 .ia-btn-assistente {
@@ -428,10 +428,10 @@ body {
 }
 
 /* ===========================
-   BOTÕES DE AÇÃO RÁPIDA — IA
-   5 sugestões abaixo do input
-   Sem emojis, em linha
-   Desabilitados até AC5
+  BOTÕES DE AÇÃO RÁPIDA — IA
+  5 sugestões abaixo do input
+  Sem emojis, em linha
+  Desabilitados até AC5
 =========================== */
 .ia-acoes {
   display: flex;
@@ -458,8 +458,8 @@ body {
 }
 
 /* ===========================
-   CARDS DE INDICADORES — KPIs
-   Grid 3 colunas, cores translúcidas
+  CARDS DE INDICADORES — KPIs
+  Grid 3 colunas, cores translúcidas
 =========================== */
 .cards-grid {
   display: grid;
@@ -528,10 +528,10 @@ img.card-icon {
 }
 
 /* ===========================
-   BLOCOS COLAPSÁVEIS — KPIs
-   7 blocos na seção KPIs
-   Fechados por padrão
-   .aberto → abre body e rotaciona seta
+  BLOCOS COLAPSÁVEIS — KPIs
+  7 blocos na seção KPIs
+  Fechados por padrão
+  .aberto → abre body e rotaciona seta
 =========================== */
 .dash-bloco {
   background: #1e2a45;
@@ -592,7 +592,7 @@ img.card-icon {
 }
 
 /* ===========================
-   PLACEHOLDER — módulos futuros
+  PLACEHOLDER — módulos futuros
 =========================== */
 .placeholder {
   background: #1e2a45;
@@ -620,7 +620,7 @@ img.card-icon {
 }
 
 /* ===========================
-   RESPONSIVO — MOBILE (até 768px)
+  RESPONSIVO — MOBILE (até 768px)
 =========================== */
 @media (max-width: 768px) {
   .toggle-btn-mobile {
@@ -691,10 +691,10 @@ img.card-icon {
 }
 
 /* ===========================
-   RESPONSIVO — SMALL MOBILE (até 480px)
-   Pendente: ajustes header mobile
-   (hambúrguer maior, logo maior,
-    bem-vindo abaixo da logo)
+  RESPONSIVO — SMALL MOBILE (até 480px)
+  Pendente: ajustes header mobile
+  (hambúrguer maior, logo maior,
+  bem-vindo abaixo da logo)
 =========================== */
 @media (max-width: 480px) {
   .header {

@@ -228,20 +228,29 @@
             <div class="acc-item" id="acc-busca">
               <div class="acc-header" data-target="acc-busca">
                 <div class="acc-header-left">
-                  <span class="acc-icon">🔍</span> Pesquisa
+                  <span class="acc-icon">
+                    <img
+                      src="../assets/image/pesquisar.svg"
+                      width="23"
+                      height="23"
+                      alt="Pesquisa"
+                      style="vertical-align: middle"
+                    />
+                  </span>
+                  Pesquisa
                 </div>
                 <span class="acc-arrow">▼</span>
               </div>
               <div class="acc-body">
                 <div class="busca-row">
                   <select id="tipoBusca">
-                    <option value="nome">Buscar por Nome</option>
                     <option value="cpfcnpj">Buscar por CPF/CNPJ</option>
                   </select>
                   <input
                     type="text"
                     id="valorBusca"
-                    placeholder="Digite para buscar..."
+                    placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                    maxlength="18"
                   />
                   <button id="btnBuscar" class="btn btn-primary">Buscar</button>
                   <button id="btnLimparBusca" class="btn btn-secondary">
@@ -256,12 +265,21 @@
             <div class="acc-item bloqueado" id="acc-cadastro">
               <div class="acc-header" data-target="acc-cadastro">
                 <div class="acc-header-left">
-                  <span class="acc-icon">➕</span> Cadastro
+                  <span class="acc-icon">
+                    <img
+                      src="../assets/image/cadastro.svg"
+                      width="27"
+                      height="27"
+                      alt="Pesquisa"
+                      style="vertical-align: middle"
+                    />
+                  </span>
+                  Cadastro
                 </div>
                 <span class="acc-arrow">▼</span>
               </div>
               <div class="acc-body">
-                <form id="formCliente">
+                <form id="formCliente" autocomplete="off">
                   <input type="hidden" id="clienteId" value="" />
                   <div class="form-grid">
                     <div class="form-group">
@@ -343,7 +361,7 @@
                         name="cep"
                         placeholder="00000-000"
                         maxlength="9"
-                        autocomplete="postal-code"
+                        autocomplete="off"
                       />
                     </div>
                     <div class="form-group form-group-wide">
@@ -353,7 +371,7 @@
                         id="logradouro"
                         name="logradouro"
                         placeholder="Rua / Avenida"
-                        autocomplete="street-address"
+                        autocomplete="off"
                       />
                     </div>
                     <div class="form-group">
@@ -391,7 +409,7 @@
                         type="text"
                         id="cidade"
                         name="cidade"
-                        autocomplete="address-level2"
+                        autocomplete="off"
                       />
                     </div>
                     <div class="form-group">
@@ -402,7 +420,7 @@
                         name="estado"
                         maxlength="2"
                         placeholder="SP"
-                        autocomplete="address-level1"
+                        autocomplete="off"
                       />
                     </div>
                   </div>
@@ -442,9 +460,68 @@
             <div class="acc-item" id="acc-lista">
               <div class="acc-header" data-target="acc-lista">
                 <div class="acc-header-left">
-                  <span class="acc-icon">📋</span> Lista
+                  <span class="acc-icon">
+                    <img
+                      src="../assets/image/lista.svg"
+                      width="25"
+                      height="25"
+                      alt="Lista"
+                      style="vertical-align: middle"
+                    />
+                  </span>
+                  Lista Clientes
                 </div>
-                <span class="acc-arrow">▼</span>
+                <div style="display: flex; align-items: center; gap: 6px">
+                  <div
+                    style="display: flex; align-items: center; gap: 6px"
+                    onclick="event.stopPropagation()"
+                  >
+                    <select
+                      id="filtroMesNasc"
+                      class="btn btn-secondary"
+                      style="width: 160px; cursor: pointer"
+                    >
+                      <option value="">Aniversário</option>
+                      <option value="01">Janeiro</option>
+                      <option value="02">Fevereiro</option>
+                      <option value="03">Março</option>
+                      <option value="04">Abril</option>
+                      <option value="05">Maio</option>
+                      <option value="06">Junho</option>
+                      <option value="07">Julho</option>
+                      <option value="08">Agosto</option>
+                      <option value="09">Setembro</option>
+                      <option value="10">Outubro</option>
+                      <option value="11">Novembro</option>
+                      <option value="12">Dezembro</option>
+                    </select>
+                    <select
+                      id="filtroGenero"
+                      class="btn btn-secondary"
+                      style="width: 160px; cursor: pointer"
+                    >
+                      <option value="">Gênero</option>
+                      <option value="M">Masculino</option>
+                      <option value="F">Feminino</option>
+                      <option value="O">Outro</option>
+                    </select>
+                    <button
+                      id="btnExcelClientes"
+                      class="btn btn-secondary"
+                      style="width: 160px"
+                    >
+                      ⬇ Download
+                    </button>
+                    <button
+                      id="btnConsultarLista"
+                      class="btn btn-primary"
+                      style="width: 160px"
+                    >
+                      Consultar
+                    </button>
+                  </div>
+                  <span class="acc-arrow">▼</span>
+                </div>
               </div>
               <div class="acc-body">
                 <div class="tabela-wrapper">
@@ -455,15 +532,20 @@
                           Nome <span id="iconeOrdem">▲</span>
                         </th>
                         <th>CPF/CNPJ</th>
-                        <th>Telefone</th>
-                        <th>Gênero</th>
-                        <th>Nascimento</th>
-                        <th>Ações</th>
+                        <th>Celular</th>
+                        <th>E-mail</th>
+                        <th id="thGenero" class="th-ordenavel">
+                          Gênero <span id="iconeOrdemGenero">↕</span>
+                        </th>
+                        <th id="thNascimento" class="th-ordenavel">
+                          Nascimento <span id="iconeOrdemNasc">↕</span>
+                        </th>
+                        <th>Editar</th>
                       </tr>
                     </thead>
                     <tbody id="tbodyClientes">
                       <tr>
-                        <td colspan="6" class="tabela-vazia">Carregando...</td>
+                        <td colspan="7" class="tabela-vazia">Carregando...</td>
                       </tr>
                     </tbody>
                   </table>
@@ -474,26 +556,39 @@
         </section>
         <!-- /SEÇÃO CLIENTES - AC1 -->
 
-        <!-- SEÇÃO: VEÍCULOS — AC2 | sec-veiculos data: 05/03/2026 -->
+        <!-- SEÇÃO: VEÍCULOS — AC2 | sec-veiculos data: 18/03/2026 -->
 
         <section class="section" id="sec-veiculos">
-          <h2 class="section-title">Veículos [EM DESENVOLVIMENTO AC2]</h2>
+          <h2 class="section-title">Veículos</h2>
           <div class="accordion" id="accordion-veiculos">
             <!-- PAINEL 1: PESQUISA -->
             <div class="acc-item" id="acc-veiculo-busca">
               <div class="acc-header" data-target="acc-veiculo-busca">
                 <div class="acc-header-left">
-                  <span class="acc-icon">🔍</span> Pesquisa
+                  <span class="acc-icon">
+                    <img
+                      src="../assets/image/pesquisar.svg"
+                      width="23"
+                      height="23"
+                      alt="Pesquisa"
+                      style="vertical-align: middle"
+                    />
+                  </span>
+                  Pesquisa
                 </div>
                 <span class="acc-arrow">▼</span>
               </div>
               <div class="acc-body">
                 <div class="busca-row">
+                  <select id="veiTipoBusca">
+                    <option value="placa">Buscar por Placa</option>
+                    <option value="proprietario">Buscar por CPF/CNPJ</option>
+                  </select>
                   <input
                     type="text"
-                    id="veiPlacaBusca"
-                    placeholder="Digite a placa..."
-                    maxlength="8"
+                    id="veiValorBusca"
+                    placeholder="Digite a placa (Mercosul)..."
+                    maxlength="18"
                   />
                   <button id="btnVeiBuscar" class="btn btn-primary">
                     Buscar
@@ -510,7 +605,16 @@
             <div class="acc-item bloqueado" id="acc-veiculo-cadastro">
               <div class="acc-header" data-target="acc-veiculo-cadastro">
                 <div class="acc-header-left">
-                  <span class="acc-icon">➕</span> Cadastro
+                  <span class="acc-icon">
+                    <img
+                      src="../assets/image/cadastro.svg"
+                      width="27"
+                      height="27"
+                      alt="Pesquisa"
+                      style="vertical-align: middle"
+                    />
+                  </span>
+                  Cadastro
                 </div>
                 <span class="acc-arrow">▼</span>
               </div>
@@ -613,7 +717,7 @@
                     class="form-mensagem"
                     style="display: none"
                   ></div>
-                  <div class="form-actions">
+                  <div class="form-actions" id="veiFormActions">
                     <button
                       type="button"
                       id="btnVeiCancelar"
@@ -635,6 +739,21 @@
                     >
                       Salvar
                     </button>
+                    <button
+                      type="button"
+                      id="btnVeiInativar"
+                      class="btn btn-danger"
+                    >
+                      Inativar
+                    </button>
+                    <button
+                      type="button"
+                      id="btnVeiServicos"
+                      class="btn btn-primary"
+                      disabled
+                    >
+                      Serviços
+                    </button>
                   </div>
                 </form>
               </div>
@@ -644,32 +763,82 @@
             <div class="acc-item" id="acc-veiculo-lista">
               <div class="acc-header" data-target="acc-veiculo-lista">
                 <div class="acc-header-left">
-                  <span class="acc-icon">📋</span> Lista
+                  <span class="acc-icon">
+                    <img
+                      src="../assets/image/lista.svg"
+                      width="25"
+                      height="25"
+                      alt="Pesquisa"
+                      style="vertical-align: middle"
+                    />
+                  </span>
+                  Lista
                 </div>
-                <span class="acc-arrow">▼</span>
+                <div style="display: flex; align-items: center; gap: 6px">
+                  <div
+                    style="display: flex; align-items: center; gap: 6px"
+                    onclick="event.stopPropagation()"
+                  >
+                    <select
+                      id="filtroMarcaVei"
+                      class="btn btn-secondary"
+                      style="width: 160px; cursor: pointer"
+                    >
+                      <option value="">Marca</option>
+                    </select>
+                    <select
+                      id="filtroAnoVei"
+                      class="btn btn-secondary"
+                      style="width: 160px; cursor: pointer"
+                    >
+                      <option value="">Ano/Modelo</option>
+                    </select>
+                    <button
+                      id="btnExcelVeiculos"
+                      class="btn btn-secondary"
+                      style="width: 160px"
+                    >
+                      ⬇ Download
+                    </button>
+                    <button
+                      id="btnConsultarVeiculos"
+                      class="btn btn-primary"
+                      style="width: 160px"
+                    >
+                      Consultar
+                    </button>
+                  </div>
+                  <span class="acc-arrow">▼</span>
+                </div>
               </div>
               <div class="acc-body">
                 <div class="tabela-wrapper">
                   <table class="tabela-veiculos">
                     <thead>
                       <tr>
-                        <th id="thMarca" class="th-ordenavel">
-                          Marca <span id="iconeOrdemVei">▲</span>
+                        <th id="thMarcaVei" class="th-ordenavel">
+                          Marca <span id="iconeOrdemMarca">↕</span>
                         </th>
                         <th>Modelo</th>
                         <th>Placa</th>
-                        <th id="thProprietario" class="th-ordenavel">
-                          Proprietário <span id="iconeOrdemProp">▲</span>
+                        <th id="thProprietarioVei" class="th-ordenavel">
+                          Proprietário <span id="iconeOrdemPropVei">↕</span>
                         </th>
                         <th>CPF/CNPJ</th>
-                        <th>Km</th>
-                        <th>Atualização</th>
+                        <th id="thKmVei" class="th-ordenavel">
+                          Km <span id="iconeOrdemKm">↕</span>
+                        </th>
+                        <th id="thAnoVei" class="th-ordenavel">
+                          Ano/Modelo <span id="iconeOrdemAno">↕</span>
+                        </th>
                         <th>Ações</th>
                       </tr>
                     </thead>
                     <tbody id="tbodyVeiculos">
                       <tr>
-                        <td colspan="8" class="tabela-vazia">Carregando...</td>
+                        <td colspan="8" class="tabela-vazia">
+                          Clique em Consultar para carregar.
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -785,6 +954,7 @@
           <!-- /BLOCO 1 -->
 
           <!-- BLOCO 2: LVT — AC5 -->
+          <!--
           <div class="dash-bloco" id="bloco-lvt">
             <div class="dash-bloco-header" data-target="bloco-lvt">
               <span style="display: flex; align-items: center; gap: 8px"
@@ -806,9 +976,11 @@
               </div>
             </div>
           </div>
+          -->
           <!-- /BLOCO 2 -->
 
           <!-- BLOCO 3: RETENÇÃO POR ANO — AC5 -->
+          <!--
           <div class="dash-bloco" id="bloco-retencao-ano">
             <div class="dash-bloco-header" data-target="bloco-retencao-ano">
               <span style="display: flex; align-items: center; gap: 8px"
@@ -830,9 +1002,11 @@
               </div>
             </div>
           </div>
+          -->
           <!-- /BLOCO 3 -->
 
           <!-- BLOCO 4: RETENÇÃO POR MODELO — AC5 -->
+          <!--
           <div class="dash-bloco" id="bloco-retencao-modelo">
             <div class="dash-bloco-header" data-target="bloco-retencao-modelo">
               <span style="display: flex; align-items: center; gap: 8px"
@@ -854,9 +1028,11 @@
               </div>
             </div>
           </div>
+          -->
           <!-- /BLOCO 4 -->
 
           <!-- BLOCO 5: PERFORMANCE CR — AC5 -->
+          <!--
           <div class="dash-bloco" id="bloco-performance-cr">
             <div class="dash-bloco-header" data-target="bloco-performance-cr">
               <span style="display: flex; align-items: center; gap: 8px"
@@ -878,9 +1054,11 @@
               </div>
             </div>
           </div>
+          -->
           <!-- /BLOCO 5 -->
 
           <!-- BLOCO 6: PERFORMANCE CIAS — AC5 -->
+          <!--
           <div class="dash-bloco" id="bloco-performance-cias">
             <div class="dash-bloco-header" data-target="bloco-performance-cias">
               <span style="display: flex; align-items: center; gap: 8px"
@@ -902,9 +1080,11 @@
               </div>
             </div>
           </div>
+          -->
           <!-- /BLOCO 6 -->
 
           <!-- BLOCO 7: CR | METAS OPERADORAS — AC5 -->
+          <!--
           <div class="dash-bloco" id="bloco-cr-metas">
             <div class="dash-bloco-header" data-target="bloco-cr-metas">
               <span style="display: flex; align-items: center; gap: 8px"
@@ -926,6 +1106,7 @@
               </div>
             </div>
           </div>
+        -->
           <!-- /BLOCO 7 -->
         </section>
         <!-- /SEÇÃO KPIs -->
@@ -949,20 +1130,164 @@
         </section>
 
         <!-- ===========================
-            SEÇÃO: SUPORTE — futuro
+            SEÇÃO: SUPORTE — AC2
         =========================== -->
         <section class="section" id="sec-suporte">
-          <h2 class="section-title">Suporte [CONGELADO AC2]</h2>
-          <div class="placeholder">
-            <div class="placeholder-icon">
-              <img
-                src="../assets/image/suporte.svg"
-                style="width: 50px; height: 50px"
-                alt="Suporte"
-              />
+          <h2 class="section-title">Suporte</h2>
+          <div class="accordion" id="accordion-suporte">
+            <!-- PAINEL 1: ABRIR CHAMADO -->
+            <div class="acc-item" id="acc-suporte-chamado">
+              <div class="acc-header" data-target="acc-suporte-chamado">
+                <div class="acc-header-left">
+                  <span class="acc-icon">
+                    <img
+                      src="../assets/image/ticket.svg"
+                      width="21"
+                      height="21"
+                      alt="Pesquisa"
+                      style="vertical-align: middle"
+                    />
+                  </span>
+                  Abrir Chamado
+                </div>
+                <span class="acc-arrow">▼</span>
+              </div>
+              <div class="acc-body">
+                <form id="formSuporte">
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="supUsuario">Usuário</label>
+                      <input
+                        type="text"
+                        id="supUsuario"
+                        readonly
+                        class="input-readonly"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="supNome">Nome</label>
+                      <input
+                        type="text"
+                        id="supNome"
+                        readonly
+                        class="input-readonly"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="supEmail">E-mail</label>
+                      <input
+                        type="email"
+                        id="supEmail"
+                        placeholder="email@exemplo.com"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="supTelefone">Telefone</label>
+                      <input
+                        type="text"
+                        id="supTelefone"
+                        placeholder="(11) 99999-0000"
+                        maxlength="15"
+                      />
+                    </div>
+                    <div class="form-group form-group-check">
+                      <label class="check-label">
+                        <input
+                          type="checkbox"
+                          id="supWhatsApp"
+                          name="supWhatsApp"
+                        />
+                        Este número é WhatsApp
+                      </label>
+                    </div>
+                    <div class="form-group">
+                      <label for="supCanalContato"
+                        >Melhor Canal para Contato</label
+                      >
+                      <select id="supCanalContato">
+                        <option value="">Selecione</option>
+                        <option value="email">E-mail</option>
+                        <option value="telefone">Telefone</option>
+                        <option value="whatsapp">WhatsApp</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="supHorarioContato"
+                        >Melhor Horário para Contato</label
+                      >
+                      <select id="supHorarioContato">
+                        <option value="">Selecione</option>
+                        <option value="manha">Manhã (08h - 12h)</option>
+                        <option value="tarde">Tarde (12h - 18h)</option>
+                        <option value="noite">Noite (18h - 21h)</option>
+                        <option value="comercial">
+                          Horário Comercial (Seg-Sex)
+                        </option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="supLocalProblema">Local do Problema</label>
+                      <select id="supLocalProblema">
+                        <option value="">Selecione</option>
+                        <option value="login">Login</option>
+                        <option value="dashboard">Dashboard</option>
+                        <option value="clientes">Cadastro de Clientes</option>
+                        <option value="veiculos">Cadastro de Veículos</option>
+                        <option value="servicos">Cadastro de Serviços</option>
+                        <option value="eventos">Eventos Futuros</option>
+                        <option value="kpis">KPIs</option>
+                        <option value="outro">Outro</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="supNivelProblema">Nível do Problema</label>
+                      <select id="supNivelProblema">
+                        <option value="">Selecione</option>
+                        <option value="baixo">Baixo - Dúvida / Sugestão</option>
+                        <option value="medio">
+                          Médio - Funcionalidade com erro
+                        </option>
+                        <option value="alto">
+                          Alto - Sistema indisponível
+                        </option>
+                        <option value="critico">
+                          Crítico - Perda de dados
+                        </option>
+                      </select>
+                    </div>
+                    <div class="form-group form-group-wide">
+                      <label for="supDescricao">Descrição do Problema</label>
+                      <textarea
+                        id="supDescricao"
+                        rows="4"
+                        placeholder="Descreva o problema com detalhes..."
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div
+                    id="supFormMensagem"
+                    class="form-mensagem"
+                    style="display: none"
+                  ></div>
+                  <div class="form-actions">
+                    <button
+                      type="button"
+                      id="btnSupCancelar"
+                      class="btn btn-secondary"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      id="btnSupEnviar"
+                      class="btn btn-primary"
+                    >
+                      Enviar Chamado
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
-            <h3>Módulo em desenvolvimento</h3>
-            <p>A ser definido</p>
           </div>
         </section>
       </main>
@@ -977,11 +1302,13 @@
         3. dashboard.js → navegação, sidebar, blocos
         4. clientes.js  → módulo AC1
         5. veiculos.js  → módulo AC2
+        6. suporte.js   → módulo Suporte
     =========================== -->
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/dashboard.js"></script>
     <script src="../assets/js/clientes.js"></script>
     <script src="../assets/js/veiculos.js"></script>
+    <script src="../assets/js/suporte.js"></script>
   </body>
 </html>

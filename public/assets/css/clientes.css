@@ -1,14 +1,14 @@
 /* clientes.css | data: 03/03/2026 */
 
-/* =========================================
-  clientes.css
-  Estilos exclusivos da seção de Clientes
-  Depende de: style.css (variáveis globais)
-   ========================================= */
+/* 
+clientes.css
+Estilos exclusivos da seção de Clientes
+Depende de: style.css (variáveis globais)
+*/
 
-/* ===========================
-  ACCORDION
-=========================== */
+/*
+ACCORDION
+*/
 .accordion {
   display: flex;
   flex-direction: column;

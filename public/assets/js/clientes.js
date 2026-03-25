@@ -1,12 +1,12 @@
-// clientes.js | última revisão data: 13/03/2026
+// clientes.js | última revisão data: 19/03/2026
 
 document.addEventListener('DOMContentLoaded', () => {
   //  ELEMENTOS DO DOM
 
   const formCliente = document.getElementById('formCliente');
   const clienteId = document.getElementById('clienteId');
-  const btnLimpar = document.getElementById('btnLimpar');
-  const btnSalvar = document.getElementById('btnSalvar');
+  let btnLimpar = document.getElementById('btnLimpar');
+  let btnSalvar = document.getElementById('btnSalvar');
   const formMensagem = document.getElementById('formMensagem');
 
   const tipoBusca = document.getElementById('tipoBusca');
@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnBuscar = document.getElementById('btnBuscar');
   const btnLimparBusca = document.getElementById('btnLimparBusca');
   const resultadoBusca = document.getElementById('resultadoBusca');
-  const tbodyBusca = document.getElementById('tbodyBusca');
   const tbodyClientes = document.getElementById('tbodyClientes');
 
   // CONTROLE DE ORDENAÇÃO
@@ -25,20 +24,42 @@ document.addEventListener('DOMContentLoaded', () => {
   let cliReativando = null;
 
   // ACCORDION — abrir/fechar painéis
-  // ALTERADO EM: 03/03/2026
-
   document.querySelectorAll('#sec-clientes .acc-header').forEach((header) => {
     header.addEventListener('click', () => {
       const targetId = header.dataset.target;
       const item = document.getElementById(targetId);
 
-      // Bloqueia painel Cadastro se não pesquisou
       if (item && item.classList.contains('bloqueado')) {
         alert('Efetuar a pesquisa antes!');
         return;
       }
 
-      if (item) item.classList.toggle('open');
+      if (item) {
+        item.classList.toggle('open');
+        const fechou = !item.classList.contains('open');
+        // Ao fechar o painel Lista: zera tudo
+        if (targetId === 'acc-lista' && fechou) {
+          const filtroGenero = document.getElementById('filtroGenero');
+          const filtroMes    = document.getElementById('filtroMesNasc');
+          if (filtroGenero) filtroGenero.value = '';
+          if (filtroMes)    filtroMes.value    = '';
+          listaClientes    = [];
+          listaConsultada  = false;
+          tbodyClientes.innerHTML = `<tr><td colspan="7" class="tabela-vazia">Selecione algum filtro e/ou clique em Consultar.</td></tr>`;
+        }
+        // Ao abrir sem ter consultado: exibe mensagem
+        if (targetId === 'acc-lista' && !fechou && !listaConsultada) {
+          tbodyClientes.innerHTML = `<tr><td colspan="7" class="tabela-vazia">Selecione algum filtro e/ou clique em Consultar.</td></tr>`;
+        }
+        // Limpa busca ao fechar o painel Busca
+        if (targetId === 'acc-busca' && fechou) {
+          limparBusca();
+        }
+        // Limpa form ao fechar o painel Cadastro
+        if (targetId === 'acc-cadastro' && fechou) {
+          cancelarCadastro();
+        }
+      }
     });
   });
 
@@ -95,7 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // EXIBIR MENSAGEM NO FORMULÁRIO
-
   const mostrarMensagem = (texto, tipo = 'success') => {
     formMensagem.textContent = texto;
     formMensagem.className = `form-mensagem ${tipo}`;
@@ -106,41 +126,153 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // LIMPAR FORMULÁRIO
-  // alterado: 03/03/2026
-
   const limparFormulario = () => {
     formCliente.reset();
     clienteId.value = '';
     cliReativando = null;
-    btnSalvar.textContent = 'Salvar';
     formMensagem.style.display = 'none';
   };
 
-  btnLimpar.addEventListener('click', limparFormulario);
+  // TRAVAR / DESTRAVAR campos CPF e Tipo
+  const travarCamposIdentificacao = () => {
+    campoCpfCnpj.readOnly = true;
+    campoCpfCnpj.style.opacity = '0.5';
+    campoTipo.disabled = true;
+    campoTipo.style.opacity = '0.5';
+  };
+
+  const destravarCamposIdentificacao = () => {
+    campoCpfCnpj.readOnly = false;
+    campoCpfCnpj.style.opacity = '';
+    campoTipo.disabled = false;
+    campoTipo.style.opacity = '';
+  };
 
   // CANCELAR CADASTRO
-  // Limpa, fecha e trava painel
-
   const cancelarCadastro = () => {
-    formCliente.reset();
-    clienteId.value = '';
-    cliReativando = null;
-    btnSalvar.textContent = 'Salvar';
-    formMensagem.style.display = 'none';
-
-    // Fecha e bloqueia painel Cadastro
+    limparFormulario();
+    destravarCamposIdentificacao();
+    renderizarBotoesForm('novo');
     const accCadastro = document.getElementById('acc-cadastro');
     accCadastro.classList.remove('open');
     accCadastro.classList.add('bloqueado');
   };
 
-  document
-    .getElementById('btnCancelar')
-    .addEventListener('click', cancelarCadastro);
+  /* ===========================
+    RENDERIZAR BOTÕES DO FORM
+    Modos: 'novo' | 'ativo' | 'salvo' | 'inativo'
+  =========================== */
+  const renderizarBotoesForm = (modo, cliente = null) => {
+    const formActions = document.querySelector('#formCliente .form-actions');
+
+    if (modo === 'novo') {
+      formActions.innerHTML = `
+        <button type="button" id="btnCancelar"  class="btn btn-secondary">Cancelar</button>
+        <button type="button" id="btnLimpar"    class="btn btn-secondary">Limpar</button>
+        <button type="submit" id="btnSalvar"    class="btn btn-primary">Cadastrar</button>
+      `;
+    } else if (modo === 'ativo') {
+      formActions.innerHTML = `
+        <button type="button" id="btnCancelar"     class="btn btn-secondary">Cancelar</button>
+        <button type="button" id="btnLimpar"       class="btn btn-secondary">Limpar</button>
+        <button type="submit" id="btnSalvar"       class="btn btn-primary">Salvar</button>
+        <button type="button" id="btnBloquearForm" class="btn btn-warning">Bloquear</button>
+        <button type="button" id="btnInativarForm" class="btn btn-danger">Inativar</button>
+        <button type="button" id="btnFrotaForm"    class="btn btn-primary">Frota</button>
+      `;
+    } else if (modo === 'bloqueado') {
+      formActions.innerHTML = `
+        <button type="button" id="btnCancelar"        class="btn btn-secondary">Cancelar</button>
+        <button type="button" id="btnLimpar"          class="btn btn-secondary">Limpar</button>
+        <button type="submit" id="btnSalvar"          class="btn btn-primary">Salvar</button>
+        <button type="button" id="btnDesbloquearForm" class="btn btn-warning">Desbloquear</button>
+        <button type="button" id="btnInativarForm"    class="btn btn-danger">Inativar</button>
+        <button type="button" id="btnFrotaForm"       class="btn btn-primary">Frota</button>
+      `;
+    } else if (modo === 'salvo') {
+      const statusAtual = cliente ? cliente.Status : 'ATIVO';
+      formActions.innerHTML = `
+        <button type="button" id="btnFechar"       class="btn btn-success">Fechar</button>
+        ${statusAtual === 'BLOQUEADO'
+          ? `<button type="button" id="btnDesbloquearForm" class="btn btn-warning">Desbloquear</button>`
+          : `<button type="button" id="btnBloquearForm"   class="btn btn-warning">Bloquear</button>`
+        }
+        <button type="button" id="btnInativarForm" class="btn btn-danger">Inativar</button>
+        <button type="button" id="btnFrotaForm"    class="btn btn-primary">Frota</button>
+      `;
+    } else if (modo === 'inativo') {
+      formActions.innerHTML = `
+        <button type="button" id="btnCancelar" class="btn btn-secondary">Cancelar</button>
+        <button type="submit" id="btnSalvar"   class="btn btn-primary">Reativar</button>
+      `;
+    }
+
+    // Re-query referências atualizadas
+    btnLimpar = document.getElementById('btnLimpar');
+    btnSalvar = document.getElementById('btnSalvar');
+
+    // Re-bind eventos fixos
+    const btnCancelar = document.getElementById('btnCancelar');
+    if (btnCancelar) btnCancelar.addEventListener('click', cancelarCadastro);
+    if (btnLimpar) btnLimpar.addEventListener('click', limparFormulario);
+
+    // Bind botão Fechar (modo salvo)
+    const btnFechar = document.getElementById('btnFechar');
+    if (btnFechar) btnFechar.addEventListener('click', cancelarCadastro);
+
+    // Bind botões específicos dos modos com cliente
+    if ((modo === 'ativo' || modo === 'bloqueado' || modo === 'salvo') && cliente) {
+      const btnInativar = document.getElementById('btnInativarForm');
+      if (btnInativar) btnInativar.addEventListener('click', async () => {
+        if (!confirm(`Inativar o cliente "${cliente.NomeCompleto}"?\n\nEle não aparecerá mais na lista.`)) return;
+        try {
+          await apiRequest(`/clientes/${cliente.ClienteId}`, { method: 'DELETE' });
+          alert('Cliente inativado com sucesso!');
+          cancelarCadastro();
+          carregarClientes();
+        } catch (error) {
+          alert('Erro ao inativar: ' + error.message);
+        }
+      });
+
+      const btnBloquear = document.getElementById('btnBloquearForm');
+      if (btnBloquear) btnBloquear.addEventListener('click', async () => {
+        if (!confirm(`Bloquear o cliente "${cliente.NomeCompleto}"?\n\nEle não receberá comunicações.`)) return;
+        try {
+          await apiRequest(`/clientes/${cliente.ClienteId}/bloquear`, { method: 'PATCH', body: {} });
+          alert('Cliente bloqueado com sucesso!');
+          cancelarCadastro();
+          carregarClientes();
+        } catch (error) {
+          alert('Erro ao bloquear: ' + error.message);
+        }
+      });
+
+      const btnDesbloquear = document.getElementById('btnDesbloquearForm');
+      if (btnDesbloquear) btnDesbloquear.addEventListener('click', async () => {
+        if (!confirm(`Desbloquear o cliente "${cliente.NomeCompleto}"?`)) return;
+        try {
+          await apiRequest(`/clientes/${cliente.ClienteId}/desbloquear`, { method: 'PATCH', body: {} });
+          alert('Cliente desbloqueado com sucesso!');
+          cancelarCadastro();
+          carregarClientes();
+        } catch (error) {
+          alert('Erro ao desbloquear: ' + error.message);
+        }
+      });
+
+      const btnFrota = document.getElementById('btnFrotaForm');
+      if (btnFrota) btnFrota.addEventListener('click', () => {
+        const cpfCnpj = document.getElementById('cpfCnpj').value.replace(/\D/g, '');
+        navegarParaVeiculos(cpfCnpj);
+      });
+    }
+  };
+
+  // Inicializa form em modo 'novo'
+  renderizarBotoesForm('novo');
 
   // CARD DE RESULTADO DA BUSCA
-  // reutilizável (criado uma vez)
-
   let cardResultado = null;
 
   const ocultarCardResultado = () => {
@@ -168,46 +300,18 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="form-actions" style="margin-top: 12px;">
         <button type="button" id="btnCliCancelar" class="btn btn-secondary">Cancelar</button>
         <button type="button" id="btnCliEditar"   class="btn btn-primary">Editar</button>
-        <button type="button" id="btnCliInativar" class="btn btn-danger">Inativar</button>
       </div>
     `;
 
-    // Cancelar
-    // Alterado em: 03/03/2026
     document.getElementById('btnCliCancelar').addEventListener('click', () => {
       limparBusca();
-      const accCadastro = document.getElementById('acc-cadastro');
-      accCadastro.classList.add('bloqueado');
+      document.getElementById('acc-cadastro').classList.add('bloqueado');
     });
 
-    // Editar — colapsa busca, abre cadastro com dados
     document.getElementById('btnCliEditar').addEventListener('click', () => {
-      const accCadastro = document.getElementById('acc-cadastro');
-      accCadastro.classList.remove('bloqueado');
-      editarCliente(cliente.ClienteId);
+      document.getElementById('acc-cadastro').classList.remove('bloqueado');
+      editarCliente(cliente.ClienteId, 'ativo');
     });
-
-    // Inativar
-    document
-      .getElementById('btnCliInativar')
-      .addEventListener('click', async () => {
-        if (
-          !confirm(
-            `Inativar o cliente "${cliente.NomeCompleto}"?\n\nEle não aparecerá mais nas buscas.`,
-          )
-        )
-          return;
-        try {
-          await apiRequest(`/clientes/${cliente.ClienteId}`, {
-            method: 'DELETE',
-          });
-          alert('Cliente inativado com sucesso!');
-          limparBusca();
-          carregarClientes();
-        } catch (error) {
-          alert('Erro ao inativar: ' + error.message);
-        }
-      });
   };
 
   const exibirClienteNaoEncontrado = () => {
@@ -224,37 +328,31 @@ document.addEventListener('DOMContentLoaded', () => {
     cardResultado.style.display = 'block';
     cardResultado.innerHTML = `
       <p>ℹ️ Cliente <strong>não encontrado</strong> no cadastro.</p>
-      <p>Deseja cadastrá-lo agora?</p>
       <div class="form-actions" style="margin-top: 12px;">
-        <button type="button" id="btnCliNaoCadastrar" class="btn btn-secondary">Cancelar</button>
-        <button type="button" id="btnCliSimCadastrar" class="btn btn-primary">Cadastrar</button>
+        <button type="button" id="btnCliNaoCadastrar"  class="btn btn-secondary">Cancelar</button>
+        <button type="button" id="btnCliSimCadastrar"  class="btn btn-primary">Cadastrar</button>
       </div>
     `;
 
-    document
-      .getElementById('btnCliNaoCadastrar')
-      .addEventListener('click', () => {
-        limparBusca();
-      });
+    document.getElementById('btnCliNaoCadastrar').addEventListener('click', () => {
+      limparBusca();
+    });
 
-    document
-      .getElementById('btnCliSimCadastrar')
-      .addEventListener('click', () => {
-        // Captura ANTES de limpar
-        const cpfCnpjDigitado = valorBusca.value.replace(/\D/g, '');
-        const tipoDocumento = cpfCnpjDigitado.length <= 11 ? 'PF' : 'PJ';
-        limparBusca();
-        const accCadastro = document.getElementById('acc-cadastro');
-        accCadastro.classList.remove('bloqueado');
-        accCadastro.classList.add('open');
-        // Preenche formulário com documento digitado
-        document.getElementById('tipo').value = tipoDocumento;
-        document.getElementById('cpfCnpj').value =
-          tipoDocumento === 'PF'
-            ? formatarCpf(cpfCnpjDigitado)
-            : formatarCnpj(cpfCnpjDigitado);
-        accCadastro.scrollIntoView({ behavior: 'smooth' });
-      });
+    document.getElementById('btnCliSimCadastrar').addEventListener('click', () => {
+      const cpfCnpjDigitado = valorBusca.value.replace(/\D/g, '');
+      const tipoDocumento = cpfCnpjDigitado.length <= 11 ? 'PF' : 'PJ';
+      limparBusca();
+      const accCadastro = document.getElementById('acc-cadastro');
+      accCadastro.classList.remove('bloqueado');
+      accCadastro.classList.add('open');
+      document.getElementById('tipo').value = tipoDocumento;
+      document.getElementById('cpfCnpj').value =
+        tipoDocumento === 'PF'
+          ? formatarCpf(cpfCnpjDigitado)
+          : formatarCnpj(cpfCnpjDigitado);
+      if (cpfCnpjDigitado.length >= 11) travarCamposIdentificacao();
+      accCadastro.scrollIntoView({ behavior: 'smooth' });
+    });
   };
 
   /* ===========================
@@ -277,24 +375,21 @@ document.addEventListener('DOMContentLoaded', () => {
       ? `<span class="badge badge-${cliente.Genero}">${cliente.Genero}</span>`
       : '—';
 
+    const bloqueado = cliente.Bloqueado === 1 || cliente.Bloqueado === true;
+
     return `
-      <tr>
-        <td>${cliente.NomeCompleto || '—'}</td>
+      <tr${bloqueado ? ' style="opacity:0.7;"' : ''}>
+        <td>${bloqueado ? '🔒 ' : ''}${cliente.NomeCompleto || '—'}</td>
         <td>${formatarDocumento(cliente.CpfCnpj)}</td>
         <td>${cliente.Telefone || '—'}</td>
+        <td>${cliente.Email || '—'}</td>
         <td>${genero}</td>
         <td>${formatarData(cliente.DataNascimento)}</td>
         <td>
-          <div class="acoes">
-            <button class="btn-sm btn-editar"
-              onclick="editarCliente(${cliente.ClienteId})">
-              ✏️ Editar
-            </button>
-            <button class="btn-sm btn-inativar"
-              onclick="inativarCliente(${cliente.ClienteId}, '${cliente.NomeCompleto.replace(/'/g, "\\'")}')">
-              Inativar
-            </button>
-          </div>
+          <button class="btn-sm btn-editar" title="Editar"
+            onclick="editarClienteDaLista(${cliente.ClienteId})">
+            ✏️
+          </button>
         </td>
       </tr>
     `;
@@ -303,12 +398,47 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ===========================
     RENDERIZAR TABELA
   =========================== */
+  let ordemNasc   = 0; // 0 = sem ordem | 1 = asc | -1 = desc
+  let ordemGenero = 0; // 0 = sem ordem | 1 = asc | -1 = desc
+  let listaConsultada = false;
+
   const renderizarTabela = () => {
-    const ordenados = [...listaClientes].sort(
-      (a, b) =>
-        ordemNome * a.NomeCompleto.localeCompare(b.NomeCompleto, 'pt-BR'),
-    );
-    tbodyClientes.innerHTML = ordenados.map(gerarLinha).join('');
+    const filtroGenero  = document.getElementById('filtroGenero')?.value || '';
+    const filtroMes     = document.getElementById('filtroMesNasc')?.value || '';
+
+    let filtrados = listaClientes.filter((c) => {
+      if (filtroGenero && c.Genero !== filtroGenero) return false;
+      if (filtroMes && c.DataNascimento) {
+        const mes = c.DataNascimento.split('T')[0].split('-')[1];
+        if (mes !== filtroMes) return false;
+      } else if (filtroMes && !c.DataNascimento) {
+        return false;
+      }
+      return true;
+    });
+
+    if (ordemNasc !== 0) {
+      filtrados.sort((a, b) => {
+        const da = a.DataNascimento || '';
+        const db = b.DataNascimento || '';
+        return ordemNasc * da.localeCompare(db);
+      });
+    } else if (ordemGenero !== 0) {
+      filtrados.sort((a, b) => {
+        const ga = a.Genero || 'Z';
+        const gb = b.Genero || 'Z';
+        return ordemGenero * ga.localeCompare(gb);
+      });
+    } else {
+      filtrados.sort(
+        (a, b) =>
+          ordemNome * a.NomeCompleto.localeCompare(b.NomeCompleto, 'pt-BR'),
+      );
+    }
+
+    tbodyClientes.innerHTML = filtrados.length
+      ? filtrados.map(gerarLinha).join('')
+      : `<tr><td colspan="7" class="tabela-vazia">Nenhum cliente encontrado com este filtro.</td></tr>`;
   };
 
   /* ===========================
@@ -317,16 +447,16 @@ document.addEventListener('DOMContentLoaded', () => {
   let listaClientes = [];
 
   const carregarClientes = async () => {
-    tbodyClientes.innerHTML = `<tr><td colspan="6" class="tabela-vazia">Carregando...</td></tr>`;
+    tbodyClientes.innerHTML = `<tr><td colspan="7" class="tabela-vazia">Carregando...</td></tr>`;
     try {
       listaClientes = await apiRequest('/clientes');
       if (listaClientes.length === 0) {
-        tbodyClientes.innerHTML = `<tr><td colspan="6" class="tabela-vazia">Nenhum cliente cadastrado.</td></tr>`;
+        tbodyClientes.innerHTML = `<tr><td colspan="7" class="tabela-vazia">Nenhum cliente cadastrado.</td></tr>`;
         return;
       }
       renderizarTabela();
     } catch (error) {
-      tbodyClientes.innerHTML = `<tr><td colspan="6" class="tabela-vazia">Erro ao carregar clientes.</td></tr>`;
+      tbodyClientes.innerHTML = `<tr><td colspan="7" class="tabela-vazia">Erro ao carregar clientes.</td></tr>`;
     }
   };
 
@@ -334,10 +464,85 @@ document.addEventListener('DOMContentLoaded', () => {
     ORDENAR AO CLICAR NO HEADER
   =========================== */
   document.getElementById('thNome').addEventListener('click', () => {
-    ordemNome *= -1;
-    document.getElementById('iconeOrdem').textContent =
-      ordemNome === 1 ? '▲' : '▼';
+    ordemNasc   = 0;
+    ordemGenero = 0;
+    ordemNome  *= -1;
+    document.getElementById('iconeOrdem').textContent        = ordemNome === 1 ? '▲' : '▼';
+    document.getElementById('iconeOrdemNasc').textContent    = '↕';
+    document.getElementById('iconeOrdemGenero').textContent  = '↕';
     renderizarTabela();
+  });
+
+  document.getElementById('thNascimento').addEventListener('click', () => {
+    ordemNasc   = ordemNasc === 1 ? -1 : 1;
+    ordemGenero = 0;
+    document.getElementById('iconeOrdemNasc').textContent    = ordemNasc === 1 ? '▲' : '▼';
+    document.getElementById('iconeOrdem').textContent        = '↕';
+    document.getElementById('iconeOrdemGenero').textContent  = '↕';
+    renderizarTabela();
+  });
+
+  document.getElementById('thGenero').addEventListener('click', () => {
+    ordemNasc   = 0;
+    ordemGenero = ordemGenero === 1 ? -1 : 1;
+    document.getElementById('iconeOrdemGenero').textContent  = ordemGenero === 1 ? '▲' : '▼';
+    document.getElementById('iconeOrdem').textContent        = '↕';
+    document.getElementById('iconeOrdemNasc').textContent    = '↕';
+    renderizarTabela();
+  });
+
+  // CONSULTAR — aplica filtros e abre o painel
+  document.getElementById('btnConsultarLista').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const accLista = document.getElementById('acc-lista');
+    accLista.classList.add('open');
+    listaConsultada = true;
+    carregarClientes();
+  });
+
+  /* ===========================
+    EDITAR DA LISTA
+    Fecha Lista, abre Cadastro
+  =========================== */
+  window.editarClienteDaLista = (id) => {
+    document.getElementById('acc-lista').classList.remove('open');
+    const accCadastro = document.getElementById('acc-cadastro');
+    accCadastro.classList.remove('bloqueado');
+    const cli = listaClientes.find((c) => c.ClienteId === id);
+    const modo = cli && cli.Status === 'BLOQUEADO' ? 'bloqueado' : 'ativo';
+    editarCliente(id, modo);
+  };
+
+  /* ===========================
+    EXPORTAR EXCEL
+  =========================== */
+  document.getElementById('btnExcelClientes').addEventListener('click', (e) => {
+    e.stopPropagation(); // evita abrir/fechar o accordion
+    if (listaClientes.length === 0) {
+      alert('Nenhum cliente para exportar.');
+      return;
+    }
+
+    const linhas = [
+      ['Nome', 'CPF/CNPJ', 'Celular', 'E-mail', 'Gênero', 'Nascimento'],
+      ...listaClientes.map((c) => [
+        c.NomeCompleto || '',
+        formatarDocumento(c.CpfCnpj),
+        c.Telefone || '',
+        c.Email || '',
+        c.Genero || '',
+        formatarData(c.DataNascimento),
+      ]),
+    ];
+
+    const tabela = `<table>${linhas.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
+    const blob = new Blob([tabela], { type: 'application/vnd.ms-excel;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `clientes_${new Date().toISOString().slice(0, 10)}.xls`;
+    a.click();
+    URL.revokeObjectURL(url);
   });
 
   /* ===========================
@@ -345,7 +550,7 @@ document.addEventListener('DOMContentLoaded', () => {
   =========================== */
   document.querySelectorAll('.nav-item').forEach((item) => {
     item.addEventListener('click', () => {
-      if (item.dataset.section === 'clientes') carregarClientes();
+      // carregamento apenas via botão Consultar
     });
   });
 
@@ -356,6 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
 
     const id = clienteId.value;
+    const reativandoId = cliReativando;
 
     const dados = {
       tipo: document.getElementById('tipo').value,
@@ -379,37 +585,43 @@ document.addEventListener('DOMContentLoaded', () => {
     btnSalvar.textContent = 'Salvando...';
 
     try {
+      let idSalvo;
+
       // REATIVAR — PATCH /reativar
-      if (cliReativando) {
-        await apiRequest(`/clientes/${cliReativando}/reativar`, {
+      if (reativandoId) {
+        await apiRequest(`/clientes/${reativandoId}/reativar`, {
           method: 'PATCH',
           body: dados,
         });
-        alert('Cliente reativado com sucesso!');
         cliReativando = null;
+        idSalvo = reativandoId;
       }
       // ATUALIZAR — PUT
       else if (id) {
         await apiRequest(`/clientes/${id}`, { method: 'PUT', body: dados });
-        mostrarMensagem('Cliente atualizado com sucesso!', 'success');
+        idSalvo = id;
       }
       // CRIAR — POST
       else {
-        await apiRequest('/clientes', { method: 'POST', body: dados });
-        mostrarMensagem('Cliente cadastrado com sucesso!', 'success');
+        const resp = await apiRequest('/clientes', { method: 'POST', body: dados });
+        idSalvo = resp.ClienteId || resp.id || resp.insertId;
       }
 
-      cancelarCadastro();
-      limparFormulario();
       carregarClientes();
 
-      document.getElementById('acc-cadastro').classList.remove('open');
-      //document.getElementById('acc-lista').classList.add('open');
+      // Após salvar: mantém form aberto, muda para modo 'salvo'
+      if (idSalvo) {
+        const clienteSalvo = await apiRequest(`/clientes/${idSalvo}`);
+        clienteId.value = clienteSalvo.ClienteId;
+        travarCamposIdentificacao();
+        mostrarMensagem('Salvo com sucesso!', 'success');
+        renderizarBotoesForm('salvo', clienteSalvo);
+      } else {
+        cancelarCadastro();
+      }
     } catch (error) {
       mostrarMensagem(error.message || 'Erro ao salvar cliente.', 'error');
-    } finally {
       btnSalvar.disabled = false;
-      btnSalvar.textContent = id ? 'Atualizar Cliente' : 'Salvar Cliente';
     }
   });
 
@@ -417,17 +629,14 @@ document.addEventListener('DOMContentLoaded', () => {
     EDITAR CLIENTE
     Colapsa busca, abre cadastro
   =========================== */
-  window.editarCliente = async (id) => {
+  window.editarCliente = async (id, modo = 'ativo') => {
     try {
       const cliente = await apiRequest(`/clientes/${id}`);
 
       clienteId.value = cliente.ClienteId;
       document.getElementById('tipo').value = cliente.Tipo || 'PF';
-      document.getElementById('cpfCnpj').value = formatarDocumento(
-        cliente.CpfCnpj,
-      );
-      document.getElementById('nomeCompleto').value =
-        cliente.NomeCompleto || '';
+      document.getElementById('cpfCnpj').value = formatarDocumento(cliente.CpfCnpj);
+      document.getElementById('nomeCompleto').value = cliente.NomeCompleto || '';
       document.getElementById('dataNascimento').value = cliente.DataNascimento
         ? cliente.DataNascimento.split('T')[0]
         : '';
@@ -444,16 +653,24 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('cidade').value = cliente.Cidade || '';
       document.getElementById('estado').value = cliente.Estado || '';
 
-      btnSalvar.textContent = 'Atualizar Cliente';
+      // Trava CPF/Tipo quando editando (nunca se altera documento)
+      if (modo === 'ativo' || modo === 'bloqueado' || modo === 'inativo') {
+        travarCamposIdentificacao();
+      } else {
+        destravarCamposIdentificacao();
+      }
 
-      // Fecha busca + limpa
+      // Botões conforme modo
+      renderizarBotoesForm(modo, cliente);
+
+      // Fecha busca
       limparBusca();
 
       // Abre cadastro
-      document.getElementById('acc-cadastro').classList.add('open');
-      document
-        .getElementById('acc-cadastro')
-        .scrollIntoView({ behavior: 'smooth' });
+      const accCadastro = document.getElementById('acc-cadastro');
+      accCadastro.classList.remove('bloqueado');
+      accCadastro.classList.add('open');
+      accCadastro.scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
       alert('Erro ao carregar dados do cliente.');
     }
@@ -464,12 +681,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Usado na listagem
   =========================== */
   window.inativarCliente = async (id, nome) => {
-    if (
-      !confirm(
-        `Inativar o cliente "${nome}"?\n\nEle não aparecerá mais nas buscas.`,
-      )
-    )
-      return;
+    if (!confirm(`Inativar o cliente "${nome}"?\n\nEle não aparecerá mais nas buscas.`)) return;
     try {
       await apiRequest(`/clientes/${id}`, { method: 'DELETE' });
       alert('Cliente inativado com sucesso!');
@@ -498,27 +710,50 @@ document.addEventListener('DOMContentLoaded', () => {
     cardResultado.innerHTML = `
       <p>⚠️ Cadastro <strong>inativo</strong> encontrado.</p>
       <p><strong>${cliente.NomeCompleto}</strong> | CPF/CNPJ: <strong>${formatarDocumento(cliente.CpfCnpj)}</strong></p>
-      <p>Deseja reativar?</p>
       <div class="form-actions" style="margin-top: 12px;">
         <button type="button" id="btnCliCancelarInativo" class="btn btn-secondary">Cancelar</button>
-        <button type="button" id="btnCliReativar" class="btn btn-primary">Reativar</button>
+        <button type="button" id="btnCliEditarInativo"   class="btn btn-primary">Editar</button>
       </div>
     `;
 
-    // Cancelar
-    document
-      .getElementById('btnCliCancelarInativo')
-      .addEventListener('click', () => {
-        limparBusca();
-      });
+    document.getElementById('btnCliCancelarInativo').addEventListener('click', limparBusca);
 
-    // Reativar — marca flag e abre cadastro com dados
-    document.getElementById('btnCliReativar').addEventListener('click', () => {
+    document.getElementById('btnCliEditarInativo').addEventListener('click', () => {
       cliReativando = cliente.ClienteId;
-      const accCadastro = document.getElementById('acc-cadastro');
-      accCadastro.classList.remove('bloqueado');
-      editarCliente(cliente.ClienteId);
-      btnSalvar.textContent = 'Reativar Cliente';
+      document.getElementById('acc-cadastro').classList.remove('bloqueado');
+      editarCliente(cliente.ClienteId, 'inativo');
+    });
+  };
+
+  /* ===========================
+    CARD — CLIENTE BLOQUEADO
+  =========================== */
+  const exibirClienteBloqueadoEncontrado = (cliente) => {
+    if (!cardResultado) {
+      cardResultado = document.createElement('div');
+      cardResultado.id = 'cardClienteResultado';
+      resultadoBusca.parentNode.insertBefore(
+        cardResultado,
+        resultadoBusca.nextSibling,
+      );
+    }
+
+    cardResultado.className = 'vei-aviso vei-aviso-alerta';
+    cardResultado.style.display = 'block';
+    cardResultado.innerHTML = `
+      <p>🔒 Cadastro <strong>bloqueado</strong> encontrado.</p>
+      <p><strong>${cliente.NomeCompleto}</strong> | CPF/CNPJ: <strong>${formatarDocumento(cliente.CpfCnpj)}</strong></p>
+      <div class="form-actions" style="margin-top: 12px;">
+        <button type="button" id="btnCliCancelarBloqueado" class="btn btn-secondary">Cancelar</button>
+        <button type="button" id="btnCliEditarBloqueado"   class="btn btn-primary">Editar</button>
+      </div>
+    `;
+
+    document.getElementById('btnCliCancelarBloqueado').addEventListener('click', limparBusca);
+
+    document.getElementById('btnCliEditarBloqueado').addEventListener('click', () => {
+      document.getElementById('acc-cadastro').classList.remove('bloqueado');
+      editarCliente(cliente.ClienteId, 'bloqueado');
     });
   };
 
@@ -548,8 +783,10 @@ document.addEventListener('DOMContentLoaded', () => {
         exibirClienteNaoEncontrado();
       } else {
         const cliente = resultado[0];
-        if (cliente.Ativo === false || cliente.Ativo === 0) {
+        if (cliente.Ativo === 0 || cliente.Ativo === false) {
           exibirClienteInativoEncontrado(cliente);
+        } else if (cliente.Bloqueado === 1 || cliente.Bloqueado === true) {
+          exibirClienteBloqueadoEncontrado(cliente);
         } else {
           exibirClienteEncontrado(cliente);
         }
@@ -562,8 +799,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Máscara CPF/CNPJ no campo de busca
+  valorBusca.addEventListener('input', () => {
+    const n = valorBusca.value.replace(/\D/g, '').slice(0, 14);
+    if (n.length <= 11) {
+      valorBusca.value = n
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    } else {
+      valorBusca.value = n
+        .replace(/(\d{2})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1/$2')
+        .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+    }
+  });
+
   // Busca ao pressionar Enter
   valorBusca.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') btnBuscar.click();
   });
+
+  /* ===========================
+    NAVEGAR PARA VEÍCULOS — Tarefa 10
+    Usado pelo botão Frota
+  =========================== */
+  const navegarParaVeiculos = (cpfCnpj) => {
+    // Ativa seção veículos no menu
+    document.querySelectorAll('.nav-item').forEach((btn) => btn.classList.remove('active'));
+    document.querySelectorAll('.section').forEach((s) => s.classList.remove('active'));
+
+    const btnVeiculos = document.querySelector('.nav-item[data-section="veiculos"]');
+    const secVeiculos = document.getElementById('sec-veiculos');
+
+    if (btnVeiculos) btnVeiculos.classList.add('active');
+    if (secVeiculos) secVeiculos.classList.add('active');
+
+    // Preenche busca por proprietário e dispara
+    const veiTipoBusca = document.getElementById('veiTipoBusca');
+    const veiValorBusca = document.getElementById('veiValorBusca');
+    const btnVeiBuscar = document.getElementById('btnVeiBuscar');
+    const accBusca = document.getElementById('acc-veiculo-busca');
+
+    if (veiTipoBusca) veiTipoBusca.value = 'proprietario';
+    if (veiValorBusca) veiValorBusca.value = cpfCnpj;
+    if (accBusca) accBusca.classList.add('open');
+    if (btnVeiBuscar) btnVeiBuscar.click();
+  };
 });

@@ -1,8 +1,7 @@
-﻿-- =========================================
--- BANCO: SoftwareProduct
+﻿-- BANCO: SoftwareProduct
 -- TABELA: dbo.Usuarios
 -- VERSÃO: 1.0 - AC1
--- =========================================
+
 
 USE SoftwareProduct;
 GO

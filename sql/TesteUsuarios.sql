@@ -1,27 +1,33 @@
 USE SoftwareProduct;
 GO
 
---------------------------------------------------
+
 -- 1) ZERAR TABELA E CONTADOR (IDENTITY)
---------------------------------------------------
 DELETE FROM dbo.Usuarios;
 DBCC CHECKIDENT ('dbo.Usuarios', RESEED, 0);
 GO
 
---------------------------------------------------
+
 -- 2) LER (verificar se zerou)
---------------------------------------------------
 SELECT * FROM dbo.Usuarios;
 GO
 
-SELECT UsuarioId, Login, Email, Ativo FROM dbo.Usuarios;
+SELECT 
+	UsuarioId, 
+	Login, 
+	Senha, 
+	Email, 
+	Ativo 
+FROM 
+	dbo.Usuarios;
+GO
 
---------------------------------------------------
--- 3) CRIAR (teste – mesmo que não use agora)
--- Senha: 123456 (já com hash bcrypt)
+
+-- 3) CRIAR (teste ï¿½ mesmo que nï¿½o use agora)
+-- Senha: 123456 (jï¿½ com hash bcrypt)
 INSERT INTO dbo.Usuarios (Login, Senha, NomeCompleto, Email, Ativo)
 VALUES (
-  'userteste01',
+  'userteste',
   '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZRGdjGj/n3.wMVh7aYJbW.VFi/6y6',
   'USER TESTE 01',
   'user01@teste.com',
@@ -30,19 +36,18 @@ VALUES (
 GO
 
 -- DELETAR O TESTE
-DELETE FROM dbo.Usuarios WHERE UsuarioId = 4;
+DELETE FROM dbo.Usuarios WHERE UsuarioId = 6;
 
---------------------------------------------------
--- 4) ALTERAR (teste – mesmo que não use agora)
---------------------------------------------------
+
+-- 4) ALTERAR (teste ï¿½ mesmo que nï¿½o use agora)
+
 UPDATE dbo.Usuarios
 SET NomeCompleto = 'Administrador Atualizado'
 WHERE Login = 'admin';
 GO
 
---------------------------------------------------
--- 5) DELETAR (soft delete – mesmo que não use agora)
---------------------------------------------------
+
+-- 5) DELETAR (soft delete ï¿½ mesmo que nï¿½o use agora)
 UPDATE dbo.Usuarios
 SET Ativo = 0
 WHERE Login = 'turtle';

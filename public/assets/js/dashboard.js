@@ -8,8 +8,8 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   /* ===========================
-     EXIBIR NOME DO USUÁRIO
-     Lê sessão gravada pelo auth.js no login
+    EXIBIR NOME DO USUÁRIO
+    Lê sessão gravada pelo auth.js no login
   =========================== */
   const sessionData = sessionStorage.getItem('usuario');
   if (sessionData) {
@@ -21,17 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ===========================
-     INDICADORES — DADOS FIXOS
-     Serão conectados à API na AC4
+  INDICADORES — DADOS FIXOS
+  Serão conectados à API na AC4
   =========================== */
   document.getElementById('totalFrota').textContent = '0';
   document.getElementById('totalSemRelacionamento').textContent = '0';
   document.getElementById('totalComRelacionamento').textContent = '0';
 
   /* ===========================
-     NAVEGAÇÃO ENTRE SEÇÕES
-     Cada .nav-item tem data-section
-     indicando qual section exibir
+    NAVEGAÇÃO ENTRE SEÇÕES
+    Cada .nav-item tem data-section
+    indicando qual section exibir
   =========================== */
   const navItems = document.querySelectorAll('.nav-item');
   const sections = document.querySelectorAll('.section');
@@ -59,10 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ===========================
-     SETA LATERAL — WEB
-     Posicionada na borda direita da sidebar
-     1 clique: recolhe ↔ expande
-     Seta vira direção conforme estado
+    SETA LATERAL — WEB
+    Posicionada na borda direita da sidebar
+    1 clique: recolhe ↔ expande
+    Seta vira direção conforme estado
   =========================== */
   const sidebar = document.getElementById('sidebar');
   const setaBtn = document.getElementById('toggleSidebar');
@@ -77,9 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ===========================
-     HAMBÚRGUER — MOBILE
-     Botão no header (canto superior esquerdo)
-     Oculta e desoculta a sidebar como overlay
+    HAMBÚRGUER — MOBILE
+    Botão no header (canto superior esquerdo)
+    Oculta e desoculta a sidebar como overlay
   =========================== */
   const toggleMobile = document.getElementById('toggleMobile');
   const overlay = document.getElementById('sidebarOverlay');
@@ -106,13 +106,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ===========================
-     BLOCOS COLAPSÁVEIS — GRÁFICOS
-     Usados na seção home:
-       - Bloco LVT
-       - Bloco Retenção por Ano
-       - Bloco Retenção por Modelo
-     Clique no header: toggle classe .aberto
-     CSS controla visibilidade do body e rotação da seta
+    BLOCOS COLAPSÁVEIS — GRÁFICOS
+    Usados na seção home:
+      - Bloco LVT
+      - Bloco Retenção por Ano
+      - Bloco Retenção por Modelo
+    Clique no header: toggle classe .aberto
+    CSS controla visibilidade do body e rotação da seta
   =========================== */
   const blocosHeaders = document.querySelectorAll('.dash-bloco-header');
 
@@ -122,6 +122,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const bloco = header.closest('.dash-bloco');
       if (bloco) {
         bloco.classList.toggle('aberto');
+      }
+    });
+  });
+
+  /* ===========================
+    ACCORDION — SUPORTE
+    Abre/fecha o painel "Abrir Chamado"
+  =========================== */
+  document.querySelectorAll('#accordion-suporte .acc-header').forEach((header) => {
+    header.addEventListener('click', () => {
+      const targetId = header.dataset.target;
+      const item = document.getElementById(targetId);
+      if (item) {
+        item.classList.toggle('open');
       }
     });
   });

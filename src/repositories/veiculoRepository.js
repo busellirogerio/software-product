@@ -37,7 +37,7 @@ class VeiculoRepository {
         c.CpfCnpj       AS ProprietarioCpfCnpj
       FROM dbo.Veiculos v
       LEFT JOIN dbo.Clientes c ON c.ClienteId = v.ClienteId
-      WHERE v.Ativo = 1
+      WHERE v.Ativo = 1 AND v.ClienteId IS NOT NULL
       ORDER BY v.Marca ${ordemValidada}
     `);
 

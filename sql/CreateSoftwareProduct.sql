@@ -1,8 +1,7 @@
-﻿-- =========================================
--- CRIAR BANCO: SoftwareProduct
+﻿-- CRIAR BANCO: SoftwareProduct
 -- VERSÃO: 1.0 - AC1
 -- DATA: 2026-02-15
--- =========================================
+
 
 -- Remove banco se existir
 IF DB_ID('SoftwareProduct') IS NOT NULL

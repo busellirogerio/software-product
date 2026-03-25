@@ -1,17 +1,14 @@
-﻿-- =========================================
--- BANCO: SoftwareProduct
+﻿-- BANCO: SoftwareProduct
 -- TABELA: dbo.Veiculos
 -- VERSÃO: 1.0 - AC2
 -- DATA: 2026-02-20
--- AUTOR: Buselli Rogerio
--- =========================================
+
 
 USE SoftwareProduct;
 GO
 
--- =========================================
+
 -- LIMPEZA — remove objetos existentes
--- =========================================
 IF OBJECT_ID('dbo.TR_Veiculos_SetDataAtualizacao', 'TR') IS NOT NULL
     DROP TRIGGER dbo.TR_Veiculos_SetDataAtualizacao;
 GO
@@ -20,9 +17,8 @@ IF OBJECT_ID('dbo.Veiculos', 'U') IS NOT NULL
     DROP TABLE dbo.Veiculos;
 GO
 
--- =========================================
+
 -- CRIAÇÃO DA TABELA
--- =========================================
 CREATE TABLE dbo.Veiculos
 (
     -- IDENTIFICAÇÃO
@@ -73,9 +69,9 @@ CREATE TABLE dbo.Veiculos
 );
 GO
 
--- =========================================
+
 -- ÍNDICES — otimizam buscas frequentes
--- =========================================
+
 
 -- Busca por placa (principal busca operacional)
 CREATE NONCLUSTERED INDEX IX_Veiculos_Placa
@@ -101,9 +97,8 @@ CREATE NONCLUSTERED INDEX IX_Veiculos_Ativo
     INCLUDE (VeiculoId, Marca, Modelo, Placa, ClienteId);
 GO
 
--- =========================================
+
 -- TRIGGER — atualiza DataAtualizacao automaticamente
--- =========================================
 CREATE TRIGGER dbo.TR_Veiculos_SetDataAtualizacao
 ON dbo.Veiculos
 AFTER UPDATE

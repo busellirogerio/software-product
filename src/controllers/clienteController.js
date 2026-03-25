@@ -1,11 +1,9 @@
-// clienteController.js | última revisão data: 13/03/2026
+// clienteController.js | última revisão data: 22/03/2026
 
 const clienteRepository = require('../repositories/clienteRepository');
 
 class ClienteController {
-  /* ===========================
-    LISTAR TODOS
-  =========================== */
+  //  LISTAR TODOS
   async listarTodos(req, res) {
     try {
       const clientes = await clienteRepository.listarTodos();
@@ -16,9 +14,7 @@ class ClienteController {
     }
   }
 
-  /* ===========================
-    BUSCAR POR ID
-  =========================== */
+  //  BUSCAR POR ID
   async buscarPorId(req, res) {
     try {
       const { id } = req.params;
@@ -36,11 +32,8 @@ class ClienteController {
     }
   }
 
-  /* ===========================
-    BUSCAR
-    Rota: GET /api/clientes/buscar?tipo=nome&valor=joao
-    tipos aceitos: nome | cpfcnpj | telefone
-  =========================== */
+  //  BUSCAR
+  //  Rota: GET /api/clientes/buscar?tipo=cpfcnpj&valor=12345678901
   async buscar(req, res) {
     try {
       const { tipo, valor } = req.query;
@@ -59,13 +52,11 @@ class ClienteController {
 
       let resultado = [];
 
-      if (tipo === 'nome') {
-        resultado = await clienteRepository.buscarPorNome(valor.trim());
-      } else if (tipo === 'cpfcnpj') {
+      if (tipo === 'cpfcnpj') {
         resultado = await clienteRepository.buscarPorCpfCnpj(valor.trim());
       } else {
         return res.status(400).json({
-          erro: 'Tipo de busca inválido. Use: nome, cpfcnpj ou telefone',
+          erro: 'Tipo de busca inválido. Use: cpfcnpj',
         });
       }
 
@@ -76,12 +67,7 @@ class ClienteController {
     }
   }
 
-  /* ===========================
-    CRIAR
-    Converte campos de texto
-    para maiúsculo antes de enviar
-    ao repository
-  =========================== */
+  //  CRIAR
   async criar(req, res) {
     try {
       const {
@@ -102,34 +88,28 @@ class ClienteController {
         estado,
       } = req.body;
 
-      // Validações obrigatórias
       if (!tipo || !cpfCnpj || !nomeCompleto) {
         return res
           .status(400)
           .json({ erro: 'Tipo, CPF/CNPJ e Nome Completo são obrigatórios' });
       }
 
-      // Valida tipo PF/PJ
       if (!['PF', 'PJ'].includes(tipo.toUpperCase())) {
         return res.status(400).json({ erro: 'Tipo deve ser PF ou PJ' });
       }
 
-      // Remove formatação do CPF/CNPJ
       const cpfCnpjLimpo = cpfCnpj.replace(/[.\-\/]/g, '').trim();
 
-      // Valida tamanho CPF (11) ou CNPJ (14)
       if (cpfCnpjLimpo.length !== 11 && cpfCnpjLimpo.length !== 14) {
         return res
           .status(400)
           .json({ erro: 'CPF deve ter 11 dígitos ou CNPJ 14 dígitos' });
       }
 
-      // Valida gênero se informado
       if (genero && !['M', 'F', 'O'].includes(genero.toUpperCase())) {
         return res.status(400).json({ erro: 'Gênero deve ser M, F ou O' });
       }
 
-      // Valida email se informado
       if (email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -137,7 +117,6 @@ class ClienteController {
         }
       }
 
-      // Monta objeto com campos em maiúsculo
       const dadosLimpos = {
         tipo: tipo.toUpperCase(),
         cpfCnpj: cpfCnpjLimpo,
@@ -167,9 +146,7 @@ class ClienteController {
     }
   }
 
-  /* ===========================
-    ATUALIZAR
-  =========================== */
+  //  ATUALIZAR
   async atualizar(req, res) {
     try {
       const { id } = req.params;
@@ -193,17 +170,14 @@ class ClienteController {
         estado,
       } = req.body;
 
-      // Nome é obrigatório na atualização
       if (!nomeCompleto) {
         return res.status(400).json({ erro: 'Nome Completo é obrigatório' });
       }
 
-      // Valida gênero se informado
       if (genero && !['M', 'F', 'O'].includes(genero.toUpperCase())) {
         return res.status(400).json({ erro: 'Gênero deve ser M, F ou O' });
       }
 
-      // Valida email se informado
       if (email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -239,33 +213,67 @@ class ClienteController {
     }
   }
 
-  /* ===========================
-    DELETAR (soft delete)
-  =========================== */
-  async deletar(req, res) {
+  //  INATIVAR (soft delete) — Status = 'INATIVO'
+  async inativar(req, res) {
     try {
       const { id } = req.params;
       if (!id || isNaN(id)) {
         return res.status(400).json({ erro: 'ID inválido' });
       }
 
-      const resultado = await clienteRepository.deletar(id);
+      const resultado = await clienteRepository.inativar(id);
       if (resultado === 0) {
         return res.status(404).json({ erro: 'Cliente não encontrado' });
       }
 
-      res.json({ mensagem: 'Cliente excluído com sucesso' });
+      res.json({ mensagem: 'Cliente inativado com sucesso' });
     } catch (error) {
-      console.error('Erro ao deletar cliente:', error);
+      console.error('Erro ao inativar cliente:', error);
       res.status(500).json({ erro: 'Erro interno do servidor' });
     }
   }
 
-  /* ===========================
-    REATIVAR
-    Ativo = 1 + atualiza dados
-    Rota: PATCH /api/clientes/:id/reativar
-  =========================== */
+  //  BLOQUEAR — Status = 'BLOQUEADO'
+  async bloquear(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id || isNaN(id)) {
+        return res.status(400).json({ erro: 'ID inválido' });
+      }
+
+      const resultado = await clienteRepository.bloquear(id);
+      if (resultado === 0) {
+        return res.status(404).json({ erro: 'Cliente não encontrado' });
+      }
+
+      res.json({ mensagem: 'Cliente bloqueado com sucesso' });
+    } catch (error) {
+      console.error('Erro ao bloquear cliente:', error);
+      res.status(500).json({ erro: 'Erro interno do servidor' });
+    }
+  }
+
+  //  DESBLOQUEAR — Status = 'ATIVO'
+  async desbloquear(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id || isNaN(id)) {
+        return res.status(400).json({ erro: 'ID inválido' });
+      }
+
+      const resultado = await clienteRepository.desbloquear(id);
+      if (resultado === 0) {
+        return res.status(404).json({ erro: 'Cliente não encontrado' });
+      }
+
+      res.json({ mensagem: 'Cliente desbloqueado com sucesso' });
+    } catch (error) {
+      console.error('Erro ao desbloquear cliente:', error);
+      res.status(500).json({ erro: 'Erro interno do servidor' });
+    }
+  }
+
+  //  REATIVAR — Status = 'ATIVO' + atualiza dados
   async reativar(req, res) {
     try {
       const { id } = req.params;
@@ -289,17 +297,14 @@ class ClienteController {
         estado,
       } = req.body;
 
-      // Nome é obrigatório
       if (!nomeCompleto) {
         return res.status(400).json({ erro: 'Nome Completo é obrigatório' });
       }
 
-      // Valida gênero se informado
       if (genero && !['M', 'F', 'O'].includes(genero.toUpperCase())) {
         return res.status(400).json({ erro: 'Gênero deve ser M, F ou O' });
       }
 
-      // Valida email se informado
       if (email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {

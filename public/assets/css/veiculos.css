@@ -46,6 +46,23 @@
   transform: translateY(-1px);
 }
 
+.btn-success {
+  background: rgba(39, 174, 96, 0.2);
+  color: #27ae60;
+  padding: 10px 22px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.btn-success:hover {
+  background: rgba(39, 174, 96, 0.4);
+  transform: translateY(-1px);
+}
+
 /* ===========================
   BOTÃO INATIVAR NA TABELA
 =========================== */
@@ -158,4 +175,68 @@
 =========================== */
 #sec-veiculos input[type='text'] {
   text-transform: uppercase;
+}
+
+/* ===========================
+  HEADER DA LISTA — botões e filtros
+=========================== */
+.acc-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.filtro-select {
+  padding: 6px 10px;
+  background: #111827;
+  border: 1px solid #2d3748;
+  border-radius: 6px;
+  color: #a0aec0;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.filtro-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.btn-lista-acao {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #2d3748;
+  background: #2d3748;
+  color: #a0aec0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.btn-lista-acao:hover {
+  background: #3d4f6b;
+  color: #ffffff;
+}
+
+.btn-lista-consultar {
+  background: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+  border-color: rgba(52, 152, 219, 0.3);
+}
+
+.btn-lista-consultar:hover {
+  background: rgba(52, 152, 219, 0.4);
+  color: #ffffff;
+}
+
+/* ===========================
+  LINHA DE FROTA (busca proprietário)
+=========================== */
+.vei-frota-linha {
+  padding: 10px 0;
+  font-size: 0.88rem;
+  color: #a0aec0;
+  line-height: 1.6;
 }
