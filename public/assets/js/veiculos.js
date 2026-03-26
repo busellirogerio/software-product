@@ -1,75 +1,87 @@
-// veiculos.js | data: 22/03/2026
-
-// Módulo de Veículos — AC2
-// Baseado em clientes.js
-// Depende de: config.js (apiRequest) + auth.js
+// -----------------------------------------------
+// veiculos.js
+// Tema: Módulo de Veículos — cadastro, busca, lista
+// Última rev: 02 | Data: 25/03/2026
+// -----------------------------------------------
 
 document.addEventListener('DOMContentLoaded', () => {
-  // ELEMENTOS DO DOM
-  const formVeiculo     = document.getElementById('formVeiculo');
-  const veiculoId       = document.getElementById('veiculoId');
-  const veiFormMensagem = document.getElementById('veiFormMensagem');
 
-  const veiValorBusca   = document.getElementById('veiValorBusca');
-  const btnVeiBuscar    = document.getElementById('btnVeiBuscar');
+
+  // #region ELEMENTOS DO DOM | rev.02 | 25/03/2026
+
+  const formVeiculo       = document.getElementById('formVeiculo');
+  const veiculoId         = document.getElementById('veiculoId');
+  const veiFormMensagem   = document.getElementById('veiFormMensagem');
+
+  const veiValorBusca     = document.getElementById('veiValorBusca');
+  const btnVeiBuscar      = document.getElementById('btnVeiBuscar');
   const btnVeiLimparBusca = document.getElementById('btnVeiLimparBusca');
   const resultadoBuscaVei = document.getElementById('resultadoBuscaVei');
-  const tbodyVeiculos   = document.getElementById('tbodyVeiculos');
+  const tbodyVeiculos     = document.getElementById('tbodyVeiculos');
 
-  // CONTROLE DE ORDENAÇÃO
-  // 0 = sem ordem | 1 = asc | -1 = desc
-  let ordemAtiva = 'marca'; // campo ativo
+  // --- ordenação: 0 = sem ordem | 1 = asc | -1 = desc
+  let ordemAtiva = 'marca';
   let ordemMarca = 1;
   let ordemProp  = 0;
   let ordemKm    = 0;
   let ordemAno   = 0;
 
-  // CONTROLE DE REATIVAÇÃO
+  // --- controle de reativação
   let veiReativando = null;
 
-  //  ACCORDION — abrir/fechar painéis
-  document
-    .querySelectorAll('#accordion-veiculos .acc-header')
-    .forEach((header) => {
-      header.addEventListener('click', () => {
-        const targetId = header.dataset.target;
-        const item = document.getElementById(targetId);
+  // #endregion
 
-        if (item && item.classList.contains('bloqueado')) {
-          alert('Efetuar a pesquisa antes!');
-          return;
+
+  // #region ACCORDION | rev.02 | 25/03/2026
+
+  document.querySelectorAll('#accordion-veiculos .acc-header').forEach((header) => {
+    header.addEventListener('click', () => {
+      const targetId = header.dataset.target;
+      const item     = document.getElementById(targetId);
+
+      if (item && item.classList.contains('bloqueado')) {
+        alert('Efetuar a pesquisa antes!');
+        return;
+      }
+
+      if (item) {
+        item.classList.toggle('open');
+        const fechou = !item.classList.contains('open');
+
+        // --- ao fechar painel Lista: zera filtros e lista
+        if (targetId === 'acc-veiculo-lista' && fechou) {
+          const filtroMarca = document.getElementById('filtroMarcaVei');
+          const filtroAno   = document.getElementById('filtroAnoVei');
+          if (filtroMarca) filtroMarca.value = '';
+          if (filtroAno)   filtroAno.value   = '';
+          listaVeiculos   = [];
+          listaConsultada = false;
+          tbodyVeiculos.innerHTML = '<tr><td colspan="8" class="tabela-vazia">Selecione algum filtro e/ou clique em Consultar.</td></tr>';
         }
 
-        if (item) {
-          item.classList.toggle('open');
-          const fechou = !item.classList.contains('open');
-          // Zera filtros e lista ao fechar o painel Lista
-          if (targetId === 'acc-veiculo-lista' && fechou) {
-            const filtroMarca = document.getElementById('filtroMarcaVei');
-            const filtroAno   = document.getElementById('filtroAnoVei');
-            if (filtroMarca) filtroMarca.value = '';
-            if (filtroAno)   filtroAno.value   = '';
-            listaVeiculos   = [];
-            listaConsultada = false;
-            tbodyVeiculos.innerHTML = '<tr><td colspan="8" class="tabela-vazia">Selecione algum filtro e/ou clique em Consultar.</td></tr>';
-          }
-          // Ao abrir sem ter consultado, mostra mensagem
-          if (targetId === 'acc-veiculo-lista' && !fechou && !listaConsultada) {
-            tbodyVeiculos.innerHTML = '<tr><td colspan="8" class="tabela-vazia">Selecione algum filtro e/ou clique em Consultar.</td></tr>';
-          }
-          // Limpa busca ao fechar o painel Pesquisa
-          if (targetId === 'acc-veiculo-busca' && fechou) {
-            limparBusca();
-          }
-          // Limpa form ao fechar o painel Cadastro
-          if (targetId === 'acc-veiculo-cadastro' && fechou) {
-            cancelarCadastro();
-          }
+        // --- ao abrir sem ter consultado: exibe mensagem
+        if (targetId === 'acc-veiculo-lista' && !fechou && !listaConsultada) {
+          tbodyVeiculos.innerHTML = '<tr><td colspan="8" class="tabela-vazia">Selecione algum filtro e/ou clique em Consultar.</td></tr>';
         }
-      });
+
+        // --- ao fechar painel Pesquisa: limpa busca
+        if (targetId === 'acc-veiculo-busca' && fechou) {
+          limparBusca();
+        }
+
+        // --- ao fechar painel Cadastro: cancela
+        if (targetId === 'acc-veiculo-cadastro' && fechou) {
+          cancelarCadastro();
+        }
+      }
     });
+  });
 
-  //   HELPERS DE FORMATAÇÃO
+  // #endregion
+
+
+  // #region HELPERS DE FORMATAÇÃO | rev.02 | 25/03/2026
+
   const formatarCpf = (valor) => {
     const n = valor.replace(/\D/g, '').slice(0, 11);
     return n
@@ -77,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/(\d{3})(\d)/, '$1.$2')
       .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
   };
+
 
   const formatarCnpj = (valor) => {
     const n = valor.replace(/\D/g, '').slice(0, 14);
@@ -87,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
   };
 
+
   const formatarDocumento = (doc) => {
     if (!doc) return '—';
     const n = doc.replace(/\D/g, '');
@@ -95,131 +109,148 @@ document.addEventListener('DOMContentLoaded', () => {
     return doc;
   };
 
+
   const formatarKm = (km) => {
     if (km === null || km === undefined) return '—';
     return Number(km).toLocaleString('pt-BR');
   };
 
-  //  MÁSCARA CPF/CNPJ
+  // #endregion
+
+
+  // #region FORMULÁRIO | rev.02 | 25/03/2026
+
   const campoVeiCpfCnpj = document.getElementById('veiCpfCnpj');
 
+  // --- máscara CPF/CNPJ no formulário
   campoVeiCpfCnpj.addEventListener('input', () => {
     const valor = campoVeiCpfCnpj.value.replace(/\D/g, '');
-    if (valor.length <= 11) {
-      campoVeiCpfCnpj.value = formatarCpf(valor);
-    } else {
-      campoVeiCpfCnpj.value = formatarCnpj(valor);
+    campoVeiCpfCnpj.value = valor.length <= 11 ? formatarCpf(valor) : formatarCnpj(valor);
+  });
+
+
+  // --- buscar proprietário pelo CPF/CNPJ digitado no formulário
+  document.getElementById('btnVeiBuscarProprietario').addEventListener('click', async () => {
+    const cpfCnpj = campoVeiCpfCnpj.value.replace(/\D/g, '').trim();
+
+    if (!cpfCnpj) {
+      alert('Digite o CPF ou CNPJ do proprietário.');
+      return;
+    }
+
+    try {
+      const cliente = await apiRequest(`/veiculos/cliente?cpfCnpj=${cpfCnpj}`);
+      document.getElementById('veiNomeProprietario').value = cliente.NomeCompleto;
+      document.getElementById('veiClienteId').value       = cliente.ClienteId;
+    } catch (error) {
+      document.getElementById('veiNomeProprietario').value = '';
+      document.getElementById('veiClienteId').value       = '';
+
+      const cpfParaCadastro = campoVeiCpfCnpj.value;
+
+      let cardProp = document.getElementById('cardPropNaoEncontrado');
+      if (!cardProp) {
+        cardProp           = document.createElement('div');
+        cardProp.id        = 'cardPropNaoEncontrado';
+        cardProp.className = 'vei-aviso vei-aviso-alerta';
+        const formGrid     = document.getElementById('btnVeiBuscarProprietario').closest('.form-grid');
+        formGrid.parentNode.insertBefore(cardProp, formGrid.nextSibling);
+      }
+
+      cardProp.style.display = 'block';
+      cardProp.innerHTML = `
+        <p>⚠️ Proprietário não encontrado. Deseja cadastrar o proprietário?</p>
+        <div class="form-actions" style="margin-top:10px;">
+          <button type="button" id="btnPropCancelar"  class="btn btn-secondary">Cancelar</button>
+          <button type="button" id="btnPropCadastrar" class="btn btn-primary">Cadastrar</button>
+        </div>
+      `;
+
+      document.getElementById('btnPropCancelar').addEventListener('click', () => {
+        cardProp.style.display = 'none';
+        cancelarCadastro();
+      });
+
+      document.getElementById('btnPropCadastrar').addEventListener('click', () => {
+        cardProp.style.display = 'none';
+        cancelarCadastro();
+        document.querySelector('.nav-item[data-section="clientes"]')?.click();
+        setTimeout(() => {
+          const accCli = document.getElementById('acc-cadastro');
+          if (accCli) {
+            accCli.classList.remove('bloqueado');
+            accCli.classList.add('open');
+          }
+          const campoCpf = document.getElementById('cpfCnpj');
+          if (campoCpf) {
+            campoCpf.value = cpfParaCadastro;
+            campoCpf.dispatchEvent(new Event('input'));
+          }
+        }, 300);
+      });
     }
   });
 
-  //  BUSCAR PROPRIETÁRIO (botão no cadastro)
-  document
-    .getElementById('btnVeiBuscarProprietario')
-    .addEventListener('click', async () => {
-      const cpfCnpj = campoVeiCpfCnpj.value.replace(/\D/g, '').trim();
 
-      if (!cpfCnpj) {
-        alert('Digite o CPF ou CNPJ do proprietário.');
-        return;
-      }
-
-      try {
-        const cliente = await apiRequest(
-          `/veiculos/cliente?cpfCnpj=${cpfCnpj}`,
-        );
-        document.getElementById('veiNomeProprietario').value =
-          cliente.NomeCompleto;
-        document.getElementById('veiClienteId').value = cliente.ClienteId;
-      } catch (error) {
-        document.getElementById('veiNomeProprietario').value = '';
-        document.getElementById('veiClienteId').value = '';
-
-        const cpfParaCadastro = campoVeiCpfCnpj.value;
-
-        let cardProp = document.getElementById('cardPropNaoEncontrado');
-        if (!cardProp) {
-          cardProp = document.createElement('div');
-          cardProp.id = 'cardPropNaoEncontrado';
-          cardProp.className = 'vei-aviso vei-aviso-alerta';
-          const formGrid = document.getElementById('btnVeiBuscarProprietario').closest('.form-grid');
-          formGrid.parentNode.insertBefore(cardProp, formGrid.nextSibling);
-        }
-
-        cardProp.style.display = 'block';
-        cardProp.innerHTML = `
-          <p>⚠️ Proprietário não encontrado. Deseja cadastrar o proprietário?</p>
-          <div class="form-actions" style="margin-top:10px;">
-            <button type="button" id="btnPropCancelar"  class="btn btn-secondary">Cancelar</button>
-            <button type="button" id="btnPropCadastrar" class="btn btn-primary">Cadastrar</button>
-          </div>
-        `;
-
-        document.getElementById('btnPropCancelar').addEventListener('click', () => {
-          cardProp.style.display = 'none';
-          cancelarCadastro();
-        });
-
-        document.getElementById('btnPropCadastrar').addEventListener('click', () => {
-          cardProp.style.display = 'none';
-          cancelarCadastro();
-          document.querySelector('.nav-item[data-section="clientes"]')?.click();
-          setTimeout(() => {
-            const accCli = document.getElementById('acc-cadastro');
-            if (accCli) {
-              accCli.classList.remove('bloqueado');
-              accCli.classList.add('open');
-            }
-            const campoCpf = document.getElementById('cpfCnpj');
-            if (campoCpf) {
-              campoCpf.value = cpfParaCadastro;
-              campoCpf.dispatchEvent(new Event('input'));
-            }
-          }, 300);
-        });
-      }
-    });
-
-  //  EXIBIR MENSAGEM NO FORMULÁRIO
+  // --- exibir mensagem no formulário
   const mostrarMensagem = (texto, tipo = 'success') => {
-    veiFormMensagem.textContent = texto;
-    veiFormMensagem.className = `form-mensagem ${tipo}`;
+    veiFormMensagem.textContent   = texto;
+    veiFormMensagem.className     = `form-mensagem ${tipo}`;
     veiFormMensagem.style.display = 'block';
     setTimeout(() => {
       veiFormMensagem.style.display = 'none';
     }, 4000);
   };
 
-  // LIMPAR FORMULÁRIO
+
+  // --- limpar formulário
   const limparFormulario = () => {
     formVeiculo.reset();
     veiculoId.value = '';
-    veiReativando = null;
-    document.getElementById('veiClienteId').value = '';
+    veiReativando   = null;
+    document.getElementById('veiClienteId').value        = '';
     document.getElementById('veiNomeProprietario').value = '';
     veiFormMensagem.style.display = 'none';
-    document.getElementById('veiPlaca').readOnly = false;
+    document.getElementById('veiPlaca').readOnly   = false;
     document.getElementById('veiCpfCnpj').readOnly = false;
   };
 
-  // TRAVAR / DESTRAVAR campos CPF e Placa
+
+  // --- travar / destravar campos de identificação (CPF e Placa)
   const travarCamposVeiculo = () => {
-    campoVeiCpfCnpj.readOnly = true;
-    campoVeiCpfCnpj.style.opacity = '0.5';
-    document.getElementById('veiPlaca').readOnly = true;
+    campoVeiCpfCnpj.readOnly              = true;
+    campoVeiCpfCnpj.style.opacity         = '0.5';
+    document.getElementById('veiPlaca').readOnly      = true;
     document.getElementById('veiPlaca').style.opacity = '0.5';
   };
 
   const destravarCamposVeiculo = () => {
-    campoVeiCpfCnpj.readOnly = false;
-    campoVeiCpfCnpj.style.opacity = '';
-    document.getElementById('veiPlaca').readOnly = false;
+    campoVeiCpfCnpj.readOnly              = false;
+    campoVeiCpfCnpj.style.opacity         = '';
+    document.getElementById('veiPlaca').readOnly      = false;
     document.getElementById('veiPlaca').style.opacity = '';
   };
 
-  /* ===========================
-    RENDERIZAR BOTÕES DO FORM
-    Modos: 'novo' | 'ativo' | 'salvo' | 'reativar'
-  =========================== */
+
+  // --- cancelar cadastro: limpa, fecha e trava painel
+  const cancelarCadastro = () => {
+    limparFormulario();
+    destravarCamposVeiculo();
+    renderizarBotoesVei('novo');
+    const accCadastro = document.getElementById('acc-veiculo-cadastro');
+    accCadastro.classList.remove('open');
+    accCadastro.classList.add('bloqueado');
+  };
+
+
+  // --- fechar cadastro: só colapsa, sem limpar
+  const fecharCadastro = () => {
+    document.getElementById('acc-veiculo-cadastro').classList.remove('open');
+  };
+
+
+  // --- renderizar botões do formulário
+  // modos: 'novo' | 'ativo' | 'reativar' | 'salvo'
   const renderizarBotoesVei = (modo, veiculo = null) => {
     const formActions = document.getElementById('veiFormActions');
 
@@ -253,16 +284,15 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    // Re-bind eventos fixos
+    // --- re-bind eventos fixos
     const btnCancelar = document.getElementById('btnVeiCancelar');
     const btnLimpar   = document.getElementById('btnVeiLimpar');
     const btnFechar   = document.getElementById('btnVeiFechar');
-
     if (btnCancelar) btnCancelar.addEventListener('click', cancelarCadastro);
     if (btnLimpar)   btnLimpar.addEventListener('click', limparFormulario);
     if (btnFechar)   btnFechar.addEventListener('click', fecharCadastro);
 
-    // Bind Inativar
+    // --- bind Inativar
     if ((modo === 'ativo' || modo === 'salvo') && veiculo) {
       document.getElementById('btnVeiInativar').addEventListener('click', async () => {
         if (!confirm(`Inativar o veículo "${veiculo.Marca} ${veiculo.Modelo} — ${veiculo.Placa}"?\n\nO proprietário será desvinculado.`)) return;
@@ -278,45 +308,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // CANCELAR CADASTRO — limpa, fecha e trava painel
-  const cancelarCadastro = () => {
-    limparFormulario();
-    destravarCamposVeiculo();
-    renderizarBotoesVei('novo');
-    const accCadastro = document.getElementById('acc-veiculo-cadastro');
-    accCadastro.classList.remove('open');
-    accCadastro.classList.add('bloqueado');
-  };
-
-  // FECHAR CADASTRO — só colapsa, sem limpar
-  const fecharCadastro = () => {
-    document.getElementById('acc-veiculo-cadastro').classList.remove('open');
-  };
-
-  // Inicializa form em modo 'novo'
+  // --- inicializa form em modo 'novo'
   renderizarBotoesVei('novo');
 
-  // CARD DE RESULTADO DA BUSCA
+  // #endregion
+
+
+  // #region CARDS DE RESULTADO | rev.02 | 25/03/2026
+
   let cardResultado = null;
 
   const ocultarCardResultado = () => {
     if (cardResultado) cardResultado.style.display = 'none';
   };
 
-  /* ===========================
-    CARD — VEÍCULO ATIVO (resultado único por placa)
-  =========================== */
+
+  // --- veículo ativo encontrado (resultado único por placa)
   const exibirVeiculoEncontrado = (veiculo) => {
     if (!cardResultado) {
-      cardResultado = document.createElement('div');
+      cardResultado    = document.createElement('div');
       cardResultado.id = 'cardVeiculoResultado';
-      resultadoBuscaVei.parentNode.insertBefore(
-        cardResultado,
-        resultadoBuscaVei.nextSibling,
-      );
+      resultadoBuscaVei.parentNode.insertBefore(cardResultado, resultadoBuscaVei.nextSibling);
     }
 
-    cardResultado.className = 'vei-resultado-card';
+    cardResultado.className    = 'vei-resultado-card';
     cardResultado.style.display = 'block';
     cardResultado.innerHTML = `
       <p>
@@ -340,20 +355,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  /* ===========================
-    LISTA — MÚLTIPLOS VEÍCULOS (busca por proprietário)
-  =========================== */
+
+  // --- múltiplos veículos encontrados (busca por proprietário)
   const exibirListaVeiculos = (veiculos) => {
     if (!cardResultado) {
-      cardResultado = document.createElement('div');
+      cardResultado    = document.createElement('div');
       cardResultado.id = 'cardVeiculoResultado';
-      resultadoBuscaVei.parentNode.insertBefore(
-        cardResultado,
-        resultadoBuscaVei.nextSibling,
-      );
+      resultadoBuscaVei.parentNode.insertBefore(cardResultado, resultadoBuscaVei.nextSibling);
     }
 
-    cardResultado.className = 'vei-resultado-card';
+    cardResultado.className    = 'vei-resultado-card';
     cardResultado.style.display = 'block';
 
     const linhas = veiculos.map((v, i) => `
@@ -364,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
           Km: <strong>${formatarKm(v.Km)}</strong>
         </span>
         <button type="button" class="btn btn-secondary btn-vei-cancelar-item" data-idx="${i}">Cancelar</button>
-        <button type="button" class="btn btn-primary btn-vei-editar-item"   data-id="${v.VeiculoId}" data-ativo="${v.Ativo}">Editar</button>
+        <button type="button" class="btn btn-primary btn-vei-editar-item" data-id="${v.VeiculoId}" data-ativo="${v.Ativo}">Editar</button>
       </div>
     `).join('');
 
@@ -379,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cardResultado.querySelectorAll('.btn-vei-editar-item').forEach((btn) => {
       btn.addEventListener('click', () => {
-        const id   = Number(btn.dataset.id);
+        const id    = Number(btn.dataset.id);
         const ativo = btn.dataset.ativo === '1' || btn.dataset.ativo === 'true';
         const accCadastro = document.getElementById('acc-veiculo-cadastro');
         accCadastro.classList.remove('bloqueado');
@@ -388,26 +399,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  /* ===========================
-    CARD — VEÍCULO NÃO ENCONTRADO
-  =========================== */
+
+  // --- veículo não encontrado
   const exibirVeiculoNaoEncontrado = () => {
     if (!cardResultado) {
-      cardResultado = document.createElement('div');
+      cardResultado    = document.createElement('div');
       cardResultado.id = 'cardVeiculoResultado';
-      resultadoBuscaVei.parentNode.insertBefore(
-        cardResultado,
-        resultadoBuscaVei.nextSibling,
-      );
+      resultadoBuscaVei.parentNode.insertBefore(cardResultado, resultadoBuscaVei.nextSibling);
     }
 
-    cardResultado.className = 'vei-aviso vei-aviso-info';
+    cardResultado.className    = 'vei-aviso vei-aviso-info';
     cardResultado.style.display = 'block';
     cardResultado.innerHTML = `
       <p>ℹ️ Veículo <strong>não encontrado</strong> no cadastro.</p>
       <div class="form-actions" style="margin-top: 12px;">
-        <button type="button" id="btnVeiNaoCadastrar"  class="btn btn-secondary">Cancelar</button>
-        <button type="button" id="btnVeiSimCadastrar"  class="btn btn-primary">Cadastrar</button>
+        <button type="button" id="btnVeiNaoCadastrar" class="btn btn-secondary">Cancelar</button>
+        <button type="button" id="btnVeiSimCadastrar" class="btn btn-primary">Cadastrar</button>
       </div>
     `;
 
@@ -419,27 +426,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const accCadastro = document.getElementById('acc-veiculo-cadastro');
       accCadastro.classList.remove('bloqueado');
       accCadastro.classList.add('open');
-      document.getElementById('veiPlaca').value = placa;
-      document.getElementById('veiPlaca').readOnly = true;
+      document.getElementById('veiPlaca').value         = placa;
+      document.getElementById('veiPlaca').readOnly      = true;
       document.getElementById('veiPlaca').style.opacity = '0.5';
       accCadastro.scrollIntoView({ behavior: 'smooth' });
     });
   };
 
-  /* ===========================
-    CARD — VEÍCULO INATIVO
-  =========================== */
+
+  // --- veículo inativo encontrado
   const exibirVeiculoInativoEncontrado = (veiculo) => {
     if (!cardResultado) {
-      cardResultado = document.createElement('div');
+      cardResultado    = document.createElement('div');
       cardResultado.id = 'cardVeiculoResultado';
-      resultadoBuscaVei.parentNode.insertBefore(
-        cardResultado,
-        resultadoBuscaVei.nextSibling,
-      );
+      resultadoBuscaVei.parentNode.insertBefore(cardResultado, resultadoBuscaVei.nextSibling);
     }
 
-    cardResultado.className = 'vei-aviso vei-aviso-alerta';
+    cardResultado.className    = 'vei-aviso vei-aviso-alerta';
     cardResultado.style.display = 'block';
     cardResultado.innerHTML = `
       <p>⚠️ Veículo <strong>inativo</strong> encontrado.</p>
@@ -460,9 +463,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  /* ===========================
-    LIMPAR BUSCA
-  =========================== */
+  // #endregion
+
+
+  // #region BUSCA | rev.02 | 25/03/2026
+
+  // --- limpar busca
   const limparBusca = () => {
     veiValorBusca.value = '';
     resultadoBuscaVei.style.display = 'none';
@@ -475,9 +481,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ocultarCardResultado();
   });
 
-  /* ===========================
-    PLACEHOLDER DINÂMICO — troca ao mudar tipo
-  =========================== */
+
+  // --- placeholder dinâmico ao mudar tipo de busca
   document.getElementById('veiTipoBusca').addEventListener('change', () => {
     const tipo = document.getElementById('veiTipoBusca').value;
     veiValorBusca.placeholder = tipo === 'placa'
@@ -487,7 +492,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ocultarCardResultado();
   });
 
-  // Máscara dinâmica no campo de busca de veículos
+
+  // --- máscara dinâmica no campo de busca
   veiValorBusca.addEventListener('input', () => {
     const tipo = document.getElementById('veiTipoBusca').value;
     if (tipo === 'placa') {
@@ -509,9 +515,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* ===========================
-    BUSCAR VEÍCULO
-  =========================== */
+
+  // --- executar busca
   const executarBusca = async () => {
     const tipo  = document.getElementById('veiTipoBusca').value;
     const valor = veiValorBusca.value.trim();
@@ -521,7 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Validação de formato
+    // --- validação de formato
     if (tipo === 'placa') {
       const mercosul = /^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/i;
       if (!mercosul.test(valor.replace(/[-\s]/g, ''))) {
@@ -547,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ? valor.replace(/[-\s]/g, '').toUpperCase()
       : valor.replace(/\D/g, '');
 
-    btnVeiBuscar.disabled = true;
+    btnVeiBuscar.disabled    = true;
     btnVeiBuscar.textContent = 'Buscando...';
     ocultarCardResultado();
 
@@ -571,175 +576,36 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (error) {
       alert(error.message || 'Erro ao buscar veículo.');
     } finally {
-      btnVeiBuscar.disabled = false;
+      btnVeiBuscar.disabled    = false;
       btnVeiBuscar.textContent = 'Buscar';
     }
   };
 
   btnVeiBuscar.addEventListener('click', executarBusca);
 
-  // Enter na busca
+  // --- Enter na busca
   veiValorBusca.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') executarBusca();
   });
 
-  /* ===========================
-    SALVAR / ATUALIZAR VEÍCULO
-  =========================== */
-  formVeiculo.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  // #endregion
 
-    const id = veiculoId.value;
-    let clienteId = document.getElementById('veiClienteId').value;
 
-    // No modo reativar: busca proprietário automaticamente pelo CPF/CNPJ digitado
-    if (veiReativando && !clienteId) {
-      const cpfCnpj = campoVeiCpfCnpj.value.replace(/\D/g, '').trim();
-      if (!cpfCnpj) {
-        alert('Digite o CPF/CNPJ do novo proprietário antes de salvar.');
-        return;
-      }
-      try {
-        const cliente = await apiRequest(`/veiculos/cliente?cpfCnpj=${cpfCnpj}`);
-        document.getElementById('veiNomeProprietario').value = cliente.NomeCompleto;
-        document.getElementById('veiClienteId').value = cliente.ClienteId;
-        clienteId = String(cliente.ClienteId);
-      } catch (error) {
-        alert('Proprietário não encontrado. Verifique o CPF/CNPJ.');
-        return;
-      }
-    }
+  // #region LISTA | rev.02 | 25/03/2026
 
-    if (!clienteId) {
-      alert('Associe um proprietário ao veículo.\n\n1. Digite o CPF/CNPJ\n2. Clique em "Buscar Proprietário"\n3. Depois salve');
-      return;
-    }
-
-    const dados = {
-      clienteId:    Number(clienteId),
-      placa:        document.getElementById('veiPlaca').value.trim().toUpperCase(),
-      marca:        document.getElementById('veiMarca').value.trim(),
-      modelo:       document.getElementById('veiModelo').value.trim(),
-      motorizacao:  document.getElementById('veiMotorizacao').value.trim() || null,
-      anoModelo:    document.getElementById('veiAnoModelo').value.trim() || null,
-      km:           document.getElementById('veiKm').value || null,
-    };
-
-    if (!dados.placa)   { alert('Placa é obrigatória.');   return; }
-    if (!dados.marca)   { alert('Marca é obrigatória.');   return; }
-    if (!dados.modelo)  { alert('Modelo é obrigatório.');  return; }
-
-    const btnSalvar = document.getElementById('btnVeiSalvar');
-    if (btnSalvar) { btnSalvar.disabled = true; btnSalvar.textContent = 'Salvando...'; }
-
-    try {
-      let idSalvo;
-
-      if (veiReativando) {
-        await apiRequest(`/veiculos/${veiReativando}/reativar`, { method: 'PATCH', body: dados });
-        idSalvo = veiReativando;
-        veiReativando = null;
-      } else if (id) {
-        await apiRequest(`/veiculos/${id}`, { method: 'PUT', body: dados });
-        idSalvo = id;
-      } else {
-        const resp = await apiRequest('/veiculos', { method: 'POST', body: dados });
-        idSalvo = resp.VeiculoId || resp.id || resp.insertId;
-      }
-
-      carregarVeiculos();
-
-      if (idSalvo) {
-        const veiculoSalvo = await apiRequest(`/veiculos/${idSalvo}`);
-        veiculoId.value = veiculoSalvo.VeiculoId;
-        travarCamposVeiculo();
-        mostrarMensagem('Salvo com sucesso!', 'success');
-        renderizarBotoesVei('salvo', veiculoSalvo);
-      } else {
-        cancelarCadastro();
-      }
-    } catch (error) {
-      mostrarMensagem(error.message || 'Erro ao salvar veículo.', 'error');
-      if (btnSalvar) { btnSalvar.disabled = false; btnSalvar.textContent = id ? 'Atualizar' : 'Salvar'; }
-    }
-  });
-
-  /* ===========================
-    EDITAR VEÍCULO
-    Colapsa busca, abre cadastro
-  =========================== */
-  window.editarVeiculo = async (id, modo = 'ativo') => {
-    try {
-      const veiculo = await apiRequest(`/veiculos/${id}`);
-
-      veiculoId.value = veiculo.VeiculoId;
-      document.getElementById('veiCpfCnpj').value = modo === 'reativar' ? '' : formatarDocumento(veiculo.ProprietarioCpfCnpj);
-      document.getElementById('veiNomeProprietario').value = modo === 'reativar' ? '' : (veiculo.ProprietarioNome || '');
-      document.getElementById('veiClienteId').value = modo === 'reativar' ? '' : (veiculo.ClienteId || '');
-      document.getElementById('veiPlaca').value      = veiculo.Placa || '';
-      document.getElementById('veiMarca').value      = veiculo.Marca || '';
-      document.getElementById('veiModelo').value     = veiculo.Modelo || '';
-      document.getElementById('veiMotorizacao').value = veiculo.Motorizacao || '';
-      document.getElementById('veiAnoModelo').value  = veiculo.AnoModelo || '';
-      document.getElementById('veiKm').value         = veiculo.Km !== null ? veiculo.Km : '';
-
-      // No modo reativar: libera CPF/CNPJ e nome, trava placa
-      if (modo === 'reativar') {
-        document.getElementById('veiCpfCnpj').readOnly = false;
-        document.getElementById('veiCpfCnpj').style.opacity = '';
-        document.getElementById('veiNomeProprietario').readOnly = false;
-        document.getElementById('veiNomeProprietario').style.opacity = '';
-        document.getElementById('veiPlaca').readOnly = true;
-        document.getElementById('veiPlaca').style.opacity = '0.5';
-      } else {
-        travarCamposVeiculo();
-      }
-
-      renderizarBotoesVei(modo, veiculo);
-
-      limparBusca();
-
-      const accCadastro = document.getElementById('acc-veiculo-cadastro');
-      accCadastro.classList.remove('bloqueado');
-      accCadastro.classList.add('open');
-      accCadastro.scrollIntoView({ behavior: 'smooth' });
-    } catch (error) {
-      alert('Erro ao carregar dados do veículo.');
-    }
-  };
-
-  /* ===========================
-    INATIVAR VEÍCULO — global
-    Usado na listagem
-  =========================== */
-  window.inativarVeiculo = async (id, nome) => {
-    if (!confirm(`Inativar o veículo "${nome}"?\n\nO proprietário será desvinculado.`)) return;
-
-    try {
-      await apiRequest(`/veiculos/${id}/inativar`, { method: 'PATCH', body: {} });
-      alert('Veículo inativado com sucesso!');
-      document.getElementById('acc-veiculo-lista').classList.remove('open');
-      carregarVeiculos();
-    } catch (error) {
-      alert('Erro ao inativar: ' + error.message);
-    }
-  };
-
-  /* ===========================
-    CARREGAR LISTA DE VEÍCULOS
-  =========================== */
-  let listaVeiculos = [];
+  let listaVeiculos   = [];
   let listaConsultada = false;
 
+
+  // --- carregar lista de veículos
   const carregarVeiculos = async () => {
     tbodyVeiculos.innerHTML = '<tr><td colspan="8" class="tabela-vazia">Carregando...</td></tr>';
     try {
       listaVeiculos = await apiRequest('/veiculos');
-      // Salva filtros selecionados antes de recriar os dropdowns
+      // --- salva filtros antes de recriar dropdowns
       const marcaSalva = document.getElementById('filtroMarcaVei')?.value || '';
       const anoSalvo   = document.getElementById('filtroAnoVei')?.value   || '';
       popularFiltros();
-      // Restaura seleção após recriar
       if (marcaSalva) document.getElementById('filtroMarcaVei').value = marcaSalva;
       if (anoSalvo)   document.getElementById('filtroAnoVei').value   = anoSalvo;
       renderizarLista();
@@ -748,9 +614,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  /* ===========================
-    POPULAR FILTROS
-  =========================== */
+
+  // --- popular filtros de marca e ano
   const popularFiltros = () => {
     const selMarca = document.getElementById('filtroMarcaVei');
     const selAno   = document.getElementById('filtroAnoVei');
@@ -762,12 +627,11 @@ document.addEventListener('DOMContentLoaded', () => {
     selAno.innerHTML   = '<option value="">Ano/Modelo</option>' + anos.map(a => `<option value="${a}">${a}</option>`).join('');
   };
 
-  /* ===========================
-    RENDERIZAR LISTA
-  =========================== */
+
+  // --- renderizar lista (aplica filtros e ordenação)
   const renderizarLista = () => {
     const filtroMarca = document.getElementById('filtroMarcaVei')?.value || '';
-    const filtroAno   = document.getElementById('filtroAnoVei')?.value || '';
+    const filtroAno   = document.getElementById('filtroAnoVei')?.value   || '';
 
     let filtrados = listaVeiculos.filter((v) => {
       if (filtroMarca && v.Marca     !== filtroMarca) return false;
@@ -775,18 +639,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return true;
     });
 
-    // Ordenação ativa
     filtrados.sort((a, b) => {
-      if (ordemAtiva === 'km') {
-        return ordemKm * ((a.Km || 0) - (b.Km || 0));
-      }
-      if (ordemAtiva === 'ano') {
-        return ordemAno * (a.AnoModelo || '').localeCompare(b.AnoModelo || '', 'pt-BR');
-      }
-      if (ordemAtiva === 'prop') {
-        return ordemProp * (a.ProprietarioNome || '').localeCompare(b.ProprietarioNome || '', 'pt-BR');
-      }
-      // padrão: marca
+      if (ordemAtiva === 'km')   return ordemKm   * ((a.Km || 0) - (b.Km || 0));
+      if (ordemAtiva === 'ano')  return ordemAno  * (a.AnoModelo || '').localeCompare(b.AnoModelo || '', 'pt-BR');
+      if (ordemAtiva === 'prop') return ordemProp * (a.ProprietarioNome || '').localeCompare(b.ProprietarioNome || '', 'pt-BR');
       return ordemMarca * a.Marca.localeCompare(b.Marca, 'pt-BR');
     });
 
@@ -813,32 +669,18 @@ document.addEventListener('DOMContentLoaded', () => {
     `).join('');
   };
 
-  /* ===========================
-    EDITAR DA LISTA
-    Fecha lista, abre cadastro
-  =========================== */
-  window.editarVeiculoLista = (id) => {
-    document.getElementById('acc-veiculo-lista').classList.remove('open');
-    const accCadastro = document.getElementById('acc-veiculo-cadastro');
-    accCadastro.classList.remove('bloqueado');
-    editarVeiculo(id, 'ativo');
-  };
 
-  /* ===========================
-    ORDENAÇÃO — clique nos headers
-  =========================== */
+  // --- ordenação ao clicar nos headers
   const configurarOrdem = (thId, iconeId, campo) => {
     const th = document.getElementById(thId);
     if (!th) return;
     th.addEventListener('click', () => {
-      // Salva valor atual antes de resetar
       let valorAtual = 0;
       if (campo === 'marca') valorAtual = ordemMarca;
       if (campo === 'prop')  valorAtual = ordemProp;
       if (campo === 'km')    valorAtual = ordemKm;
       if (campo === 'ano')   valorAtual = ordemAno;
 
-      // Reseta ícones e variáveis de outros campos
       ['iconeOrdemMarca', 'iconeOrdemPropVei', 'iconeOrdemKm', 'iconeOrdemAno'].forEach(id => {
         const el = document.getElementById(id);
         if (el && id !== iconeId) el.textContent = '↕';
@@ -846,30 +688,24 @@ document.addEventListener('DOMContentLoaded', () => {
       ordemMarca = 0; ordemProp = 0; ordemKm = 0; ordemAno = 0;
       ordemAtiva = campo;
 
-      // Alterna asc/desc usando valor salvo
       let ordemAtual;
-      if (campo === 'marca')  { ordemMarca = valorAtual === 1 ? -1 : 1; ordemAtual = ordemMarca; }
-      if (campo === 'prop')   { ordemProp  = valorAtual === 1 ? -1 : 1; ordemAtual = ordemProp;  }
-      if (campo === 'km')     { ordemKm    = valorAtual === 1 ? -1 : 1; ordemAtual = ordemKm;    }
-      if (campo === 'ano')    { ordemAno   = valorAtual === 1 ? -1 : 1; ordemAtual = ordemAno;   }
+      if (campo === 'marca') { ordemMarca = valorAtual === 1 ? -1 : 1; ordemAtual = ordemMarca; }
+      if (campo === 'prop')  { ordemProp  = valorAtual === 1 ? -1 : 1; ordemAtual = ordemProp;  }
+      if (campo === 'km')    { ordemKm    = valorAtual === 1 ? -1 : 1; ordemAtual = ordemKm;    }
+      if (campo === 'ano')   { ordemAno   = valorAtual === 1 ? -1 : 1; ordemAtual = ordemAno;   }
 
       document.getElementById(iconeId).textContent = ordemAtual === 1 ? '▲' : '▼';
       renderizarLista();
     });
   };
 
-  configurarOrdem('thMarcaVei',       'iconeOrdemMarca',   'marca');
-  configurarOrdem('thProprietarioVei','iconeOrdemPropVei',  'prop');
-  configurarOrdem('thKmVei',          'iconeOrdemKm',       'km');
-  configurarOrdem('thAnoVei',         'iconeOrdemAno',      'ano');
+  configurarOrdem('thMarcaVei',        'iconeOrdemMarca',   'marca');
+  configurarOrdem('thProprietarioVei', 'iconeOrdemPropVei', 'prop');
+  configurarOrdem('thKmVei',           'iconeOrdemKm',      'km');
+  configurarOrdem('thAnoVei',          'iconeOrdemAno',     'ano');
 
-  /* ===========================
-    FILTROS — aplicados apenas ao clicar em Consultar
-  =========================== */
 
-  /* ===========================
-    BOTÃO CONSULTAR
-  =========================== */
+  // --- botão Consultar
   document.getElementById('btnConsultarVeiculos').addEventListener('click', (e) => {
     e.stopPropagation();
     const accLista = document.getElementById('acc-veiculo-lista');
@@ -882,9 +718,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* ===========================
-    EXPORTAR EXCEL
-  =========================== */
+
+  // --- exportar Excel
   document.getElementById('btnExcelVeiculos').addEventListener('click', (e) => {
     e.stopPropagation();
     if (listaVeiculos.length === 0) {
@@ -906,25 +741,187 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const tabela = `<table>${linhas.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
-    const blob = new Blob([tabela], { type: 'application/vnd.ms-excel;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
+    const blob   = new Blob([tabela], { type: 'application/vnd.ms-excel;charset=utf-8' });
+    const url    = URL.createObjectURL(blob);
+    const a      = document.createElement('a');
+    a.href     = url;
     a.download = `veiculos_${new Date().toISOString().slice(0, 10)}.xls`;
     a.click();
     URL.revokeObjectURL(url);
   });
 
-  /* ===========================
-    INICIALIZAÇÃO
-  =========================== */
+  // #endregion
+
+
+  // #region SUBMIT | rev.02 | 25/03/2026
+
+  formVeiculo.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const id      = veiculoId.value;
+    let clienteId = document.getElementById('veiClienteId').value;
+
+    // --- no modo reativar: busca proprietário pelo CPF/CNPJ digitado
+    if (veiReativando && !clienteId) {
+      const cpfCnpj = campoVeiCpfCnpj.value.replace(/\D/g, '').trim();
+      if (!cpfCnpj) {
+        alert('Digite o CPF/CNPJ do novo proprietário antes de salvar.');
+        return;
+      }
+      try {
+        const cliente = await apiRequest(`/veiculos/cliente?cpfCnpj=${cpfCnpj}`);
+        document.getElementById('veiNomeProprietario').value = cliente.NomeCompleto;
+        document.getElementById('veiClienteId').value       = cliente.ClienteId;
+        clienteId = String(cliente.ClienteId);
+      } catch (error) {
+        alert('Proprietário não encontrado. Verifique o CPF/CNPJ.');
+        return;
+      }
+    }
+
+    if (!clienteId) {
+      alert('Associe um proprietário ao veículo.\n\n1. Digite o CPF/CNPJ\n2. Clique em "Buscar Proprietário"\n3. Depois salve');
+      return;
+    }
+
+    const dados = {
+      clienteId:   Number(clienteId),
+      placa:       document.getElementById('veiPlaca').value.trim().toUpperCase(),
+      marca:       document.getElementById('veiMarca').value.trim(),
+      modelo:      document.getElementById('veiModelo').value.trim(),
+      motorizacao: document.getElementById('veiMotorizacao').value.trim() || null,
+      anoModelo:   document.getElementById('veiAnoModelo').value.trim()   || null,
+      km:          document.getElementById('veiKm').value || null,
+    };
+
+    if (!dados.placa)  { alert('Placa é obrigatória.');  return; }
+    if (!dados.marca)  { alert('Marca é obrigatória.');  return; }
+    if (!dados.modelo) { alert('Modelo é obrigatório.'); return; }
+
+    const btnSalvar = document.getElementById('btnVeiSalvar');
+    if (btnSalvar) { btnSalvar.disabled = true; btnSalvar.textContent = 'Salvando...'; }
+
+    try {
+      let idSalvo;
+
+      // --- REATIVAR — PATCH /reativar
+      if (veiReativando) {
+        await apiRequest(`/veiculos/${veiReativando}/reativar`, { method: 'PATCH', body: dados });
+        idSalvo      = veiReativando;
+        veiReativando = null;
+
+      // --- ATUALIZAR — PUT
+      } else if (id) {
+        await apiRequest(`/veiculos/${id}`, { method: 'PUT', body: dados });
+        idSalvo = id;
+
+      // --- CRIAR — POST
+      } else {
+        const resp = await apiRequest('/veiculos', { method: 'POST', body: dados });
+        idSalvo = resp.VeiculoId || resp.id || resp.insertId;
+      }
+
+      carregarVeiculos();
+
+      if (idSalvo) {
+        const veiculoSalvo = await apiRequest(`/veiculos/${idSalvo}`);
+        veiculoId.value = veiculoSalvo.VeiculoId;
+        travarCamposVeiculo();
+        mostrarMensagem('Salvo com sucesso!', 'success');
+        renderizarBotoesVei('salvo', veiculoSalvo);
+      } else {
+        cancelarCadastro();
+      }
+    } catch (error) {
+      mostrarMensagem(error.message || 'Erro ao salvar veículo.', 'error');
+      if (btnSalvar) { btnSalvar.disabled = false; btnSalvar.textContent = id ? 'Atualizar' : 'Salvar'; }
+    }
+  });
+
+  // #endregion
+
+
+  // #region EDITAR | INATIVAR | rev.02 | 25/03/2026
+
+  // --- editar veículo: colapsa busca, abre cadastro preenchido
+  window.editarVeiculo = async (id, modo = 'ativo') => {
+    try {
+      const veiculo = await apiRequest(`/veiculos/${id}`);
+
+      veiculoId.value = veiculo.VeiculoId;
+      document.getElementById('veiCpfCnpj').value          = modo === 'reativar' ? '' : formatarDocumento(veiculo.ProprietarioCpfCnpj);
+      document.getElementById('veiNomeProprietario').value  = modo === 'reativar' ? '' : (veiculo.ProprietarioNome || '');
+      document.getElementById('veiClienteId').value         = modo === 'reativar' ? '' : (veiculo.ClienteId || '');
+      document.getElementById('veiPlaca').value             = veiculo.Placa || '';
+      document.getElementById('veiMarca').value             = veiculo.Marca || '';
+      document.getElementById('veiModelo').value            = veiculo.Modelo || '';
+      document.getElementById('veiMotorizacao').value       = veiculo.Motorizacao || '';
+      document.getElementById('veiAnoModelo').value         = veiculo.AnoModelo || '';
+      document.getElementById('veiKm').value                = veiculo.Km !== null ? veiculo.Km : '';
+
+      // --- modo reativar: libera CPF/CNPJ e nome, trava placa
+      if (modo === 'reativar') {
+        document.getElementById('veiCpfCnpj').readOnly              = false;
+        document.getElementById('veiCpfCnpj').style.opacity         = '';
+        document.getElementById('veiNomeProprietario').readOnly      = false;
+        document.getElementById('veiNomeProprietario').style.opacity = '';
+        document.getElementById('veiPlaca').readOnly                = true;
+        document.getElementById('veiPlaca').style.opacity           = '0.5';
+      } else {
+        travarCamposVeiculo();
+      }
+
+      renderizarBotoesVei(modo, veiculo);
+      limparBusca();
+
+      const accCadastro = document.getElementById('acc-veiculo-cadastro');
+      accCadastro.classList.remove('bloqueado');
+      accCadastro.classList.add('open');
+      accCadastro.scrollIntoView({ behavior: 'smooth' });
+    } catch (error) {
+      alert('Erro ao carregar dados do veículo.');
+    }
+  };
+
+
+  // --- editar da lista: fecha lista, abre cadastro
+  window.editarVeiculoLista = (id) => {
+    document.getElementById('acc-veiculo-lista').classList.remove('open');
+    const accCadastro = document.getElementById('acc-veiculo-cadastro');
+    accCadastro.classList.remove('bloqueado');
+    editarVeiculo(id, 'ativo');
+  };
+
+
+  // --- inativar veículo (global — usado na listagem)
+  window.inativarVeiculo = async (id, nome) => {
+    if (!confirm(`Inativar o veículo "${nome}"?\n\nO proprietário será desvinculado.`)) return;
+    try {
+      await apiRequest(`/veiculos/${id}/inativar`, { method: 'PATCH', body: {} });
+      alert('Veículo inativado com sucesso!');
+      document.getElementById('acc-veiculo-lista').classList.remove('open');
+      carregarVeiculos();
+    } catch (error) {
+      alert('Erro ao inativar: ' + error.message);
+    }
+  };
+
+  // #endregion
+
+
+  // #region INICIALIZAÇÃO | rev.02 | 25/03/2026
+
   tbodyVeiculos.innerHTML = '<tr><td colspan="8" class="tabela-vazia">Selecione algum filtro e/ou clique em Consultar.</td></tr>';
 
-  // Carrega dados em background só para popular os filtros — sem exibir a lista
+  // --- carrega dados em background para popular os filtros — sem exibir a lista
   (async () => {
     try {
       listaVeiculos = await apiRequest('/veiculos');
       popularFiltros();
     } catch (_) { /* silencioso */ }
   })();
+
+  // #endregion
+
+
 });

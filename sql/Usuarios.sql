@@ -1,37 +1,48 @@
-﻿-- BANCO: SoftwareProduct
--- TABELA: dbo.Usuarios
--- VERSÃO: 1.0 - AC1
+-- -----------------------------------------------
+-- Usuarios.sql
+-- Tema: Criar tabela dbo.Usuarios + índices + trigger
+-- Última rev: 02 | Data: 25/03/2026
+-- Banco: SoftwareProduct
+-- -----------------------------------------------
 
 
 USE SoftwareProduct;
 GO
 
--- Remove trigger se existir
+
+-- #region LIMPEZA | rev.02 | 25/03/2026
+
+-- --- remove trigger se existir
 IF OBJECT_ID('dbo.TR_Usuarios_SetDataAtualizacao', 'TR') IS NOT NULL
     DROP TRIGGER dbo.TR_Usuarios_SetDataAtualizacao;
 GO
 
--- Remove tabela se existir
+-- --- remove tabela se existir
 IF OBJECT_ID('dbo.Usuarios', 'U') IS NOT NULL
     DROP TABLE dbo.Usuarios;
 GO
+
+-- #endregion
+
+
+-- #region CRIAÇÃO DA TABELA | rev.02 | 25/03/2026
 
 CREATE TABLE dbo.Usuarios
 (
     -- IDENTIFICAÇÃO
     UsuarioId           INT IDENTITY(1,1)  NOT NULL,
-    
+
     -- DADOS DE ACESSO
     Login               NVARCHAR(100)      NOT NULL,
     Senha               NVARCHAR(255)      NOT NULL,
-    
+
     -- DADOS PESSOAIS
     NomeCompleto        NVARCHAR(120)      NOT NULL,
     Email               NVARCHAR(254)      NULL,
-    
+
     -- CONTROLE LÓGICO
     Ativo               BIT                NOT NULL CONSTRAINT DF_Usuarios_Ativo DEFAULT (1),
-    
+
     -- AUDITORIA
     DataCriacao         DATETIME2(0)       NOT NULL CONSTRAINT DF_Usuarios_DataCriacao DEFAULT (SYSDATETIME()),
     DataAtualizacao     DATETIME2(0)       NOT NULL CONSTRAINT DF_Usuarios_DataAtualizacao DEFAULT (SYSDATETIME()),
@@ -43,18 +54,29 @@ CREATE TABLE dbo.Usuarios
 );
 GO
 
--- ÍNDICES
+-- #endregion
+
+
+-- #region ÍNDICES | rev.02 | 25/03/2026
+
+-- --- busca por login (filtrado para ativos)
 CREATE NONCLUSTERED INDEX IX_Usuarios_Login
     ON dbo.Usuarios (Login)
     WHERE Ativo = 1;
 GO
 
+-- --- listagem geral por status
 CREATE NONCLUSTERED INDEX IX_Usuarios_Ativo
     ON dbo.Usuarios (Ativo)
     INCLUDE (UsuarioId, Login, NomeCompleto);
 GO
 
--- TRIGGER
+-- #endregion
+
+
+-- #region TRIGGER | rev.02 | 25/03/2026
+
+-- --- atualiza DataAtualizacao automaticamente a cada UPDATE
 CREATE TRIGGER dbo.TR_Usuarios_SetDataAtualizacao
 ON dbo.Usuarios
 AFTER UPDATE
@@ -66,6 +88,9 @@ BEGIN
     INNER JOIN inserted i ON i.UsuarioId = u.UsuarioId;
 END;
 GO
+
+-- #endregion
+
 
 PRINT '✅ Tabela dbo.Usuarios criada com sucesso!';
 GO

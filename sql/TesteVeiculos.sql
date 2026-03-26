@@ -1,28 +1,32 @@
-﻿-- BANCO: SoftwareProduct
--- TESTE: dbo.Veiculos
--- VERSÃO: 1.0 - AC2
--- DATA: 2026-02-20
-
--- INSTRUÇÕES:
--- Execute cada bloco separado pelo GO individualmente no SSMS
--- Verifique o resultado esperado em cada passo
--- O bloco de ZERAR é opcional — use apenas para resetar ambiente de testes
+-- -----------------------------------------------
+-- TesteVeiculos.sql
+-- Tema: Testes CRUD na tabela dbo.Veiculos
+-- Última rev: 02 | Data: 25/03/2026
+-- Banco: SoftwareProduct
+-- Instruções:
+--   Execute cada bloco separado pelo GO individualmente no SSMS
+--   Verifique o resultado esperado em cada passo
+--   O bloco ZERAR é opcional — use apenas para resetar o ambiente de testes
+-- -----------------------------------------------
 
 
 USE SoftwareProduct;
 GO
 
 
--- [OPCIONAL] ZERAR TABELA — use apenas para resetar testes
--- Remove todos os registros e reinicia o IDENTITY
+-- #region ZERAR TABELA (opcional) | rev.02 | 25/03/2026
 
+-- --- remove todos os registros e reinicia o IDENTITY
 -- DELETE FROM dbo.Veiculos;
 -- DBCC CHECKIDENT ('dbo.Veiculos', RESEED, 0);
 -- GO
 
--- PASSO 1 — VERIFICAR ESTADO INICIAL
--- Esperado: tabela vazia ou com registros anteriores
+-- #endregion
 
+
+-- #region VERIFICAR ESTADO INICIAL | rev.02 | 25/03/2026
+
+-- --- passo 1: esperado: tabela vazia ou com registros anteriores
 SELECT
     v.VeiculoId,
     v.Marca,
@@ -36,10 +40,13 @@ FROM dbo.Veiculos v
 LEFT JOIN dbo.Clientes c ON c.ClienteId = v.ClienteId;
 GO
 
+-- #endregion
 
--- PASSO 2 — CRIAR VEÍCULO COM PROPRIETÁRIO
--- Requer ao menos 1 cliente ativo na tabela dbo.Clientes
--- Ajuste o ClienteId conforme o banco
+
+-- #region CRIAR VEÍCULOS | rev.02 | 25/03/2026
+
+-- --- passo 2: criar veículo com proprietário
+-- Requer ao menos 1 cliente ativo em dbo.Clientes — ajuste o ClienteId conforme o banco
 -- Esperado: 1 registro inserido
 INSERT INTO dbo.Veiculos
     (ClienteId, Marca, Modelo, Motorizacao, AnoModelo, Placa, Km, Ativo)
@@ -47,9 +54,7 @@ VALUES
     (1, 'TOYOTA', 'COROLLA', '2.0', '2022/2023', 'ABC1D23', 45000, 1);
 GO
 
-
--- PASSO 3 — CRIAR SEGUNDO VEÍCULO
--- Placa formato antigo
+-- --- passo 3: criar segundo veículo (placa formato antigo)
 -- Esperado: 2 registros na tabela
 INSERT INTO dbo.Veiculos
     (ClienteId, Marca, Modelo, Motorizacao, AnoModelo, Placa, Km, Ativo)
@@ -57,8 +62,7 @@ VALUES
     (1, 'HONDA', 'CIVIC', '1.5 TURBO', '2021/2021', 'XYZ-9876', 62000, 1);
 GO
 
-
--- PASSO 4 — VERIFICAR INSERÇÕES
+-- --- passo 4: verificar inserções
 -- Esperado: 2 veículos ativos com ClienteId = 1
 SELECT
     v.VeiculoId,
@@ -78,17 +82,19 @@ WHERE v.Ativo = 1
 ORDER BY v.Marca;
 GO
 
+-- #endregion
 
--- PASSO 5 — EDITAR VEÍCULO (troca de KM)
--- Simula atualização de quilometragem após serviço
+
+-- #region EDITAR E TRIGGER | rev.02 | 25/03/2026
+
+-- --- passo 5: editar quilometragem após serviço
 -- Esperado: Km atualizado + DataAtualizacao alterada pelo trigger
 UPDATE dbo.Veiculos
 SET Km = 46500
 WHERE Placa = 'ABC1D23';
 GO
 
-
--- PASSO 6 — VERIFICAR TRIGGER DE AUDITORIA
+-- --- passo 6: verificar trigger de auditoria
 -- Esperado: DataAtualizacao diferente de DataCriacao para a placa ABC1D23
 SELECT
     VeiculoId,
@@ -100,8 +106,12 @@ FROM dbo.Veiculos
 WHERE Placa = 'ABC1D23';
 GO
 
+-- #endregion
 
--- PASSO 7 — BUSCAR VEÍCULO POR PLACA
+
+-- #region BUSCAS | rev.02 | 25/03/2026
+
+-- --- passo 7: buscar veículo por placa
 -- Esperado: retorna 1 registro com dados completos
 SELECT
     v.VeiculoId,
@@ -116,8 +126,7 @@ LEFT JOIN dbo.Clientes c ON c.ClienteId = v.ClienteId
 WHERE v.Placa = 'XYZ-9876' AND v.Ativo = 1;
 GO
 
-
--- PASSO 8 — BUSCAR VEÍCULOS POR PROPRIETÁRIO (CPF/CNPJ)
+-- --- passo 8: buscar veículos por proprietário (CPF/CNPJ)
 -- Esperado: retorna todos os veículos ativos do cliente
 SELECT
     v.VeiculoId,
@@ -133,8 +142,12 @@ WHERE c.CpfCnpj = '12345678901'   -- JOAO DA SILVA — ClienteId = 1
 AND v.Ativo = 1;
 GO
 
+-- #endregion
 
--- PASSO 9 — INATIVAR VEÍCULO (soft delete)
+
+-- #region INATIVAR E REATIVAR | rev.02 | 25/03/2026
+
+-- --- passo 9: inativar veículo (soft delete)
 -- Seta Ativo = 0 e ClienteId = NULL (desvincula proprietário)
 -- Esperado: registro permanece na tabela com Ativo = 0 e ClienteId = NULL
 UPDATE dbo.Veiculos
@@ -144,10 +157,8 @@ SET
 WHERE Placa = 'ABC1D23';
 GO
 
-
--- PASSO 10 — VERIFICAR INATIVAÇÃO
--- Esperado: Placa ABC1D23 com Ativo = 0 e ClienteId = NULL
---           Placa XYZ-9876 ainda aparece com Ativo = 1
+-- --- passo 10: verificar inativação
+-- Esperado: ABC1D23 com Ativo = 0 e ClienteId = NULL | XYZ-9876 com Ativo = 1
 SELECT
     VeiculoId,
     Marca,
@@ -160,8 +171,7 @@ FROM dbo.Veiculos
 ORDER BY Ativo DESC, Marca;
 GO
 
-
--- PASSO 11 — LISTAR SOMENTE ATIVOS (ordem crescente por marca)
+-- --- passo 11: listar somente ativos (ordem crescente por marca)
 -- Esperado: apenas veículos com Ativo = 1
 SELECT
     v.VeiculoId,
@@ -177,9 +187,7 @@ WHERE v.Ativo = 1
 ORDER BY v.Marca ASC;
 GO
 
-
--- PASSO 12 — REATIVAR VEÍCULO INATIVO
--- Simula vinculação de novo proprietário ao reativar
+-- --- passo 12: reativar veículo inativo e vincular novo proprietário
 -- Esperado: Ativo = 1 com novo ClienteId vinculado
 UPDATE dbo.Veiculos
 SET
@@ -188,9 +196,8 @@ SET
 WHERE Placa = 'ABC1D23';
 GO
 
-
--- PASSO 13 — VERIFICAR REATIVAÇÃO
--- Esperado: Placa ABC1D23 com Ativo = 1 e ClienteId preenchido
+-- --- passo 13: verificar reativação
+-- Esperado: ABC1D23 com Ativo = 1 e ClienteId preenchido
 SELECT
     v.VeiculoId,
     v.Marca,
@@ -203,5 +210,8 @@ FROM dbo.Veiculos v
 LEFT JOIN dbo.Clientes c ON c.ClienteId = v.ClienteId
 ORDER BY v.VeiculoId;
 GO
+
+-- #endregion
+
 
 PRINT '✅ TesteVeiculos.sql — 13 passos executados com sucesso!';

@@ -1,24 +1,32 @@
-// usuarioRoutes.js | data: 03/03/2026
+// -----------------------------------------------
+// usuarioRoutes.js
+// Tema: Rotas da API — dbo.Usuarios
+// Última rev: 01 | Data: 25/03/2026
+// -----------------------------------------------
+
+// #region IMPORTS | rev.01 | 25/03/2026
 
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const router = express.Router();
 const usuarioController = require('../controllers/usuarioController');
 
-// Rate limiting para login - previne ataques de força bruta
-// Máximo 5 tentativas por IP em 15 minutos
+// #endregion
+
+
+// #region RATE LIMITERS | rev.01 | 25/03/2026
+
+// --- login: máximo 5 tentativas por IP em 15 minutos
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
-  message: {
-    erro: 'Muitas tentativas de login. Tente novamente em 15 minutos.',
-  },
+  message: { erro: 'Muitas tentativas de login. Tente novamente em 15 minutos.' },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-// Rate limiting para reset de senha
-// Máximo 3 tentativas por IP em 1 hora
+
+// --- reset de senha: máximo 3 tentativas por IP em 1 hora
 const resetLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 3,
@@ -27,8 +35,8 @@ const resetLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Rate limiting geral para outras operações
-// Máximo 100 requests por IP em 15 minutos
+
+// --- geral: máximo 100 requests por IP em 15 minutos
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -37,44 +45,46 @@ const generalLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Middleware para validar JSON nas requisições POST/PUT
+// #endregion
+
+
+// #region MIDDLEWARES | rev.01 | 25/03/2026
+
+// --- rejeita POST/PUT sem body
 const validateJSON = (req, res, next) => {
   if (['POST', 'PUT'].includes(req.method)) {
     if (!req.body || Object.keys(req.body).length === 0) {
-      return res
-        .status(400)
-        .json({ erro: 'Dados obrigatórios não fornecidos' });
+      return res.status(400).json({ erro: 'Dados obrigatórios não fornecidos' });
     }
   }
   next();
 };
 
-// ROTAS PÚBLICAS - não requerem autenticação
+// #endregion
 
-// Login de usuário com rate limiting
-router.post('/login', loginLimiter, validateJSON, usuarioController.login);
 
-// Reset de senha com rate limiting
-router.post(
-  '/reset-senha',
-  resetLimiter,
-  validateJSON,
-  usuarioController.resetSenha,
-);
+// #region ROTAS PÚBLICAS | rev.01 | 25/03/2026
 
-// ROTAS PROTEGIDAS - aplicam rate limiting geral
-// TODO: Adicionar middleware de autenticação JWT quando implementado
+router.post('/login',      loginLimiter, validateJSON, usuarioController.login);
+router.post('/reset-senha', resetLimiter, validateJSON, usuarioController.resetSenha);
 
-// Listar todos usuários
-router.get('/', generalLimiter, usuarioController.listarTodos);
+// #endregion
 
-// Criar novo usuário
-router.post('/', generalLimiter, validateJSON, usuarioController.criar);
 
-// Atualizar usuário existente
-router.put('/:id', generalLimiter, validateJSON, usuarioController.atualizar);
+// #region ROTAS PROTEGIDAS | rev.01 | 25/03/2026
 
-// Deletar usuário (soft delete)
+// TODO: adicionar middleware de autenticação JWT quando implementado
+
+router.get('/',     generalLimiter, usuarioController.listarTodos);
+router.post('/',    generalLimiter, validateJSON, usuarioController.criar);
+router.put('/:id',  generalLimiter, validateJSON, usuarioController.atualizar);
 router.delete('/:id', generalLimiter, usuarioController.deletar);
 
+// #endregion
+
+
+// #region EXPORTS | rev.01 | 25/03/2026
+
 module.exports = router;
+
+// #endregion

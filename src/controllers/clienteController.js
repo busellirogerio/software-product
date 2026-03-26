@@ -1,9 +1,73 @@
-// clienteController.js | última revisão data: 22/03/2026
+// -----------------------------------------------
+// clienteController.js
+// Tema: Controller — validações e respostas HTTP para Clientes
+// Última rev: 01 | Data: 25/03/2026
+// -----------------------------------------------
+
+// #region IMPORTS | rev.01 | 25/03/2026
 
 const clienteRepository = require('../repositories/clienteRepository');
 
+// #endregion
+
+
+// #region HELPERS | rev.01 | 25/03/2026
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// --- sanitiza e normaliza dados do cliente vindos do body
+function sanitizar(body) {
+  const {
+    nomeCompleto, dataNascimento, genero,
+    telefone, telefoneWhatsApp, email,
+    cep, logradouro, numero, complemento,
+    bairro, cidade, estado,
+  } = body;
+
+  return {
+    nomeCompleto:     nomeCompleto.trim().toUpperCase(),
+    dataNascimento:   dataNascimento || null,
+    genero:           genero ? genero.toUpperCase() : null,
+    telefone:         telefone ? telefone.trim() : null,
+    telefoneWhatsApp: telefoneWhatsApp ? true : false,
+    email:            email ? email.trim().toUpperCase() : null,
+    cep:              cep ? cep.replace(/\D/g, '') : null,
+    logradouro:       logradouro ? logradouro.trim().toUpperCase() : null,
+    numero:           numero ? numero.trim() : null,
+    complemento:      complemento ? complemento.trim().toUpperCase() : null,
+    bairro:           bairro ? bairro.trim().toUpperCase() : null,
+    cidade:           cidade ? cidade.trim().toUpperCase() : null,
+    estado:           estado ? estado.trim().toUpperCase() : null,
+  };
+}
+
+// --- valida campos comuns a criar/atualizar/reativar
+function validarDadosComuns(body, res) {
+  const { nomeCompleto, genero, email } = body;
+
+  if (!nomeCompleto) {
+    res.status(400).json({ erro: 'Nome Completo é obrigatório' });
+    return false;
+  }
+  if (genero && !['M', 'F', 'O'].includes(genero.toUpperCase())) {
+    res.status(400).json({ erro: 'Gênero deve ser M, F ou O' });
+    return false;
+  }
+  if (email && !emailRegex.test(email)) {
+    res.status(400).json({ erro: 'Formato de email inválido' });
+    return false;
+  }
+  return true;
+}
+
+// #endregion
+
+
+// #region CONTROLLER | rev.01 | 25/03/2026
+
 class ClienteController {
-  //  LISTAR TODOS
+
+  // --- listar todos (ATIVO + BLOQUEADO)
   async listarTodos(req, res) {
     try {
       const clientes = await clienteRepository.listarTodos();
@@ -14,17 +78,16 @@ class ClienteController {
     }
   }
 
-  //  BUSCAR POR ID
+
+  // --- buscar por ID
   async buscarPorId(req, res) {
     try {
       const { id } = req.params;
-      if (!id || isNaN(id)) {
-        return res.status(400).json({ erro: 'ID inválido' });
-      }
+      if (!id || isNaN(id)) return res.status(400).json({ erro: 'ID inválido' });
+
       const cliente = await clienteRepository.buscarPorId(id);
-      if (!cliente) {
-        return res.status(404).json({ erro: 'Cliente não encontrado' });
-      }
+      if (!cliente) return res.status(404).json({ erro: 'Cliente não encontrado' });
+
       res.json(cliente);
     } catch (error) {
       console.error('Erro ao buscar cliente:', error);
@@ -32,34 +95,24 @@ class ClienteController {
     }
   }
 
-  //  BUSCAR
-  //  Rota: GET /api/clientes/buscar?tipo=cpfcnpj&valor=12345678901
+
+  // --- buscar por CPF/CNPJ
+  // GET /api/clientes/buscar?tipo=cpfcnpj&valor=12345678901
   async buscar(req, res) {
     try {
       const { tipo, valor } = req.query;
 
       if (!tipo || !valor) {
-        return res
-          .status(400)
-          .json({ erro: 'Parâmetros tipo e valor são obrigatórios' });
+        return res.status(400).json({ erro: 'Parâmetros tipo e valor são obrigatórios' });
       }
-
       if (valor.trim().length < 2) {
-        return res
-          .status(400)
-          .json({ erro: 'Digite ao menos 2 caracteres para buscar' });
+        return res.status(400).json({ erro: 'Digite ao menos 2 caracteres para buscar' });
+      }
+      if (tipo !== 'cpfcnpj') {
+        return res.status(400).json({ erro: 'Tipo de busca inválido. Use: cpfcnpj' });
       }
 
-      let resultado = [];
-
-      if (tipo === 'cpfcnpj') {
-        resultado = await clienteRepository.buscarPorCpfCnpj(valor.trim());
-      } else {
-        return res.status(400).json({
-          erro: 'Tipo de busca inválido. Use: cpfcnpj',
-        });
-      }
-
+      const resultado = await clienteRepository.buscarPorCpfCnpj(valor.trim());
       res.json(resultado);
     } catch (error) {
       console.error('Erro ao buscar cliente:', error);
@@ -67,72 +120,30 @@ class ClienteController {
     }
   }
 
-  //  CRIAR
+
+  // --- criar novo cliente
   async criar(req, res) {
     try {
-      const {
-        tipo,
-        cpfCnpj,
-        nomeCompleto,
-        dataNascimento,
-        genero,
-        telefone,
-        telefoneWhatsApp,
-        email,
-        cep,
-        logradouro,
-        numero,
-        complemento,
-        bairro,
-        cidade,
-        estado,
-      } = req.body;
+      const { tipo, cpfCnpj } = req.body;
 
-      if (!tipo || !cpfCnpj || !nomeCompleto) {
-        return res
-          .status(400)
-          .json({ erro: 'Tipo, CPF/CNPJ e Nome Completo são obrigatórios' });
+      if (!tipo || !cpfCnpj || !req.body.nomeCompleto) {
+        return res.status(400).json({ erro: 'Tipo, CPF/CNPJ e Nome Completo são obrigatórios' });
       }
-
       if (!['PF', 'PJ'].includes(tipo.toUpperCase())) {
         return res.status(400).json({ erro: 'Tipo deve ser PF ou PJ' });
       }
 
       const cpfCnpjLimpo = cpfCnpj.replace(/[.\-\/]/g, '').trim();
-
       if (cpfCnpjLimpo.length !== 11 && cpfCnpjLimpo.length !== 14) {
-        return res
-          .status(400)
-          .json({ erro: 'CPF deve ter 11 dígitos ou CNPJ 14 dígitos' });
+        return res.status(400).json({ erro: 'CPF deve ter 11 dígitos ou CNPJ 14 dígitos' });
       }
 
-      if (genero && !['M', 'F', 'O'].includes(genero.toUpperCase())) {
-        return res.status(400).json({ erro: 'Gênero deve ser M, F ou O' });
-      }
-
-      if (email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          return res.status(400).json({ erro: 'Formato de email inválido' });
-        }
-      }
+      if (!validarDadosComuns(req.body, res)) return;
 
       const dadosLimpos = {
         tipo: tipo.toUpperCase(),
         cpfCnpj: cpfCnpjLimpo,
-        nomeCompleto: nomeCompleto.trim().toUpperCase(),
-        dataNascimento: dataNascimento || null,
-        genero: genero ? genero.toUpperCase() : null,
-        telefone: telefone ? telefone.trim() : null,
-        telefoneWhatsApp: telefoneWhatsApp ? true : false,
-        email: email ? email.trim().toUpperCase() : null,
-        cep: cep ? cep.replace(/\D/g, '') : null,
-        logradouro: logradouro ? logradouro.trim().toUpperCase() : null,
-        numero: numero ? numero.trim() : null,
-        complemento: complemento ? complemento.trim().toUpperCase() : null,
-        bairro: bairro ? bairro.trim().toUpperCase() : null,
-        cidade: cidade ? cidade.trim().toUpperCase() : null,
-        estado: estado ? estado.trim().toUpperCase() : null,
+        ...sanitizar(req.body),
       };
 
       const cliente = await clienteRepository.criar(dadosLimpos);
@@ -146,65 +157,17 @@ class ClienteController {
     }
   }
 
-  //  ATUALIZAR
+
+  // --- atualizar dados do cliente
   async atualizar(req, res) {
     try {
       const { id } = req.params;
-      if (!id || isNaN(id)) {
-        return res.status(400).json({ erro: 'ID inválido' });
-      }
+      if (!id || isNaN(id)) return res.status(400).json({ erro: 'ID inválido' });
 
-      const {
-        nomeCompleto,
-        dataNascimento,
-        genero,
-        telefone,
-        telefoneWhatsApp,
-        email,
-        cep,
-        logradouro,
-        numero,
-        complemento,
-        bairro,
-        cidade,
-        estado,
-      } = req.body;
+      if (!validarDadosComuns(req.body, res)) return;
 
-      if (!nomeCompleto) {
-        return res.status(400).json({ erro: 'Nome Completo é obrigatório' });
-      }
-
-      if (genero && !['M', 'F', 'O'].includes(genero.toUpperCase())) {
-        return res.status(400).json({ erro: 'Gênero deve ser M, F ou O' });
-      }
-
-      if (email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          return res.status(400).json({ erro: 'Formato de email inválido' });
-        }
-      }
-
-      const dadosLimpos = {
-        nomeCompleto: nomeCompleto.trim().toUpperCase(),
-        dataNascimento: dataNascimento || null,
-        genero: genero ? genero.toUpperCase() : null,
-        telefone: telefone ? telefone.trim() : null,
-        telefoneWhatsApp: telefoneWhatsApp ? true : false,
-        email: email ? email.trim().toUpperCase() : null,
-        cep: cep ? cep.replace(/\D/g, '') : null,
-        logradouro: logradouro ? logradouro.trim().toUpperCase() : null,
-        numero: numero ? numero.trim() : null,
-        complemento: complemento ? complemento.trim().toUpperCase() : null,
-        bairro: bairro ? bairro.trim().toUpperCase() : null,
-        cidade: cidade ? cidade.trim().toUpperCase() : null,
-        estado: estado ? estado.trim().toUpperCase() : null,
-      };
-
-      const resultado = await clienteRepository.atualizar(id, dadosLimpos);
-      if (resultado === 0) {
-        return res.status(404).json({ erro: 'Cliente não encontrado' });
-      }
+      const resultado = await clienteRepository.atualizar(id, sanitizar(req.body));
+      if (resultado === 0) return res.status(404).json({ erro: 'Cliente não encontrado' });
 
       res.json({ mensagem: 'Cliente atualizado com sucesso' });
     } catch (error) {
@@ -213,18 +176,15 @@ class ClienteController {
     }
   }
 
-  //  INATIVAR (soft delete) — Status = 'INATIVO'
+
+  // --- inativar (soft delete) — Ativo = 0
   async inativar(req, res) {
     try {
       const { id } = req.params;
-      if (!id || isNaN(id)) {
-        return res.status(400).json({ erro: 'ID inválido' });
-      }
+      if (!id || isNaN(id)) return res.status(400).json({ erro: 'ID inválido' });
 
       const resultado = await clienteRepository.inativar(id);
-      if (resultado === 0) {
-        return res.status(404).json({ erro: 'Cliente não encontrado' });
-      }
+      if (resultado === 0) return res.status(404).json({ erro: 'Cliente não encontrado' });
 
       res.json({ mensagem: 'Cliente inativado com sucesso' });
     } catch (error) {
@@ -233,18 +193,15 @@ class ClienteController {
     }
   }
 
-  //  BLOQUEAR — Status = 'BLOQUEADO'
+
+  // --- bloquear — Bloqueado = 1
   async bloquear(req, res) {
     try {
       const { id } = req.params;
-      if (!id || isNaN(id)) {
-        return res.status(400).json({ erro: 'ID inválido' });
-      }
+      if (!id || isNaN(id)) return res.status(400).json({ erro: 'ID inválido' });
 
       const resultado = await clienteRepository.bloquear(id);
-      if (resultado === 0) {
-        return res.status(404).json({ erro: 'Cliente não encontrado' });
-      }
+      if (resultado === 0) return res.status(404).json({ erro: 'Cliente não encontrado' });
 
       res.json({ mensagem: 'Cliente bloqueado com sucesso' });
     } catch (error) {
@@ -253,18 +210,15 @@ class ClienteController {
     }
   }
 
-  //  DESBLOQUEAR — Status = 'ATIVO'
+
+  // --- desbloquear — Bloqueado = 0
   async desbloquear(req, res) {
     try {
       const { id } = req.params;
-      if (!id || isNaN(id)) {
-        return res.status(400).json({ erro: 'ID inválido' });
-      }
+      if (!id || isNaN(id)) return res.status(400).json({ erro: 'ID inválido' });
 
       const resultado = await clienteRepository.desbloquear(id);
-      if (resultado === 0) {
-        return res.status(404).json({ erro: 'Cliente não encontrado' });
-      }
+      if (resultado === 0) return res.status(404).json({ erro: 'Cliente não encontrado' });
 
       res.json({ mensagem: 'Cliente desbloqueado com sucesso' });
     } catch (error) {
@@ -273,65 +227,17 @@ class ClienteController {
     }
   }
 
-  //  REATIVAR — Status = 'ATIVO' + atualiza dados
+
+  // --- reativar — Ativo = 1, Bloqueado = 0 + atualiza dados
   async reativar(req, res) {
     try {
       const { id } = req.params;
-      if (!id || isNaN(id)) {
-        return res.status(400).json({ erro: 'ID inválido' });
-      }
+      if (!id || isNaN(id)) return res.status(400).json({ erro: 'ID inválido' });
 
-      const {
-        nomeCompleto,
-        dataNascimento,
-        genero,
-        telefone,
-        telefoneWhatsApp,
-        email,
-        cep,
-        logradouro,
-        numero,
-        complemento,
-        bairro,
-        cidade,
-        estado,
-      } = req.body;
+      if (!validarDadosComuns(req.body, res)) return;
 
-      if (!nomeCompleto) {
-        return res.status(400).json({ erro: 'Nome Completo é obrigatório' });
-      }
-
-      if (genero && !['M', 'F', 'O'].includes(genero.toUpperCase())) {
-        return res.status(400).json({ erro: 'Gênero deve ser M, F ou O' });
-      }
-
-      if (email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          return res.status(400).json({ erro: 'Formato de email inválido' });
-        }
-      }
-
-      const dadosLimpos = {
-        nomeCompleto: nomeCompleto.trim().toUpperCase(),
-        dataNascimento: dataNascimento || null,
-        genero: genero ? genero.toUpperCase() : null,
-        telefone: telefone ? telefone.trim() : null,
-        telefoneWhatsApp: telefoneWhatsApp ? true : false,
-        email: email ? email.trim().toUpperCase() : null,
-        cep: cep ? cep.replace(/\D/g, '') : null,
-        logradouro: logradouro ? logradouro.trim().toUpperCase() : null,
-        numero: numero ? numero.trim() : null,
-        complemento: complemento ? complemento.trim().toUpperCase() : null,
-        bairro: bairro ? bairro.trim().toUpperCase() : null,
-        cidade: cidade ? cidade.trim().toUpperCase() : null,
-        estado: estado ? estado.trim().toUpperCase() : null,
-      };
-
-      const cliente = await clienteRepository.reativar(id, dadosLimpos);
-      if (!cliente) {
-        return res.status(404).json({ erro: 'Cliente não encontrado' });
-      }
+      const cliente = await clienteRepository.reativar(id, sanitizar(req.body));
+      if (!cliente) return res.status(404).json({ erro: 'Cliente não encontrado' });
 
       res.json({ mensagem: 'Cliente reativado com sucesso', cliente });
     } catch (error) {
@@ -339,6 +245,14 @@ class ClienteController {
       res.status(500).json({ erro: 'Erro interno do servidor' });
     }
   }
+
 }
 
+// #endregion
+
+
+// #region EXPORTS | rev.01 | 25/03/2026
+
 module.exports = new ClienteController();
+
+// #endregion

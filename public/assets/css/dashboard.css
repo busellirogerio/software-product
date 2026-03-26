@@ -1,16 +1,14 @@
-/* dashboard.css | data: 03/03/2026 */
+/* -----------------------------------------------
+   dashboard.css
+   Tema: Layout, sidebar, header e estilos do dashboard
+   Última rev: 02 | Data: 25/03/2026
+   Depende de: style.css (variáveis globais)
+   ----------------------------------------------- */
 
-/* =========================================
-  dashboard.css
-  Estilos exclusivos do dashboard Re⟳Loop
-  Depende de: style.css (variáveis globais)
-   ========================================= */
 
-/* ===========================
-  LAYOUT GERAL
-  html/body ocupam 100% da tela
-  sem scroll na página inteira
-=========================== */
+/* #region LAYOUT GERAL | rev.02 | 25/03/2026 */
+
+/* --- html/body ocupam 100% da tela sem scroll na página inteira */
 html,
 body {
   height: 100%;
@@ -24,12 +22,14 @@ body {
   position: relative;
 }
 
-/* ===========================
-  HEADER
-  Linha superior fixa com 3 zonas:
-  .header-left  → hambúrguer (mobile) + logo
-  .user-info    → bem-vindo + botão sair
-=========================== */
+/* #endregion */
+
+
+/* #region HEADER | rev.02 | 25/03/2026 */
+
+/* --- linha superior fixa com 3 zonas:
+   .header-left → hambúrguer (mobile) + logo
+   .user-info   → bem-vindo + botão sair */
 .header {
   height: 56px;
   background: #1e2a45;
@@ -48,10 +48,46 @@ body {
   gap: 12px;
 }
 
-/* ===========================
-  LOGO Re⟳Loop — HEADER
-  .logo-destaque → colore o ⟳
-=========================== */
+/* --- área direita: "Bem-vindo, X" + botão sair */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.85rem;
+  color: #a0aec0;
+}
+
+.user-info strong {
+  color: #ffffff;
+}
+
+/* --- botão sair: sem fundo, só ícone sair.svg */
+.btn-sair {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-sair img {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+}
+
+.btn-sair:hover {
+  opacity: 0.7;
+}
+
+/* #endregion */
+
+
+/* #region LOGO | rev.02 | 25/03/2026 */
+
+/* --- Re⟳Loop no header: .logo-destaque colore o ⟳ */
 .header-logo h2 {
   font-size: 1.2rem;
   color: #ffffff;
@@ -64,10 +100,12 @@ body {
   color: var(--primary-color);
 }
 
-/* ===========================
-  HAMBÚRGUER — apenas mobile
-  Oculta/desoculta a sidebar como overlay
-=========================== */
+/* #endregion */
+
+
+/* #region HAMBÚRGUER | rev.02 | 25/03/2026 */
+
+/* --- apenas mobile: oculta/desoculta a sidebar como overlay */
 .toggle-btn-mobile {
   display: none; /* oculto no desktop */
   width: 36px;
@@ -92,46 +130,14 @@ body {
   object-fit: contain;
 }
 
-/* Área direita: "Bem-vindo, X" + botão sair */
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  font-size: 0.85rem;
-  color: #a0aec0;
-}
+/* #endregion */
 
-.user-info strong {
-  color: #ffffff;
-}
 
-/* Botão sair — sem fundo, só ícone sair.svg */
-.btn-sair {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+/* #region SIDEBAR | rev.02 | 25/03/2026 */
 
-.btn-sair img {
-  width: 45px;
-  height: 45px;
-  object-fit: contain;
-}
-
-.btn-sair:hover {
-  opacity: 0.7;
-}
-
-/* ===========================
-  SIDEBAR — MENU LATERAL
-  Web recolhida: 56px (só ícones)
-  Web expandida: 210px (ícone + label)
-  Mobile: overlay com translateX
-=========================== */
+/* --- web recolhida: 56px (só ícones)
+   web expandida: 210px (ícone + label)
+   mobile: overlay com translateX */
 .sidebar {
   width: 56px;
   background: #1e2a45;
@@ -154,12 +160,13 @@ body {
   align-items: flex-start;
 }
 
-/* ===========================
-  SETA DE COLAPSO — WEB ONLY
-  Na borda direita da sidebar
-  Centralizada verticalmente
-  Alterna › e ‹ via JS
-=========================== */
+/* #endregion */
+
+
+/* #region SETA DE COLAPSO | rev.02 | 25/03/2026 */
+
+/* --- web only, na borda direita da sidebar
+   centralizada verticalmente — alterna › e ‹ via JS */
 .sidebar-toggle-arrow {
   position: absolute;
   right: -12px;
@@ -189,11 +196,12 @@ body {
   color: #ffffff;
 }
 
-/* ===========================
-  OVERLAY MOBILE
-  Fundo escuro atrás da sidebar
-  Fecha ao clicar
-=========================== */
+/* #endregion */
+
+
+/* #region OVERLAY MOBILE | rev.02 | 25/03/2026 */
+
+/* --- fundo escuro atrás da sidebar, fecha ao clicar */
 .sidebar-overlay {
   display: none;
   position: absolute;
@@ -206,11 +214,13 @@ body {
   display: block;
 }
 
-/* ===========================
-  ITENS DO MENU
-  Recolhido: 40x40 centralizado
-  Expandido: largura total com label
-=========================== */
+/* #endregion */
+
+
+/* #region ITENS DO MENU | rev.02 | 25/03/2026 */
+
+/* --- recolhido: 40x40 centralizado
+   expandido: largura total com label */
 .nav-item {
   width: 40px;
   height: 40px;
@@ -253,7 +263,7 @@ body {
   color: var(--primary-color);
 }
 
-/* SVGs brancos — sem filtro */
+/* --- SVGs brancos: sem filtro */
 .nav-icon {
   width: 22px;
   height: 22px;
@@ -262,7 +272,7 @@ body {
   display: block;
 }
 
-/* Label: oculto recolhido, visível expandido */
+/* --- label: oculto recolhido, visível expandido */
 .nav-label {
   display: none;
   font-weight: 500;
@@ -273,16 +283,18 @@ body {
   display: block;
 }
 
-/* Espaçador — empurra Configurações e Suporte para o rodapé */
+/* --- espaçador: empurra Configurações e Suporte para o rodapé */
 .nav-spacer {
   flex: 1;
   min-height: 20px;
 }
 
-/* ===========================
-  ÁREA PRINCIPAL
-  Scroll interno independente
-=========================== */
+/* #endregion */
+
+
+/* #region ÁREA PRINCIPAL | rev.02 | 25/03/2026 */
+
+/* --- scroll interno independente */
 .main-area {
   flex: 1;
   overflow-y: auto;
@@ -290,10 +302,12 @@ body {
   background: #111827;
 }
 
-/* ===========================
-  SEÇÕES
-  Apenas .active é visível
-=========================== */
+/* #endregion */
+
+
+/* #region SEÇÕES | rev.02 | 25/03/2026 */
+
+/* --- apenas .active é visível */
 .section {
   display: none;
 }
@@ -309,12 +323,14 @@ body {
   margin-bottom: 28px;
 }
 
-/* ===========================
-  HOME IA — Re⟳Loop.IA
-  Tela limpa centralizada
-  Logo grande + badge .IA + input chat
-  Input desabilitado até AC5
-=========================== */
+/* #endregion */
+
+
+/* #region HOME IA | rev.02 | 25/03/2026 */
+
+/* --- Re⟳Loop.IA: tela limpa centralizada
+   logo grande + badge .IA + input chat
+   input desabilitado até AC5 */
 .ia-home {
   display: flex;
   flex-direction: column;
@@ -325,7 +341,7 @@ body {
   text-align: center;
 }
 
-/* Logo grande centralizada */
+/* --- logo grande centralizada */
 .ia-logo {
   display: flex;
   flex-direction: column;
@@ -342,7 +358,7 @@ body {
   line-height: 1;
 }
 
-/* Badge .IA abaixo da logo */
+/* --- badge .IA abaixo da logo */
 .ia-badge {
   font-size: 1rem;
   font-weight: 600;
@@ -352,12 +368,14 @@ body {
   opacity: 0.85;
 }
 
-/* ===========================
-  INPUT CHAT
-  Caixa alta — texto no topo, ícones no rodapé
-  align-items: flex-end → ícones colados embaixo
-  Desabilitado até AC5
-=========================== */
+/* #endregion */
+
+
+/* #region INPUT CHAT | rev.02 | 25/03/2026 */
+
+/* --- caixa alta: texto no topo, ícones no rodapé
+   align-items: flex-end → ícones colados embaixo
+   desabilitado até AC5 */
 .ia-input-wrapper {
   display: flex;
   align-items: flex-end; /* ícones alinhados no rodapé */
@@ -395,11 +413,19 @@ body {
   cursor: not-allowed;
 }
 
-/* ===========================
-  BOTÕES MICROFONE E IA ASSISTENTE
-  Alinhados no rodapé direito do input
-  Desabilitados até AC5
-=========================== */
+/* --- hint abaixo do input */
+.ia-hint {
+  font-size: 0.78rem;
+  color: #4a5568;
+  letter-spacing: 0.5px;
+}
+
+/* #endregion */
+
+
+/* #region BOTÕES MICROFONE E IA | rev.02 | 25/03/2026 */
+
+/* --- alinhados no rodapé direito do input, desabilitados até AC5 */
 .ia-btn-mic,
 .ia-btn-assistente {
   background: transparent;
@@ -420,19 +446,12 @@ body {
   object-fit: contain;
 }
 
-/* Hint abaixo do input */
-.ia-hint {
-  font-size: 0.78rem;
-  color: #4a5568;
-  letter-spacing: 0.5px;
-}
+/* #endregion */
 
-/* ===========================
-  BOTÕES DE AÇÃO RÁPIDA — IA
-  5 sugestões abaixo do input
-  Sem emojis, em linha
-  Desabilitados até AC5
-=========================== */
+
+/* #region BOTÕES DE AÇÃO RÁPIDA | rev.02 | 25/03/2026 */
+
+/* --- 5 sugestões abaixo do input, sem emojis, em linha, desabilitados até AC5 */
 .ia-acoes {
   display: flex;
   flex-wrap: wrap;
@@ -457,10 +476,12 @@ body {
   white-space: nowrap;
 }
 
-/* ===========================
-  CARDS DE INDICADORES — KPIs
-  Grid 3 colunas, cores translúcidas
-=========================== */
+/* #endregion */
+
+
+/* #region CARDS DE INDICADORES | rev.02 | 25/03/2026 */
+
+/* --- grid 3 colunas, cores translúcidas */
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -527,12 +548,13 @@ img.card-icon {
   color: #ffffff;
 }
 
-/* ===========================
-  BLOCOS COLAPSÁVEIS — KPIs
-  7 blocos na seção KPIs
-  Fechados por padrão
-  .aberto → abre body e rotaciona seta
-=========================== */
+/* #endregion */
+
+
+/* #region BLOCOS COLAPSÁVEIS | rev.02 | 25/03/2026 */
+
+/* --- 7 blocos na seção KPIs, fechados por padrão
+   .aberto → abre body e rotaciona seta */
 .dash-bloco {
   background: #1e2a45;
   border: 1px solid #2d3748;
@@ -591,9 +613,12 @@ img.card-icon {
   color: #718096;
 }
 
-/* ===========================
-  PLACEHOLDER — módulos futuros
-=========================== */
+/* #endregion */
+
+
+/* #region PLACEHOLDER | rev.02 | 25/03/2026 */
+
+/* --- módulos futuros */
 .placeholder {
   background: #1e2a45;
   border: 2px dashed #2d3748;
@@ -619,9 +644,11 @@ img.card-icon {
   color: #4a5568;
 }
 
-/* ===========================
-  RESPONSIVO — MOBILE (até 768px)
-=========================== */
+/* #endregion */
+
+
+/* #region RESPONSIVO MOBILE | rev.02 | 25/03/2026 */
+
 @media (max-width: 768px) {
   .toggle-btn-mobile {
     display: flex;
@@ -690,12 +717,11 @@ img.card-icon {
   }
 }
 
-/* ===========================
-  RESPONSIVO — SMALL MOBILE (até 480px)
-  Pendente: ajustes header mobile
-  (hambúrguer maior, logo maior,
-  bem-vindo abaixo da logo)
-=========================== */
+/* #endregion */
+
+
+/* #region RESPONSIVO SMALL MOBILE | rev.02 | 25/03/2026 */
+
 @media (max-width: 480px) {
   .header {
     padding: 0 16px;
@@ -718,3 +744,5 @@ img.card-icon {
     letter-spacing: 2px;
   }
 }
+
+/* #endregion */

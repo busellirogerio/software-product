@@ -1,32 +1,39 @@
-<!-- dashboard.html | data: 03/03/2026 -->
+<!-- -----------------------------------------------
+     dashboard.html
+     Tema: Dashboard principal — navegação e módulos
+     Última rev: 02 | Data: 25/03/2026
+     ----------------------------------------------- -->
 
 <!doctype html>
 <html lang="pt-BR">
+
+  <!-- #region HEAD -->
+
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Re⟳Loop - Dashboard</title>
 
-    <!-- ===========================
-        CSS — ORDEM OBRIGATÓRIA
-        1. style.css     → variáveis globais e reset
-        2. dashboard.css → layout, sidebar, home IA
-        3. clientes.css  → módulo AC1
-        4. veiculos.css  → módulo AC2
-    =========================== -->
+    <!-- CSS — ORDEM OBRIGATÓRIA
+         1. style.css     → variáveis globais e reset
+         2. dashboard.css → layout, sidebar, home IA
+         3. clientes.css  → módulo AC1
+         4. veiculos.css  → módulo AC2
+    -->
     <link rel="stylesheet" href="../assets/css/style.css" />
     <link rel="stylesheet" href="../assets/css/dashboard.css" />
     <link rel="stylesheet" href="../assets/css/clientes.css" />
     <link rel="stylesheet" href="../assets/css/veiculos.css" />
   </head>
 
+  <!-- #endregion -->
+
+
   <body>
-    <!-- ===========================
-        HEADER
-        - Hambúrguer mobile (canto esquerdo)
-        - Logo Re⟳Loop
-        - Bem-vindo + botão sair (direita)
-    =========================== -->
+
+    <!-- #region HEADER -->
+
+    <!-- Hambúrguer mobile + Logo Re⟳Loop + Bem-vindo + botão sair -->
     <header class="header">
       <div class="header-left">
         <!-- Hambúrguer — visível apenas no mobile -->
@@ -56,16 +63,17 @@
       </div>
     </header>
 
-    <!-- ===========================
-        APP BODY = SIDEBAR + MAIN
-    =========================== -->
+    <!-- #endregion -->
+
+
+    <!-- #region APP BODY = SIDEBAR + MAIN -->
+
     <div class="app-body">
-      <!-- ===========================
-          SIDEBAR — MENU LATERAL
-          Web: recolhida (56px) ↔ expandida (210px)
-          controlada pela seta na borda direita
-          Mobile: overlay, abre pelo hambúrguer
-      =========================== -->
+
+      <!-- #region SIDEBAR -->
+
+      <!-- Web: recolhida (56px) ↔ expandida (210px) controlada pela seta
+           Mobile: overlay, abre pelo hambúrguer -->
       <nav class="sidebar" id="sidebar">
         <!-- NAVEGAÇÃO PRINCIPAL -->
         <button class="nav-item active" data-section="home" aria-label="Início">
@@ -158,15 +166,17 @@
       <!-- Overlay mobile — fecha sidebar ao clicar fora -->
       <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-      <!-- ===========================
-          MAIN — ÁREA DE CONTEÚDO
-      =========================== -->
+      <!-- #endregion -->
+
+
+      <!-- #region MAIN -->
+
       <main class="main-area">
-        <!-- ===========================
-            SEÇÃO: INÍCIO — IA Re⟳Loop
-            Tela limpa com logo grande e input
-            de chat. Input e botões bloqueados até AC5.
-        =========================== -->
+
+        <!-- #region SEÇÃO INÍCIO -->
+
+        <!-- IA Re⟳Loop: tela limpa com logo grande e input de chat
+             Input e botões bloqueados até AC5 -->
         <section class="section active" id="sec-home">
           <div class="ia-home">
             <!-- Logo grande centralizada -->
@@ -219,11 +229,15 @@
         </section>
         <!-- /SEÇÃO INÍCIO -->
 
-        <!-- SEÇÃO: CLIENTES — AC1 | sec-clientes data: 05/03/2026 -->
+        <!-- #endregion -->
+
+
+        <!-- #region SEÇÃO CLIENTES — AC1 -->
 
         <section class="section" id="sec-clientes">
           <h2 class="section-title">Clientes</h2>
           <div class="accordion">
+
             <!-- PAINEL 1: BUSCAR / EDITAR -->
             <div class="acc-item" id="acc-busca">
               <div class="acc-header" data-target="acc-busca">
@@ -552,15 +566,20 @@
                 </div>
               </div>
             </div>
+
           </div>
         </section>
-        <!-- /SEÇÃO CLIENTES - AC1 -->
+        <!-- /SEÇÃO CLIENTES -->
 
-        <!-- SEÇÃO: VEÍCULOS — AC2 | sec-veiculos data: 18/03/2026 -->
+        <!-- #endregion -->
+
+
+        <!-- #region SEÇÃO VEÍCULOS — AC2 -->
 
         <section class="section" id="sec-veiculos">
           <h2 class="section-title">Veículos</h2>
           <div class="accordion" id="accordion-veiculos">
+
             <!-- PAINEL 1: PESQUISA -->
             <div class="acc-item" id="acc-veiculo-busca">
               <div class="acc-header" data-target="acc-veiculo-busca">
@@ -845,13 +864,16 @@
                 </div>
               </div>
             </div>
+
           </div>
         </section>
         <!-- /SEÇÃO VEÍCULOS -->
 
-        <!-- ===========================
-            SEÇÃO: SERVIÇOS — AC3
-        =========================== -->
+        <!-- #endregion -->
+
+
+        <!-- #region SEÇÃO SERVIÇOS — AC3 -->
+
         <section class="section" id="sec-servicos">
           <h2 class="section-title">Serviços [CONGELADO AC3]</h2>
           <div class="placeholder">
@@ -867,9 +889,11 @@
           </div>
         </section>
 
-        <!-- ===========================
-            SEÇÃO: EVENTOS FUTUROS — AC4
-        =========================== -->
+        <!-- #endregion -->
+
+
+        <!-- #region SEÇÃO EVENTOS — AC4 -->
+
         <section class="section" id="sec-eventos">
           <h2 class="section-title">Eventos [CONGELADO AC4]</h2>
           <div class="placeholder">
@@ -885,11 +909,12 @@
           </div>
         </section>
 
-        <!-- ===========================
-            SEÇÃO: KPIs
-            7 blocos colapsáveis com indicadores
-            e gráficos — conectados na AC5
-        =========================== -->
+        <!-- #endregion -->
+
+
+        <!-- #region SEÇÃO KPIs -->
+
+        <!-- 7 blocos colapsáveis com indicadores e gráficos — conectados na AC5 -->
         <section class="section" id="sec-kpis">
           <h2 class="section-title">KPIs [CONGELADO AC4]</h2>
 
@@ -1108,12 +1133,15 @@
           </div>
         -->
           <!-- /BLOCO 7 -->
+
         </section>
         <!-- /SEÇÃO KPIs -->
 
-        <!-- ===========================
-            SEÇÃO: CONFIGURAÇÕES — futuro
-        =========================== -->
+        <!-- #endregion -->
+
+
+        <!-- #region SEÇÃO CONFIGURAÇÕES -->
+
         <section class="section" id="sec-configuracoes">
           <h2 class="section-title">Configurações [CONGELADO AC3]</h2>
           <div class="placeholder">
@@ -1129,12 +1157,15 @@
           </div>
         </section>
 
-        <!-- ===========================
-            SEÇÃO: SUPORTE — AC2
-        =========================== -->
+        <!-- #endregion -->
+
+
+        <!-- #region SEÇÃO SUPORTE — AC2 -->
+
         <section class="section" id="sec-suporte">
           <h2 class="section-title">Suporte</h2>
           <div class="accordion" id="accordion-suporte">
+
             <!-- PAINEL 1: ABRIR CHAMADO -->
             <div class="acc-item" id="acc-suporte-chamado">
               <div class="acc-header" data-target="acc-suporte-chamado">
@@ -1288,27 +1319,95 @@
                 </form>
               </div>
             </div>
+
+            <!-- PAINEL 2: MEUS CHAMADOS -->
+            <div class="acc-item" id="acc-suporte-historico">
+              <div class="acc-header" data-target="acc-suporte-historico">
+                <div class="acc-header-left">
+                  <span class="acc-icon">
+                    <img
+                      src="../assets/image/lista.svg"
+                      width="25"
+                      height="25"
+                      alt="Lista"
+                      style="vertical-align: middle"
+                    />
+                  </span>
+                  Meus Chamados
+                </div>
+                <div style="display: flex; align-items: center; gap: 6px">
+                  <div
+                    style="display: flex; align-items: center; gap: 6px"
+                    onclick="event.stopPropagation()"
+                  >
+                    <input
+                      type="date"
+                      id="supDataInicial"
+                      style="width:160px;height:44px;padding:6px 10px;border-radius:6px;border:1px solid #4a5568;background:#fff;color:#1a202c;font-size:0.95rem;cursor:pointer;"
+                    />
+                    <input
+                      type="date"
+                      id="supDataFinal"
+                      style="width:160px;height:44px;padding:6px 10px;border-radius:6px;border:1px solid #4a5568;background:#fff;color:#1a202c;font-size:0.95rem;cursor:pointer;"
+                    />
+                    <button
+                      id="btnPdfChamados"
+                      class="btn btn-secondary"
+                      style="width: 120px"
+                    >
+                      ⬇ PDF
+                    </button>
+                    <button
+                      id="btnConsultarChamados"
+                      class="btn btn-primary"
+                      style="width: 120px"
+                    >
+                      Consultar
+                    </button>
+                  </div>
+                  <span class="acc-arrow">▼</span>
+                </div>
+              </div>
+              <div class="acc-body">
+                <div id="listaChamados">
+                  <p class="tabela-vazia">Clique em Consultar para carregar.</p>
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
+        <!-- /SEÇÃO SUPORTE -->
+
+        <!-- #endregion -->
+
       </main>
       <!-- /MAIN -->
+
+      <!-- #endregion -->
+
     </div>
     <!-- /APP BODY -->
 
-    <!-- ===========================
-        SCRIPTS — ORDEM OBRIGATÓRIA
-        1. config.js    → API_BASE_URL e apiRequest()
-        2. auth.js      → verificação de sessão e logout
-        3. dashboard.js → navegação, sidebar, blocos
-        4. clientes.js  → módulo AC1
-        5. veiculos.js  → módulo AC2
-        6. suporte.js   → módulo Suporte
-    =========================== -->
+
+    <!-- #region SCRIPTS -->
+
+    <!-- Ordem obrigatória:
+         1. config.js    → API_BASE_URL e apiRequest()
+         2. auth.js      → verificação de sessão e logout
+         3. dashboard.js → navegação, sidebar, blocos
+         4. clientes.js  → módulo AC1
+         5. veiculos.js  → módulo AC2
+         6. suporte.js   → módulo Suporte
+    -->
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/dashboard.js"></script>
     <script src="../assets/js/clientes.js"></script>
     <script src="../assets/js/veiculos.js"></script>
     <script src="../assets/js/suporte.js"></script>
+
+    <!-- #endregion -->
+
   </body>
 </html>

@@ -1,4 +1,10 @@
-// config.js | data: 03/03/2026
+// -----------------------------------------------
+// config.js
+// Tema: Configuração global da API e utilitários
+// Última rev: 01 | Data: 25/03/2026
+// -----------------------------------------------
+
+// #region CONFIG | rev.01 | 25/03/2026
 
 const API_BASE_URL =
   window.location.port === '3000'
@@ -22,31 +28,34 @@ const CONFIG = {
     emailRegex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   },
   messages: {
-    networkError: 'Erro de conexão. Verifique sua internet.',
-    serverError: 'Erro interno do servidor. Tente novamente.',
-    sessionExpired: 'Sessão expirada. Faça login novamente.',
+    networkError:       'Erro de conexão. Verifique sua internet.',
+    serverError:        'Erro interno do servidor. Tente novamente.',
+    sessionExpired:     'Sessão expirada. Faça login novamente.',
     invalidCredentials: 'Email ou senha inválidos.',
   },
 };
 
-// ===============================
-// apiRequest — suporta dois formatos:
-// 1) apiRequest('/endpoint', { method: 'POST', body: payload })
-// 2) apiRequest('/endpoint', 'POST', payload)
-// ===============================
+// #endregion
+
+
+// #region API REQUEST | rev.01 | 25/03/2026
+
+// --- suporta dois formatos:
+//     1) apiRequest('/endpoint', { method: 'POST', body: payload })
+//     2) apiRequest('/endpoint', 'POST', payload)
 const apiRequest = async (endpoint, methodOrOptions = {}, bodyArg) => {
   const url = `${CONFIG.api.baseURL}${endpoint}`;
 
   let options = {};
 
-  // Formato 2: apiRequest(url, 'METHOD', body)
+  // --- formato 2: apiRequest(url, 'METHOD', body)
   if (typeof methodOrOptions === 'string') {
     options.method = methodOrOptions;
     if (bodyArg !== undefined) {
       options.body = bodyArg;
     }
   } else {
-    // Formato 1: apiRequest(url, { method, body })
+    // --- formato 1: apiRequest(url, { method, body })
     options = { ...methodOrOptions };
   }
 
@@ -56,7 +65,7 @@ const apiRequest = async (endpoint, methodOrOptions = {}, bodyArg) => {
     ...options,
   };
 
-  // Serializa body se for objeto
+  // --- serializa body se for objeto
   if (finalOptions.body && typeof finalOptions.body === 'object') {
     finalOptions.body = JSON.stringify(finalOptions.body);
   }
@@ -78,12 +87,24 @@ const apiRequest = async (endpoint, methodOrOptions = {}, bodyArg) => {
   }
 };
 
+// #endregion
+
+
+// #region VALIDAÇÕES | rev.01 | 25/03/2026
+
 const isValidEmail = (email) => CONFIG.validation.emailRegex.test(email);
 
 const isValidPassword = (password) =>
   password && password.length >= CONFIG.validation.minPasswordLength;
 
-window.CONFIG = CONFIG;
-window.apiRequest = apiRequest;
-window.isValidEmail = isValidEmail;
+// #endregion
+
+
+// #region EXPORTS GLOBAIS | rev.01 | 25/03/2026
+
+window.CONFIG        = CONFIG;
+window.apiRequest    = apiRequest;
+window.isValidEmail  = isValidEmail;
 window.isValidPassword = isValidPassword;
+
+// #endregion

@@ -1,16 +1,45 @@
-// veiculoController.js | data: 03/03/2026
+// -----------------------------------------------
+// veiculoController.js
+// Tema: Controller — validações e respostas HTTP para Veículos
+// Última rev: 01 | Data: 25/03/2026
+// -----------------------------------------------
 
-// Camada intermediária — validações e respostas HTTP
-// VERSÃO: 1.0 - AC2
-// =========================================
+// #region IMPORTS | rev.01 | 25/03/2026
 
 const veiculoRepository = require('../repositories/veiculoRepository');
 
+// #endregion
+
+
+// #region HELPERS | rev.01 | 25/03/2026
+
+const placaAntigaRegex    = /^[A-Z]{3}[0-9]{4}$/;
+const placaMercosulRegex  = /^[A-Z]{3}[0-9]{1}[A-Z]{1}[0-9]{2}$/;
+
+// --- valida formato de placa (antigo ou Mercosul)
+function validarPlaca(placa) {
+  const placaLimpa = placa.replace(/[-\s]/g, '').toUpperCase();
+  return (placaAntigaRegex.test(placaLimpa) || placaMercosulRegex.test(placaLimpa))
+    ? placaLimpa
+    : null;
+}
+
+// --- valida Km (número positivo)
+function validarKm(km) {
+  if (km === undefined || km === null || km === '') return true;
+  const n = parseInt(km);
+  return !isNaN(n) && n >= 0;
+}
+
+// #endregion
+
+
+// #region CONTROLLER | rev.01 | 25/03/2026
+
 class VeiculoController {
-  /* ===========================
-// LISTAR TODOS
-// Query opcional: ?ordem=ASC ou ?ordem=DESC
-  =========================== */
+
+  // --- listar todos os veículos ativos com proprietário
+  // query opcional: ?ordem=ASC/DESC
   async listarTodos(req, res) {
     try {
       const ordem = req.query.ordem || 'ASC';
@@ -22,19 +51,16 @@ class VeiculoController {
     }
   }
 
-  /* ===========================
-    BUSCAR (unificada)
-    Query: ?tipo=placa&valor=ABC1D23
-    Query: ?tipo=proprietario&valor=98765432100
-  =========================== */
+
+  // --- buscar por placa ou proprietário (CPF/CNPJ)
+  // ?tipo=placa&valor=ABC1D23
+  // ?tipo=proprietario&valor=98765432100
   async buscar(req, res) {
     try {
       const { tipo, valor } = req.query;
 
       if (!tipo || !valor) {
-        return res
-          .status(400)
-          .json({ erro: 'Parâmetros tipo e valor são obrigatórios' });
+        return res.status(400).json({ erro: 'Parâmetros tipo e valor são obrigatórios' });
       }
 
       let resultado;
@@ -44,9 +70,7 @@ class VeiculoController {
       } else if (tipo === 'proprietario') {
         resultado = await veiculoRepository.buscarPorProprietario(valor);
       } else {
-        return res
-          .status(400)
-          .json({ erro: 'Tipo de busca inválido. Use: placa ou proprietario' });
+        return res.status(400).json({ erro: 'Tipo de busca inválido. Use: placa ou proprietario' });
       }
 
       res.json(resultado);
@@ -56,22 +80,15 @@ class VeiculoController {
     }
   }
 
-  /* ===========================
-    BUSCAR POR ID
-  =========================== */
+
+  // --- buscar por ID
   async buscarPorId(req, res) {
     try {
       const id = parseInt(req.params.id);
-
-      if (isNaN(id)) {
-        return res.status(400).json({ erro: 'ID inválido' });
-      }
+      if (isNaN(id)) return res.status(400).json({ erro: 'ID inválido' });
 
       const veiculo = await veiculoRepository.buscarPorId(id);
-
-      if (!veiculo) {
-        return res.status(404).json({ erro: 'Veículo não encontrado' });
-      }
+      if (!veiculo) return res.status(404).json({ erro: 'Veículo não encontrado' });
 
       res.json(veiculo);
     } catch (error) {
@@ -80,38 +97,23 @@ class VeiculoController {
     }
   }
 
-  /* ===========================
-    BUSCAR CLIENTE POR CPF/CNPJ
-    Usado no formulário para confirmar proprietário
-    antes de cadastrar o veículo
-    GET /api/veiculos/cliente?cpfCnpj=98765432100
-  =========================== */
+
+  // --- buscar cliente por CPF/CNPJ para confirmar proprietário
+  // GET /api/veiculos/cliente?cpfCnpj=98765432100
   async buscarCliente(req, res) {
     try {
       const { cpfCnpj } = req.query;
 
-      if (!cpfCnpj) {
-        return res.status(400).json({ erro: 'CPF/CNPJ é obrigatório' });
-      }
+      if (!cpfCnpj) return res.status(400).json({ erro: 'CPF/CNPJ é obrigatório' });
 
-      // Remove formatação
       const cpfCnpjLimpo = cpfCnpj.replace(/[\.\-\/\s]/g, '');
 
-      // Valida comprimento
       if (cpfCnpjLimpo.length !== 11 && cpfCnpjLimpo.length !== 14) {
-        return res
-          .status(400)
-          .json({ erro: 'CPF deve ter 11 dígitos ou CNPJ 14 dígitos' });
+        return res.status(400).json({ erro: 'CPF deve ter 11 dígitos ou CNPJ 14 dígitos' });
       }
 
-      const cliente =
-        await veiculoRepository.buscarClientePorCpfCnpj(cpfCnpjLimpo);
-
-      if (!cliente) {
-        return res
-          .status(404)
-          .json({ erro: 'Cliente não encontrado ou inativo' });
-      }
+      const cliente = await veiculoRepository.buscarClientePorCpfCnpj(cpfCnpjLimpo);
+      if (!cliente) return res.status(404).json({ erro: 'Cliente não encontrado ou inativo' });
 
       res.json(cliente);
     } catch (error) {
@@ -120,61 +122,34 @@ class VeiculoController {
     }
   }
 
-  /* ===========================
-    CRIAR VEÍCULO
-    Campos obrigatórios: clienteId, marca, modelo, placa
-  =========================== */
+
+  // --- criar novo veículo
   async criar(req, res) {
     try {
-      const { clienteId, marca, modelo, motorizacao, anoModelo, placa, km } =
-        req.body;
+      const { clienteId, marca, modelo, motorizacao, anoModelo, placa, km } = req.body;
 
-      // Validações obrigatórias
-      if (!clienteId) {
-        return res.status(400).json({ erro: 'Proprietário é obrigatório' });
-      }
-      if (!marca || marca.trim() === '') {
-        return res.status(400).json({ erro: 'Marca é obrigatória' });
-      }
-      if (!modelo || modelo.trim() === '') {
-        return res.status(400).json({ erro: 'Modelo é obrigatório' });
-      }
-      if (!placa || placa.trim() === '') {
-        return res.status(400).json({ erro: 'Placa é obrigatória' });
+      if (!clienteId) return res.status(400).json({ erro: 'Proprietário é obrigatório' });
+      if (!marca || marca.trim() === '')  return res.status(400).json({ erro: 'Marca é obrigatória' });
+      if (!modelo || modelo.trim() === '') return res.status(400).json({ erro: 'Modelo é obrigatório' });
+      if (!placa || placa.trim() === '')  return res.status(400).json({ erro: 'Placa é obrigatória' });
+
+      const placaLimpa = validarPlaca(placa);
+      if (!placaLimpa) {
+        return res.status(400).json({ erro: 'Placa inválida. Use formato ABC1234 ou ABC1D23' });
       }
 
-      // Valida formato de placa — antigo (ABC-1234) ou Mercosul (ABC1D23)
-      const placaLimpa = placa.replace(/[-\s]/g, '').toUpperCase();
-      const placaAntigaRegex = /^[A-Z]{3}[0-9]{4}$/;
-      const placaMercosulRegex = /^[A-Z]{3}[0-9]{1}[A-Z]{1}[0-9]{2}$/;
-
-      if (
-        !placaAntigaRegex.test(placaLimpa) &&
-        !placaMercosulRegex.test(placaLimpa)
-      ) {
-        return res
-          .status(400)
-          .json({ erro: 'Placa inválida. Use formato ABC1234 ou ABC1D23' });
-      }
-
-      // Valida Km — apenas números positivos
-      if (km !== undefined && km !== null && km !== '') {
-        const kmNumero = parseInt(km);
-        if (isNaN(kmNumero) || kmNumero < 0) {
-          return res
-            .status(400)
-            .json({ erro: 'Km deve ser um número positivo' });
-        }
+      if (!validarKm(km)) {
+        return res.status(400).json({ erro: 'Km deve ser um número positivo' });
       }
 
       const veiculo = await veiculoRepository.criar({
-        clienteId: parseInt(clienteId),
-        marca: marca.trim(),
-        modelo: modelo.trim(),
+        clienteId:   parseInt(clienteId),
+        marca:       marca.trim(),
+        modelo:      modelo.trim(),
         motorizacao: motorizacao ? motorizacao.trim() : null,
-        anoModelo: anoModelo ? anoModelo.trim() : null,
-        placa: placaLimpa,
-        km: km ? parseInt(km) : null,
+        anoModelo:   anoModelo ? anoModelo.trim() : null,
+        placa:       placaLimpa,
+        km:          km ? parseInt(km) : null,
       });
 
       res.status(201).json(veiculo);
@@ -184,73 +159,41 @@ class VeiculoController {
     }
   }
 
-  /* ===========================
-    ATUALIZAR VEÍCULO
-    Permite atualizar todos os campos incluindo Km
-  =========================== */
+
+  // --- atualizar veículo
   async atualizar(req, res) {
     try {
       const id = parseInt(req.params.id);
+      if (isNaN(id)) return res.status(400).json({ erro: 'ID inválido' });
 
-      if (isNaN(id)) {
-        return res.status(400).json({ erro: 'ID inválido' });
-      }
+      const { clienteId, marca, modelo, motorizacao, anoModelo, placa, km } = req.body;
 
-      const { clienteId, marca, modelo, motorizacao, anoModelo, placa, km } =
-        req.body;
+      if (!marca || marca.trim() === '')  return res.status(400).json({ erro: 'Marca é obrigatória' });
+      if (!modelo || modelo.trim() === '') return res.status(400).json({ erro: 'Modelo é obrigatório' });
 
-      // Validações obrigatórias
-      if (!marca || marca.trim() === '') {
-        return res.status(400).json({ erro: 'Marca é obrigatória' });
-      }
-      if (!modelo || modelo.trim() === '') {
-        return res.status(400).json({ erro: 'Modelo é obrigatório' });
-      }
-
-      // Valida placa se informada
+      let placaLimpa = null;
       if (placa && placa.trim() !== '') {
-        const placaLimpa = placa.replace(/[-\s]/g, '').toUpperCase();
-        const placaAntigaRegex = /^[A-Z]{3}[0-9]{4}$/;
-        const placaMercosulRegex = /^[A-Z]{3}[0-9]{1}[A-Z]{1}[0-9]{2}$/;
-
-        if (
-          !placaAntigaRegex.test(placaLimpa) &&
-          !placaMercosulRegex.test(placaLimpa)
-        ) {
-          return res
-            .status(400)
-            .json({ erro: 'Placa inválida. Use formato ABC1234 ou ABC1D23' });
+        placaLimpa = validarPlaca(placa);
+        if (!placaLimpa) {
+          return res.status(400).json({ erro: 'Placa inválida. Use formato ABC1234 ou ABC1D23' });
         }
       }
 
-      // Valida Km
-      if (km !== undefined && km !== null && km !== '') {
-        const kmNumero = parseInt(km);
-        if (isNaN(kmNumero) || kmNumero < 0) {
-          return res
-            .status(400)
-            .json({ erro: 'Km deve ser um número positivo' });
-        }
+      if (!validarKm(km)) {
+        return res.status(400).json({ erro: 'Km deve ser um número positivo' });
       }
 
-      // Verifica se veículo existe
       const veiculoExistente = await veiculoRepository.buscarPorId(id);
-      if (!veiculoExistente) {
-        return res.status(404).json({ erro: 'Veículo não encontrado' });
-      }
-
-      const placaFormatada = placa
-        ? placa.replace(/[-\s]/g, '').toUpperCase()
-        : null;
+      if (!veiculoExistente) return res.status(404).json({ erro: 'Veículo não encontrado' });
 
       const veiculo = await veiculoRepository.atualizar(id, {
-        clienteId: clienteId ? parseInt(clienteId) : null,
-        marca: marca.trim(),
-        modelo: modelo.trim(),
+        clienteId:   clienteId ? parseInt(clienteId) : null,
+        marca:       marca.trim(),
+        modelo:      modelo.trim(),
         motorizacao: motorizacao ? motorizacao.trim() : null,
-        anoModelo: anoModelo ? anoModelo.trim() : null,
-        placa: placaFormatada,
-        km: km ? parseInt(km) : null,
+        anoModelo:   anoModelo ? anoModelo.trim() : null,
+        placa:       placaLimpa,
+        km:          km ? parseInt(km) : null,
       });
 
       res.json(veiculo);
@@ -260,29 +203,20 @@ class VeiculoController {
     }
   }
 
-  /* ===========================
-    INATIVAR VEÍCULO (soft delete)
-    Ativo = 0 + ClienteId = NULL
-  =========================== */
+
+  // --- inativar (soft delete) — Ativo = 0 + ClienteId = NULL
   async inativar(req, res) {
     try {
       const id = parseInt(req.params.id);
+      if (isNaN(id)) return res.status(400).json({ erro: 'ID inválido' });
 
-      if (isNaN(id)) {
-        return res.status(400).json({ erro: 'ID inválido' });
-      }
-
-      // Verifica se veículo existe e está ativo
       const veiculo = await veiculoRepository.buscarPorId(id);
-      if (!veiculo) {
-        return res.status(404).json({ erro: 'Veículo não encontrado' });
-      }
+      if (!veiculo) return res.status(404).json({ erro: 'Veículo não encontrado' });
       if (veiculo.Ativo === false || veiculo.Ativo === 0) {
         return res.status(400).json({ erro: 'Veículo já está inativo' });
       }
 
       await veiculoRepository.inativar(id);
-
       res.json({ mensagem: 'Veículo inativado com sucesso' });
     } catch (error) {
       console.error('Erro ao inativar veículo:', error);
@@ -290,31 +224,21 @@ class VeiculoController {
     }
   }
 
-  /* ===========================
-    REATIVAR VEÍCULO
-    Ativo = 1 + vincula novo ClienteId + atualiza Km
-  =========================== */
+
+  // --- reativar — Ativo = 1 + vincula novo ClienteId + atualiza Km
   async reativar(req, res) {
     try {
       const id = parseInt(req.params.id);
-
-      if (isNaN(id)) {
-        return res.status(400).json({ erro: 'ID inválido' });
-      }
+      if (isNaN(id)) return res.status(400).json({ erro: 'ID inválido' });
 
       const { clienteId, km } = req.body;
 
       if (!clienteId) {
-        return res
-          .status(400)
-          .json({ erro: 'Proprietário é obrigatório para reativar' });
+        return res.status(400).json({ erro: 'Proprietário é obrigatório para reativar' });
       }
 
-      // Verifica se veículo existe
       const veiculo = await veiculoRepository.buscarPorId(id);
-      if (!veiculo) {
-        return res.status(404).json({ erro: 'Veículo não encontrado' });
-      }
+      if (!veiculo) return res.status(404).json({ erro: 'Veículo não encontrado' });
 
       const veiculoReativado = await veiculoRepository.reativar(
         id,
@@ -328,6 +252,14 @@ class VeiculoController {
       res.status(500).json({ erro: 'Erro interno do servidor' });
     }
   }
+
 }
 
+// #endregion
+
+
+// #region EXPORTS | rev.01 | 25/03/2026
+
 module.exports = new VeiculoController();
+
+// #endregion

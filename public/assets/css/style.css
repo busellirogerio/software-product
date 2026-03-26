@@ -1,24 +1,11 @@
-/* style.css | date: 03/03/2026 */
+/* -----------------------------------------------
+   style.css
+   Tema: Reset global, variáveis CSS e estilos base
+   Última rev: 02 | Data: 25/03/2026
+   ----------------------------------------------- */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
-  color: #ffffff;
-  background: #1e2a45;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+/* #region VARIÁVEIS | rev.02 | 25/03/2026 */
 
 :root {
   --primary-color: #3498db;
@@ -44,6 +31,36 @@ body {
   --spacing-xxl: 48px;
 }
 
+/* #endregion */
+
+
+/* #region RESET | rev.02 | 25/03/2026 */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #ffffff;
+  background: #1e2a45;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* #endregion */
+
+
+/* #region TIPOGRAFIA | rev.02 | 25/03/2026 */
+
 h1,
 h2,
 h3,
@@ -66,6 +83,11 @@ label {
   color: #a0aec0;
   font-size: 0.9rem;
 }
+
+/* #endregion */
+
+
+/* #region INPUTS | rev.02 | 25/03/2026 */
 
 input,
 select,
@@ -91,6 +113,11 @@ textarea:focus {
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
 }
 
+/* #endregion */
+
+
+/* #region BOTÕES | rev.02 | 25/03/2026 */
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -109,6 +136,11 @@ textarea:focus {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* #endregion */
+
+
+/* #region ANIMAÇÕES | rev.02 | 25/03/2026 */
 
 @keyframes fadeIn {
   from {
@@ -138,3 +170,5 @@ textarea:focus {
     transform: rotate(360deg);
   }
 }
+
+/* #endregion */

@@ -1,9 +1,12 @@
-﻿-- CRIAR BANCO: SoftwareProduct
--- VERSÃO: 1.0 - AC1
--- DATA: 2026-02-15
+-- -----------------------------------------------
+-- CreateSoftwareProduct.sql
+-- Tema: Criar banco de dados SoftwareProduct
+-- Última rev: 02 | Data: 25/03/2026
+-- -----------------------------------------------
 
 
--- Remove banco se existir
+-- #region REMOVER BANCO EXISTENTE | rev.02 | 25/03/2026
+
 IF DB_ID('SoftwareProduct') IS NOT NULL
 BEGIN
     ALTER DATABASE SoftwareProduct SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
@@ -12,7 +15,11 @@ BEGIN
 END
 GO
 
--- Criar novo banco
+-- #endregion
+
+
+-- #region CRIAR BANCO | rev.02 | 25/03/2026
+
 CREATE DATABASE SoftwareProduct
 GO
 
@@ -22,3 +29,5 @@ GO
 PRINT '✅ Banco SoftwareProduct criado com sucesso!';
 PRINT '✅ Pronto para criar tabelas!';
 GO
+
+-- #endregion

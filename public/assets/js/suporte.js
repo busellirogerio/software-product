@@ -1,15 +1,15 @@
-// suporte.js | data: 24/03/2026
-
-// ===============================
+// -----------------------------------------------
 // suporte.js
-// Módulo Suporte — Abrir Chamado
-// Depende de: config.js, auth.js
-// ===============================
+// Tema: Módulo de Suporte — Abrir Chamado + Meus Chamados
+// Última rev: 02 | Data: 25/03/2026
+// -----------------------------------------------
 
 document.addEventListener('DOMContentLoaded', () => {
-  /* ===========================
-    ELEMENTOS
-  =========================== */
+
+
+  // #region ELEMENTOS DO DOM | rev.02 | 25/03/2026
+
+  // --- abrir chamado
   const accItem     = document.getElementById('acc-suporte-chamado');
   const form        = document.getElementById('formSuporte');
   const supUsuario  = document.getElementById('supUsuario');
@@ -26,10 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnCancelar = document.getElementById('btnSupCancelar');
   const btnEnviar   = document.getElementById('btnSupEnviar');
 
-  /* ===========================
-    PREENCHER USUÁRIO E NOME DA SESSÃO
-    Sempre bloqueados — nunca apagados
-  =========================== */
+  // #endregion
+
+
+  // #region SESSÃO | rev.02 | 25/03/2026
+
+  // --- preencher usuário e nome da sessão (sempre bloqueados)
   function preencherSessao() {
     const sessionData = sessionStorage.getItem('usuario');
     if (!sessionData) return;
@@ -40,10 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   preencherSessao();
 
-  /* ===========================
-    MÁSCARA TELEFONE
-    (11) 99999-0000
-  =========================== */
+  // #endregion
+
+
+  // #region FORMULÁRIO | rev.02 | 25/03/2026
+
+  // --- máscara telefone: (11) 99999-0000
   if (supTelefone) {
     supTelefone.addEventListener('input', () => {
       let v = supTelefone.value.replace(/\D/g, '').slice(0, 11);
@@ -58,10 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ===========================
-    ZERAR CAMPOS EDITÁVEIS
-    Nunca apaga Usuário e Nome
-  =========================== */
+  // --- zerar campos editáveis (nunca apaga Usuário e Nome)
   function zerarForm() {
     if (supEmail)    supEmail.value    = '';
     if (supTelefone) supTelefone.value = '';
@@ -80,9 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     preencherSessao();
   }
 
-  /* ===========================
-    FECHAR ACCORDION + ZERAR
-  =========================== */
+  // --- fechar accordion + zerar
   function fecharAccordion() {
     if (accItem && accItem.classList.contains('open')) {
       accItem.classList.remove('open');
@@ -90,18 +89,13 @@ document.addEventListener('DOMContentLoaded', () => {
     zerarForm();
   }
 
-  /* ===========================
-    BOTÃO CANCELAR
-  =========================== */
+  // --- botão Cancelar
   if (btnCancelar) {
     btnCancelar.addEventListener('click', fecharAccordion);
   }
 
-  /* ===========================
-    FECHAR ACCORDION PELA SETA — zera ao fechar
-    Sobrescreve o listener genérico do dashboard.js
-    apenas para reagir ao fechamento
-  =========================== */
+  // --- fechar accordion pela seta: zera ao fechar
+  // sobrescreve o listener genérico do dashboard.js
   if (accItem) {
     const header = accItem.querySelector('.acc-header');
     if (header) {
@@ -114,10 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* ===========================
-    SAIR DA SEÇÃO SUPORTE — fecha e zera
-    Observa cliques nos itens de navegação
-  =========================== */
+  // --- sair da seção Suporte: fecha e zera
   document.querySelectorAll('.nav-item').forEach((item) => {
     item.addEventListener('click', () => {
       if (item.dataset.section !== 'suporte') {
@@ -126,9 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* ===========================
-    VALIDAÇÃO
-  =========================== */
+  // --- validação
   function validar() {
     const obrigatorios = [
       { el: supEmail,    label: 'E-mail' },
@@ -157,9 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return true;
   }
 
-  /* ===========================
-    MENSAGEM DE FEEDBACK
-  =========================== */
+  // --- mensagem de feedback
   function mostrarMensagem(texto, tipo) {
     if (!supMensagem) return;
     supMensagem.textContent   = texto;
@@ -167,10 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     supMensagem.style.display = 'block';
   }
 
-  /* ===========================
-    GERAR PROTOCOLO ALEATÓRIO
-    Formato: SUP-YYYYMMDD-XXXXX
-  =========================== */
+  // --- gerar protocolo aleatório: SUP-YYYYMMDD-XXXXX
   function gerarProtocolo() {
     const hoje = new Date();
     const data = hoje.toISOString().slice(0, 10).replace(/-/g, '');
@@ -178,9 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return `SUP-${data}-${rand}`;
   }
 
-  /* ===========================
-    SUBMIT — ENVIAR CHAMADO
-  =========================== */
+  // --- submit: enviar chamado
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -221,4 +203,217 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // #endregion
+
+
+  // #region MEUS CHAMADOS | rev.02 | 25/03/2026
+
+  // --- elementos do histórico
+  const listaChamados        = document.getElementById('listaChamados');
+  const btnConsultarChamados = document.getElementById('btnConsultarChamados');
+  const btnPdfChamados       = document.getElementById('btnPdfChamados');
+  const supDataInicial       = document.getElementById('supDataInicial');
+  const supDataFinal         = document.getElementById('supDataFinal');
+
+  let chamadosCarregados = [];
+
+  // --- formatar data
+  function formatarData(isoString) {
+    if (!isoString) return '—';
+    const d = new Date(isoString);
+    return d.toLocaleDateString('pt-BR');
+  }
+
+  // --- renderizar estrelas
+  function renderStars(chamadoId, qualidadeAtual) {
+    return [1, 2, 3, 4, 5].map((n) => {
+      const preenchida = qualidadeAtual && n <= qualidadeAtual;
+      return `<span class="estrela" data-id="${chamadoId}" data-val="${n}" style="cursor:pointer;font-size:18px;color:${preenchida ? '#f5a623' : '#ccc'};">★</span>`;
+    }).join('');
+  }
+
+  // --- renderizar lista de chamados
+  function renderizarChamados(lista) {
+    if (!listaChamados) return;
+
+    if (lista.length === 0) {
+      listaChamados.innerHTML = '<p class="tabela-vazia">Nenhum chamado encontrado.</p>';
+      return;
+    }
+
+    const linhas = lista.map((c) => `
+      <div class="vei-lista-row" data-chamado-id="${c.ChamadoId}" style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #eee;">
+        <span style="flex:1;">
+          <strong>${c.Protocolo}</strong> |
+          Data: <strong>${formatarData(c.DataEnvio)}</strong> |
+          Local: <strong>${c.LocalProblema}</strong> |
+          Nível: <strong>${c.NivelProblema}</strong>
+        </span>
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap;">
+          <input
+            type="checkbox"
+            class="chk-resolvido"
+            data-id="${c.ChamadoId}"
+            ${c.Resolvido ? 'checked' : ''}
+            style="width:16px;height:16px;cursor:pointer;"
+          />
+          Resolvido
+        </label>
+        <span class="bloco-estrelas" style="display:flex;align-items:center;gap:2px;">
+          ${renderStars(c.ChamadoId, c.Qualidade)}
+        </span>
+      </div>
+    `).join('');
+
+    listaChamados.innerHTML = `<div class="vei-resultado-card" style="padding:0 4px;">${linhas}</div>`;
+
+    // Listeners checkbox resolvido
+    listaChamados.querySelectorAll('.chk-resolvido').forEach((chk) => {
+      chk.addEventListener('change', async () => {
+        const id = chk.dataset.id;
+        try {
+          await apiRequest(`/suporte/chamados/${id}/resolvido`, {
+            method: 'PATCH',
+            body: { resolvido: chk.checked },
+          });
+        } catch {
+          chk.checked = !chk.checked; // reverte se falhar
+        }
+      });
+    });
+
+    // Listeners estrelas qualidade
+    listaChamados.querySelectorAll('.estrela').forEach((estrela) => {
+      estrela.addEventListener('click', async () => {
+        const id  = estrela.dataset.id;
+        const val = Number(estrela.dataset.val);
+
+        // Atualiza visual imediatamente
+        const bloco = estrela.closest('.bloco-estrelas');
+        bloco.querySelectorAll('.estrela').forEach((e) => {
+          e.style.color = Number(e.dataset.val) <= val ? '#f5a623' : '#ccc';
+        });
+
+        try {
+          await apiRequest(`/suporte/chamados/${id}/qualidade`, {
+            method: 'PATCH',
+            body: { qualidade: val },
+          });
+        } catch {
+          // falha silenciosa — visual já foi atualizado
+        }
+      });
+    });
+  }
+
+  // --- consultar chamados
+  async function consultarChamados() {
+    if (!listaChamados) return;
+
+    const sessionData = sessionStorage.getItem('usuario');
+    if (!sessionData) return;
+    const { usuario } = JSON.parse(sessionData);
+    const login = usuario.Login || '';
+
+    listaChamados.innerHTML = '<p class="tabela-vazia">Carregando...</p>';
+
+    const params = new URLSearchParams({ usuario: login });
+    if (supDataInicial && supDataInicial.value) params.append('dataInicial', supDataInicial.value);
+    if (supDataFinal   && supDataFinal.value)   params.append('dataFinal',   supDataFinal.value);
+
+    try {
+      chamadosCarregados = await apiRequest(`/suporte/chamados?${params.toString()}`);
+      renderizarChamados(chamadosCarregados);
+    } catch (error) {
+      listaChamados.innerHTML = '<p class="tabela-vazia">Erro ao carregar chamados.</p>';
+    }
+  }
+
+  if (btnConsultarChamados) {
+    btnConsultarChamados.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // Abre o accordion se estiver fechado
+      const accHistorico = document.getElementById('acc-suporte-historico');
+      if (accHistorico && !accHistorico.classList.contains('open')) {
+        accHistorico.classList.add('open');
+      }
+      consultarChamados();
+    });
+  }
+
+  // --- fechar accordion histórico: limpa lista
+  const accHistorico = document.getElementById('acc-suporte-historico');
+  if (accHistorico) {
+    const headerHistorico = accHistorico.querySelector('.acc-header');
+    if (headerHistorico) {
+      headerHistorico.addEventListener('click', () => {
+        // Limpa sempre ao clicar no header (abrindo ou fechando)
+        // Se estava fechado e vai abrir, a lista já estava vazia — sem impacto
+        chamadosCarregados = [];
+        if (listaChamados) {
+          listaChamados.innerHTML = '<p class="tabela-vazia">Clique em Consultar para carregar.</p>';
+        }
+        if (supDataInicial) supDataInicial.value = '';
+        if (supDataFinal)   supDataFinal.value   = '';
+      });
+    }
+  }
+
+  // --- exportar PDF
+  if (btnPdfChamados) {
+    btnPdfChamados.addEventListener('click', (e) => {
+      e.stopPropagation();
+
+      if (chamadosCarregados.length === 0) {
+        alert('Nenhum chamado para exportar. Clique em Consultar primeiro.');
+        return;
+      }
+
+      const linhas = chamadosCarregados.map((c) => `
+        <tr>
+          <td>${c.Protocolo}</td>
+          <td>${formatarData(c.DataEnvio)}</td>
+          <td>${c.LocalProblema}</td>
+          <td>${c.NivelProblema}</td>
+          <td>${c.Resolvido ? 'Sim' : 'Não'}</td>
+          <td>${c.Qualidade ? '★'.repeat(c.Qualidade) + '☆'.repeat(5 - c.Qualidade) : '—'}</td>
+        </tr>
+      `).join('');
+
+      const html = `
+        <html><head><title>Meus Chamados</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; }
+          h2 { margin-bottom: 16px; }
+          table { width: 100%; border-collapse: collapse; }
+          th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; font-size: 13px; }
+          th { background: #f0f0f0; }
+        </style></head>
+        <body>
+          <h2>Meus Chamados de Suporte</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Protocolo</th><th>Data</th><th>Local</th><th>Nível</th><th>Resolvido</th><th>Qualidade</th>
+              </tr>
+            </thead>
+            <tbody>${linhas}</tbody>
+          </table>
+        </body></html>
+      `;
+
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url  = URL.createObjectURL(blob);
+      const janela = window.open(url, '_blank');
+      janela.addEventListener('load', () => {
+        janela.print();
+        URL.revokeObjectURL(url);
+      });
+    });
+  }
+
+  // #endregion
+
+
 });

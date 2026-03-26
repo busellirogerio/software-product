@@ -1,4 +1,10 @@
-//  server.js | data: 03/03/2026
+// -----------------------------------------------
+// server.js
+// Tema: Configuração principal do servidor Express
+// Última rev: 01 | Data: 25/03/2026
+// -----------------------------------------------
+
+// #region IMPORTS | rev.01 | 25/03/2026
 
 const express = require('express');
 const cors = require('cors');
@@ -14,7 +20,12 @@ const suporteRoutes = require('./src/routes/suporteRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-//  RATE LIMIT
+// #endregion
+
+
+// #region MIDDLEWARES | rev.01 | 25/03/2026
+
+// --- rate limit
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 1000,
@@ -23,7 +34,8 @@ const globalLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-//  CORS
+
+// --- cors
 const corsOptions = {
   origin: [
     'http://localhost:3000',
@@ -35,7 +47,8 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
-//  SECURITY HEADERS
+
+// --- security headers
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
@@ -47,10 +60,12 @@ app.use((req, res, next) => {
 app.use(globalLimiter);
 app.use(cors(corsOptions));
 
-//  STATIC FILES
+
+// --- static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-//  API VALIDATION
+
+// --- api — parse json + validação de content-type
 app.use('/api', express.json({ limit: '10mb' }));
 
 app.use('/api', (req, res, next) => {
@@ -65,19 +80,26 @@ app.use('/api', (req, res, next) => {
   next();
 });
 
-//  LOG
+
+// --- log de requisições
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
 
-//  ROTAS API
+// #endregion
+
+
+// #region ROTAS | rev.01 | 25/03/2026
+
+// --- api
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/clientes', clienteRoutes);
 app.use('/api/veiculos', veiculoRoutes);
-app.use('/api/suporte', suporteRoutes);
+app.use('/api/suporte',  suporteRoutes);
 
-//  ROTAS FRONT (FIX)
+
+// --- frontend
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'pages', 'login.html'));
 });
@@ -86,7 +108,8 @@ app.get('/pages/dashboard.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'pages', 'dashboard.html'));
 });
 
-//  404
+
+// --- 404
 app.use((req, res) => {
   if (req.url.startsWith('/api')) {
     res.status(404).json({ erro: 'Endpoint não encontrado' });
@@ -95,12 +118,17 @@ app.use((req, res) => {
   }
 });
 
-//  START
+// #endregion
+
+
+// #region START | rev.01 | 25/03/2026
 
 app.listen(PORT, () => {
-  console.log('========================================');
+  console.log('----------------------------------------');
   console.log(`Servidor rodando: http://127.0.0.1:${PORT}`);
-  console.log(`Login: http://127.0.0.1:${PORT}/pages/login.html`);
+  console.log(`Login:     http://127.0.0.1:${PORT}/pages/login.html`);
   console.log(`Dashboard: http://127.0.0.1:${PORT}/pages/dashboard.html`);
-  console.log('========================================');
+  console.log('----------------------------------------');
 });
+
+// #endregion

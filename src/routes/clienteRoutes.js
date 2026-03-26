@@ -1,13 +1,22 @@
-// clienteRoutes.js | última revisão data: 22/03/2026
+// -----------------------------------------------
+// clienteRoutes.js
+// Tema: Rotas da API — dbo.Clientes
+// Última rev: 01 | Data: 25/03/2026
+// -----------------------------------------------
+
+// #region IMPORTS | rev.01 | 25/03/2026
 
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const router = express.Router();
 const clienteController = require('../controllers/clienteController');
 
-//  RATE LIMITERS
+// #endregion
 
-// Rotas gerais — 100 requisições por 15 min
+
+// #region RATE LIMITER | rev.01 | 25/03/2026
+
+// --- 100 requisições por IP em 15 minutos
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -16,45 +25,46 @@ const generalLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-//  VALIDAÇÃO DE BODY
+// #endregion
+
+
+// #region MIDDLEWARES | rev.01 | 25/03/2026
+
+// --- rejeita POST/PUT/PATCH sem body
 const validateJSON = (req, res, next) => {
   if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
     if (!req.body || Object.keys(req.body).length === 0) {
-      return res
-        .status(400)
-        .json({ erro: 'Dados obrigatórios não fornecidos' });
+      return res.status(400).json({ erro: 'Dados obrigatórios não fornecidos' });
     }
   }
   next();
 };
 
-//  ROTAS
+// #endregion
 
-// Listar todos (ATIVO + BLOQUEADO)
-router.get('/', generalLimiter, clienteController.listarTodos);
 
-// Buscar por cpfcnpj
-router.get('/buscar', generalLimiter, clienteController.buscar);
+// #region ROTAS | rev.01 | 25/03/2026
 
-// Buscar por ID
-router.get('/:id', generalLimiter, clienteController.buscarPorId);
+// --- listagem e busca
+router.get('/',        generalLimiter, clienteController.listarTodos);
+router.get('/buscar',  generalLimiter, clienteController.buscar);
+router.get('/:id',     generalLimiter, clienteController.buscarPorId);
 
-// Criar novo cliente
-router.post('/', generalLimiter, validateJSON, clienteController.criar);
+// --- criar e atualizar
+router.post('/',       generalLimiter, validateJSON, clienteController.criar);
+router.put('/:id',     generalLimiter, validateJSON, clienteController.atualizar);
 
-// Atualizar dados do cliente
-router.put('/:id', generalLimiter, validateJSON, clienteController.atualizar);
-
-// Reativar cliente inativo (Status = 'ATIVO' + atualiza dados)
-router.patch('/:id/reativar', generalLimiter, validateJSON, clienteController.reativar);
-
-// Inativar cliente (soft delete — Status = 'INATIVO')
-router.delete('/:id', generalLimiter, clienteController.inativar);
-
-// Bloquear cliente (Status = 'BLOQUEADO')
-router.patch('/:id/bloquear', generalLimiter, clienteController.bloquear);
-
-// Desbloquear cliente (Status = 'ATIVO')
+// --- status
+router.patch('/:id/reativar',    generalLimiter, validateJSON, clienteController.reativar);
+router.patch('/:id/bloquear',    generalLimiter, clienteController.bloquear);
 router.patch('/:id/desbloquear', generalLimiter, clienteController.desbloquear);
+router.delete('/:id',            generalLimiter, clienteController.inativar);
+
+// #endregion
+
+
+// #region EXPORTS | rev.01 | 25/03/2026
 
 module.exports = router;
+
+// #endregion

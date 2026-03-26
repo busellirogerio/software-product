@@ -1,37 +1,47 @@
-// database.js | data: 03/03/2026
+// -----------------------------------------------
+// database.js
+// Tema: Configuração do pool de conexões SQL Server
+// Última rev: 01 | Data: 25/03/2026
+// -----------------------------------------------
 
-// src/config/database.js
+// #region IMPORTS | rev.01 | 25/03/2026
+
 const sql = require('mssql');
 require('dotenv').config();
 
-// Validação de variáveis de ambiente obrigatórias
+// #endregion
+
+
+// #region VALIDAÇÃO DE AMBIENTE | rev.01 | 25/03/2026
+
 const requiredEnvVars = ['DB_SERVER', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD'];
 const missingVars = requiredEnvVars.filter((varName) => !process.env[varName]);
 
 if (missingVars.length > 0) {
-  console.error(
-    '❌ Variáveis de ambiente obrigatórias não definidas:',
-    missingVars,
-  );
+  console.error('❌ Variáveis de ambiente obrigatórias não definidas:', missingVars);
   process.exit(1);
 }
 
-// Configuração do banco com pool de conexões
-const config = {
-  server: process.env.DB_SERVER,
-  database: process.env.DB_DATABASE,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  port: parseInt(process.env.DB_PORT, 10) || 1433,
+// #endregion
 
-  // Configurações de pool para performance
+
+// #region CONFIG | rev.01 | 25/03/2026
+
+const config = {
+  server:   process.env.DB_SERVER,
+  database: process.env.DB_DATABASE,
+  user:     process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  port:     parseInt(process.env.DB_PORT, 10) || 1433,
+
+  // --- pool de conexões
   pool: {
-    max: 10, // Máximo 10 conexões simultâneas
-    min: 2, // Mínimo 2 conexões sempre ativas
+    max: 10,             // máximo 10 conexões simultâneas
+    min: 2,              // mínimo 2 conexões sempre ativas
     idleTimeoutMillis: 30000, // 30s timeout para conexões ociosas
   },
 
-  // Configurações de conexão
+  // --- opções de conexão
   options: {
     encrypt: false,
     trustServerCertificate: true,
@@ -40,35 +50,32 @@ const config = {
     enableArithAbort: true,
   },
 
-  // Configurações de retry
+  // --- retry
   retry: {
     count: 3,
     delay: 1000,
   },
 };
 
-// Variável para controlar pool global
+// #endregion
+
+
+// #region POOL | rev.01 | 25/03/2026
+
 let globalPool = null;
 
-// Função para obter conexão do pool
+// --- obtém ou cria o pool global
 const getPool = async () => {
   try {
     if (!globalPool) {
       console.log('🔌 Criando pool de conexões com SQL Server...');
       globalPool = await sql.connect(config);
 
-      // Eventos do pool
-      globalPool.on('connect', () => {
-        console.log('✅ Nova conexão estabelecida com SQL Server');
-      });
-
-      globalPool.on('close', () => {
-        console.log('⚠️  Conexão com SQL Server fechada');
-      });
-
-      globalPool.on('error', (err) => {
+      globalPool.on('connect', () => console.log('✅ Nova conexão estabelecida com SQL Server'));
+      globalPool.on('close',   () => console.log('⚠️  Conexão com SQL Server fechada'));
+      globalPool.on('error',   (err) => {
         console.error('❌ Erro na conexão SQL Server:', err);
-        globalPool = null; // Reset pool on error
+        globalPool = null;
       });
 
       console.log('✅ Pool de conexões SQL Server criado com sucesso');
@@ -82,11 +89,12 @@ const getPool = async () => {
   }
 };
 
-// Função para testar conectividade
+
+// --- testa conectividade
 const testConnection = async () => {
   try {
     const pool = await getPool();
-    const result = await pool.request().query('SELECT 1 as test');
+    await pool.request().query('SELECT 1 as test');
     console.log('✅ Teste de conectividade SQL Server: OK');
     return true;
   } catch (error) {
@@ -96,7 +104,8 @@ const testConnection = async () => {
   }
 };
 
-// Função para fechar pool gracefully
+
+// --- fecha o pool gracefully
 const closePool = async () => {
   if (globalPool) {
     try {
@@ -109,11 +118,11 @@ const closePool = async () => {
   }
 };
 
-// Exportar configurações e funções
-module.exports = {
-  config,
-  getPool,
-  testConnection,
-  closePool,
-  sql,
-};
+// #endregion
+
+
+// #region EXPORTS | rev.01 | 25/03/2026
+
+module.exports = { config, getPool, testConnection, closePool, sql };
+
+// #endregion

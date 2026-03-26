@@ -1,4 +1,11 @@
-/* login.css | data: 03/03/2026 */
+/* -----------------------------------------------
+   login.css
+   Tema: Estilos exclusivos da tela de login
+   Última rev: 02 | Data: 25/03/2026
+   ----------------------------------------------- */
+
+
+/* #region CONTAINER | rev.02 | 25/03/2026 */
 
 .login-container {
   display: flex;
@@ -40,6 +47,11 @@
   text-transform: uppercase;
 }
 
+/* #endregion */
+
+
+/* #region FORMULÁRIO | rev.02 | 25/03/2026 */
+
 .form-group {
   margin-bottom: var(--spacing-lg);
 }
@@ -63,6 +75,11 @@
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
 }
+
+/* #endregion */
+
+
+/* #region SENHA | rev.02 | 25/03/2026 */
 
 .password-container {
   position: relative;
@@ -92,6 +109,11 @@
 .toggle-password:hover {
   color: var(--primary-color);
 }
+
+/* #endregion */
+
+
+/* #region BOTÕES | rev.02 | 25/03/2026 */
 
 .btn-login {
   width: 100%;
@@ -144,7 +166,11 @@
   background: rgba(52, 152, 219, 0.1);
 }
 
-/* Login messages */
+/* #endregion */
+
+
+/* #region MENSAGENS | rev.02 | 25/03/2026 */
+
 .login-message {
   border-radius: var(--border-radius);
   padding: var(--spacing-md);
@@ -166,7 +192,11 @@
   border: 1px solid rgba(46, 204, 113, 0.3);
 }
 
-/* Modal */
+/* #endregion */
+
+
+/* #region MODAL | rev.02 | 25/03/2026 */
+
 .modal {
   display: none;
   position: fixed;
@@ -250,6 +280,11 @@
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
 }
 
+/* #endregion */
+
+
+/* #region BOTÕES DO MODAL | rev.02 | 25/03/2026 */
+
 .modal-buttons {
   display: flex;
   gap: var(--spacing-md);
@@ -294,7 +329,11 @@
   cursor: not-allowed;
 }
 
-/* Reset Success */
+/* #endregion */
+
+
+/* #region RESET SUCESSO | rev.02 | 25/03/2026 */
+
 .reset-success {
   padding: var(--spacing-xl);
   text-align: center;
@@ -342,6 +381,12 @@
   background: #27ae60;
 }
 
+/* #endregion */
+
+
+/* #region RESPONSIVO | rev.02 | 25/03/2026 */
+
+/* --- tablet */
 @media (max-width: 768px) {
   .login-box {
     padding: var(--spacing-xl);
@@ -359,6 +404,7 @@
   }
 }
 
+/* --- mobile */
 @media (max-width: 480px) {
   .login-container {
     padding: var(--spacing-md);
@@ -376,7 +422,11 @@
   }
 }
 
-/* Logo e título do login */
+/* #endregion */
+
+
+/* #region LOGO | rev.02 | 25/03/2026 */
+
 .login-logo {
   width: 80px;
   height: 80px;
@@ -395,3 +445,5 @@
 .logo-destaque {
   color: var(--primary-color);
 }
+
+/* #endregion */

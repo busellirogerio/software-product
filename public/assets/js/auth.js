@@ -1,15 +1,25 @@
-// auth.js | data: 03/03/2026
+// -----------------------------------------------
+// auth.js
+// Tema: Proteção de rotas e gerenciamento de sessão
+// Última rev: 01 | Data: 25/03/2026
+// -----------------------------------------------
 
-// Proteção de rotas e gerenciamento de autenticação
 document.addEventListener('DOMContentLoaded', () => {
-  // Configurações de autenticação
+
+  // #region CONFIG | rev.01 | 25/03/2026
+
   const AUTH_CONFIG = {
-    sessionKey: 'usuario',
+    sessionKey:    'usuario',
     maxSessionTime: 24 * 60 * 60 * 1000, // 24 horas
-    checkInterval: 5 * 60 * 1000, // Verifica sessão a cada 5 minutos
+    checkInterval:   5 * 60 * 1000,       // verifica sessão a cada 5 minutos
   };
 
-  // Função para obter usuário logado
+  // #endregion
+
+
+  // #region SESSÃO | rev.01 | 25/03/2026
+
+  // --- obter usuário logado
   const getUsuarioLogado = () => {
     try {
       const usuarioJson = sessionStorage.getItem(AUTH_CONFIG.sessionKey);
@@ -17,17 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const sessionData = JSON.parse(usuarioJson);
 
-      // Valida estrutura básica da sessão
+      // --- valida estrutura básica
       if (!sessionData.usuario || !sessionData.loginTime) {
         console.warn('⚠️ Sessão inválida detectada');
         clearSession();
         return null;
       }
 
-      // Verifica se sessão expirou
-      const now = Date.now();
-      const sessionAge = now - sessionData.loginTime;
-
+      // --- verifica expiração
+      const sessionAge = Date.now() - sessionData.loginTime;
       if (sessionAge > AUTH_CONFIG.maxSessionTime) {
         console.warn('⚠️ Sessão expirada');
         clearSession();
@@ -43,13 +51,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Função para limpar sessão
+
+  // --- limpar sessão
   const clearSession = () => {
     sessionStorage.removeItem(AUTH_CONFIG.sessionKey);
-    localStorage.removeItem('usuarioLogado'); // Remove legacy storage
+    localStorage.removeItem('usuarioLogado'); // remove legacy storage
   };
 
-  // Função para exibir mensagens
+  // #endregion
+
+
+  // #region UI | rev.01 | 25/03/2026
+
+  // --- exibir mensagem flutuante
   const showMessage = (message, type = 'error') => {
     const existingAlert = document.querySelector('.auth-alert');
     if (existingAlert) existingAlert.remove();
@@ -69,13 +83,16 @@ document.addEventListener('DOMContentLoaded', () => {
       max-width: 300px;
     `;
     alert.textContent = message;
-
     document.body.appendChild(alert);
-
     setTimeout(() => alert.remove(), 4000);
   };
 
-  // Função para redirecionar para login
+  // #endregion
+
+
+  // #region AUTENTICAÇÃO | rev.01 | 25/03/2026
+
+  // --- redirecionar para login
   const redirectToLogin = () => {
     const currentPath = window.location.pathname;
     if (!currentPath.includes('login.html')) {
@@ -84,7 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Função principal de verificação
+
+  // --- verificar autenticação e atualizar nome no header
   const verificarAutenticacao = () => {
     const usuario = getUsuarioLogado();
 
@@ -93,31 +111,26 @@ document.addEventListener('DOMContentLoaded', () => {
       return false;
     }
 
-    // Atualizar nome do usuário no header
     const nomeEl = document.getElementById('nomeUsuario');
     if (nomeEl) {
-      const nomeDisplay = usuario.NomeCompleto || usuario.Login || 'Usuário';
-      nomeEl.textContent = nomeDisplay;
+      nomeEl.textContent = usuario.NomeCompleto || usuario.Login || 'Usuário';
       nomeEl.title = `Logado como: ${usuario.Email || usuario.Login}`;
     }
 
-    // Log de atividade
     console.log('✅ Usuário autenticado:', usuario.Login);
     return true;
   };
 
-  // Função de logout
+
+  // --- logout
   const logout = () => {
     try {
       const usuario = getUsuarioLogado();
-      if (usuario) {
-        console.log('👋 Logout realizado:', usuario.Login);
-      }
+      if (usuario) console.log('👋 Logout realizado:', usuario.Login);
 
       clearSession();
       showMessage('Logout realizado com sucesso.', 'success');
 
-      // Pequeno delay para mostrar a mensagem
       setTimeout(() => {
         window.location.href = 'http://127.0.0.1:3000/pages/login.html';
       }, 1500);
@@ -128,19 +141,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Verificar se estamos em uma página protegida
+  // #endregion
+
+
+  // #region INICIALIZAÇÃO | rev.01 | 25/03/2026
+
   const currentPath = window.location.pathname;
   const isProtectedPage =
     currentPath.includes('dashboard.html') ||
     currentPath.includes('admin.html') ||
     currentPath.includes('usuarios.html');
 
-  // Executar verificação se estiver em página protegida
+  // --- executa verificação em páginas protegidas
   if (isProtectedPage) {
     const isAuthenticated = verificarAutenticacao();
 
     if (isAuthenticated) {
-      // Configurar verificação periódica da sessão
+      // --- verificação periódica da sessão
       setInterval(() => {
         const usuario = getUsuarioLogado();
         if (!usuario) {
@@ -151,23 +168,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Configurar botão de sair
+
+  // --- botão sair
   const btnSair = document.getElementById('btnSair');
   if (btnSair) {
     btnSair.addEventListener('click', (e) => {
       e.preventDefault();
-
-      // Confirmação opcional para logout
-      if (confirm('Deseja realmente sair do sistema?')) {
-        logout();
-      }
+      if (confirm('Deseja realmente sair do sistema?')) logout();
     });
   }
 
-  // Detectar tentativa de acesso direto a páginas protegidas
+
+  // --- atualiza timestamp ao sair da página
   window.addEventListener('beforeunload', () => {
     if (isProtectedPage && getUsuarioLogado()) {
-      // Atualiza timestamp da sessão
       const sessionData = JSON.parse(
         sessionStorage.getItem(AUTH_CONFIG.sessionKey),
       );
@@ -179,7 +193,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Detectar mudanças na sessionStorage (múltiplas abas)
+
+  // --- detecta encerramento em outra aba
   window.addEventListener('storage', (e) => {
     if (e.key === AUTH_CONFIG.sessionKey && !e.newValue && isProtectedPage) {
       showMessage('Sessão encerrada em outra aba.');
@@ -187,8 +202,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Expor funções globais necessárias
-  window.logout = logout;
-  window.getUsuarioLogado = getUsuarioLogado;
+  // #endregion
+
+
+  // #region EXPORTS GLOBAIS | rev.01 | 25/03/2026
+
+  window.logout                = logout;
+  window.getUsuarioLogado      = getUsuarioLogado;
   window.verificarAutenticacao = verificarAutenticacao;
+
+  // #endregion
+
 });

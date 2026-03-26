@@ -1,37 +1,45 @@
-﻿-- BANCO: SoftwareProduct
--- TESTE: dbo.Clientes
--- VERSÃO: 1.0 - AC1
--- DATA: 2026-02-18
+-- -----------------------------------------------
+-- TesteClientes.sql
+-- Tema: Testes CRUD na tabela dbo.Clientes
+-- Última rev: 02 | Data: 25/03/2026
+-- Banco: SoftwareProduct
+-- -----------------------------------------------
+
+
 USE SoftwareProduct;
 GO
 
 
--- 1) ZERAR TABELA E REINICIAR CONTADOR
+-- #region ZERAR E VERIFICAR | rev.02 | 25/03/2026
+
+-- --- 1) zerar tabela e reiniciar contador
 DELETE FROM dbo.Clientes;
 DBCC CHECKIDENT ('dbo.Clientes', RESEED, 0);
 GO
 
-
--- 2) VERIFICAR SE ZEROU
+-- --- 2) verificar se zerou
 SELECT * FROM dbo.Clientes;
 GO
 
 SELECT
-	ClienteId,
-	NomeCompleto,
-	CpfCnpj,
-	Telefone,
-	Ativo
-FROM 
-	dbo.Clientes;
+    ClienteId,
+    NomeCompleto,
+    CpfCnpj,
+    Telefone,
+    Ativo
+FROM
+    dbo.Clientes;
 GO
-
 
 SELECT * FROM dbo.Clientes
 WHERE ClienteId = 3;
 
+-- #endregion
 
--- 3) INSERIR 6 CLIENTES FICTÍCIOS — todos ATIVOS (Ativo=1, Bloqueado=0)
+
+-- #region INSERIR CLIENTES | rev.02 | 25/03/2026
+
+-- --- 3) inserir 6 clientes fictícios — todos ATIVOS (Ativo=1, Bloqueado=0)
 
 INSERT INTO dbo.Clientes
     (Tipo, CpfCnpj, NomeCompleto, DataNascimento, Genero,
@@ -93,59 +101,58 @@ VALUES
      '01452000', 'AVENIDA PAULISTA', '750', 'ANDAR 5', 'PINHEIROS', 'SAO PAULO', 'SP');
 GO
 
-
--- 4) VERIFICAR REGISTROS INSERIDOS
+-- --- 4) verificar registros inseridos
 SELECT * FROM dbo.Clientes;
 GO
 
+-- #endregion
 
--- 5) ATUALIZAR — verifica trigger DataAtualizacao
+
+-- #region TESTES CRUD | rev.02 | 25/03/2026
+
+-- --- 5) atualizar: verifica se trigger DataAtualizacao dispara
 UPDATE dbo.Clientes
 SET Telefone = '11988880001'
 WHERE CpfCnpj = '12345678901';
 GO
 
-
--- 6) VERIFICAR SE DataAtualizacao MUDOU
+-- --- 6) verificar se DataAtualizacao mudou
 SELECT ClienteId, NomeCompleto, Telefone, DataCriacao, DataAtualizacao
 FROM dbo.Clientes
 WHERE CpfCnpj = '12345678901';
 GO
 
-
--- 7) SOFT DELETE — Ativo = 0
---    Registro permanece no banco
+-- --- 7) soft delete: Ativo = 0 (registro permanece no banco)
 UPDATE dbo.Clientes
 SET Ativo = 0
 WHERE CpfCnpj = '12345678901';
 GO
 
-
--- 8) VERIFICAR SOFT DELETE
---    Ativo = 0 mas registro existe
+-- --- 8) verificar soft delete: Ativo = 0 mas registro existe
 SELECT ClienteId, NomeCompleto, Ativo
 FROM dbo.Clientes;
 GO
 
+-- #endregion
 
--- 9) BUSCA POR NOME (considera espaço)
+
+-- #region BUSCAS | rev.02 | 25/03/2026
+
+-- --- 9) busca por nome (considera espaço)
 SELECT ClienteId, NomeCompleto, CpfCnpj, Telefone
 FROM dbo.Clientes
 WHERE NomeCompleto LIKE '%JOAO%'
 AND Ativo = 1;
 GO
 
-
--- 10) BUSCA POR CPF/CNPJ
+-- --- 10) busca por CPF/CNPJ
 SELECT ClienteId, NomeCompleto, CpfCnpj, Tipo
 FROM dbo.Clientes
 WHERE CpfCnpj = '12345678000195'
 AND Ativo = 1;
 GO
 
-
--- 11) LISTAR TODOS OS CLIENTES ATIVOS
---     Colunas da listagem conforme AC1
+-- --- 11) listar todos os clientes ativos (colunas da listagem AC1)
 SELECT
     ClienteId,
     NomeCompleto,
@@ -158,7 +165,11 @@ WHERE Ativo = 1
 ORDER BY NomeCompleto;
 GO
 
+-- --- verificar FK
+SELECT name FROM sys.foreign_keys WHERE name = 'FK_Veiculos_ClienteId';
+
+-- #endregion
+
+
 PRINT '✅ Testes dbo.Clientes concluídos com sucesso!';
 GO
-
-SELECT name FROM sys.foreign_keys WHERE name = 'FK_Veiculos_ClienteId';

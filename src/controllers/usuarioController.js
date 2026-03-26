@@ -1,15 +1,25 @@
-// usuarioController.js | data: 03/03/2026
+// -----------------------------------------------
+// usuarioController.js
+// Tema: Controller — validações e respostas HTTP para Usuários
+// Última rev: 01 | Data: 25/03/2026
+// -----------------------------------------------
+
+// #region IMPORTS | rev.01 | 25/03/2026
 
 const usuarioRepository = require('../repositories/usuarioRepository');
 
+// #endregion
+
+
+// #region CONTROLLER | rev.01 | 25/03/2026
+
 class UsuarioController {
-  // Autentica usuário e retorna dados básicos
-  // Remove informações sensíveis da resposta
+
+  // --- login: autentica e retorna dados sem senha
   async login(req, res) {
     try {
       const { email, senha } = req.body;
 
-      // Validação de campos obrigatórios
       if (!email || !senha) {
         return res.status(400).json({ erro: 'Email e senha são obrigatórios' });
       }
@@ -20,7 +30,7 @@ class UsuarioController {
         return res.status(401).json({ erro: 'Usuário ou senha inválidos' });
       }
 
-      // Remove dados sensíveis da resposta
+      // --- remove senha da resposta
       const { Senha, ...usuarioSemSenha } = usuario;
       res.json(usuarioSemSenha);
     } catch (error) {
@@ -29,18 +39,16 @@ class UsuarioController {
     }
   }
 
-  // Reset de senha via email
-  // Valida formato do email antes de processar
+
+  // --- reset de senha via email
   async resetSenha(req, res) {
     try {
       const { email } = req.body;
 
-      // Validação de campo obrigatório
       if (!email) {
         return res.status(400).json({ erro: 'Email é obrigatório' });
       }
 
-      // Validação básica de formato de email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         return res.status(400).json({ erro: 'Formato de email inválido' });
@@ -52,18 +60,15 @@ class UsuarioController {
         return res.status(404).json({ erro: 'Usuário não encontrado' });
       }
 
-      res.json({
-        mensagem: 'Solicitação de reset realizada com sucesso',
-        protocolo: resultado.protocolo,
-      });
+      res.json({ mensagem: 'Solicitação de reset realizada com sucesso', protocolo: resultado.protocolo });
     } catch (error) {
       console.error('Erro no reset de senha:', error);
       res.status(500).json({ erro: 'Erro interno do servidor' });
     }
   }
 
-  // Lista todos usuários ativos
-  // Dados sensíveis já removidos no repository
+
+  // --- listar todos os usuários ativos (sem senha)
   async listarTodos(req, res) {
     try {
       const usuarios = await usuarioRepository.listarTodos();
@@ -74,44 +79,35 @@ class UsuarioController {
     }
   }
 
-  // Cria novo usuário
-  // Valida campos obrigatórios e formatos
+
+  // --- criar novo usuário
   async criar(req, res) {
     try {
       const { login, senha, nomeCompleto, email } = req.body;
 
-      // Validação de campos obrigatórios
       if (!login || !senha || !nomeCompleto || !email) {
-        return res.status(400).json({
-          erro: 'Login, senha, nome completo e email são obrigatórios',
-        });
+        return res.status(400).json({ erro: 'Login, senha, nome completo e email são obrigatórios' });
       }
 
-      // Validação de tamanhos mínimos
       if (senha.length < 6) {
-        return res
-          .status(400)
-          .json({ erro: 'Senha deve ter pelo menos 6 caracteres' });
+        return res.status(400).json({ erro: 'Senha deve ter pelo menos 6 caracteres' });
       }
 
-      // Validação de formato de email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         return res.status(400).json({ erro: 'Formato de email inválido' });
       }
 
-      // Sanitiza dados de entrada
       const dadosLimpos = {
-        login: login.trim(),
+        login:        login.trim(),
         senha,
         nomeCompleto: nomeCompleto.trim(),
-        email: email.trim().toLowerCase(),
+        email:        email.trim().toLowerCase(),
       };
 
       const usuario = await usuarioRepository.criar(dadosLimpos);
       res.status(201).json(usuario);
     } catch (error) {
-      // Trata erro de duplicação de login/email
       if (error.message.includes('UNIQUE')) {
         return res.status(409).json({ erro: 'Login ou email já existem' });
       }
@@ -120,42 +116,34 @@ class UsuarioController {
     }
   }
 
-  // Atualiza dados do usuário
-  // Valida campos e formatos antes de atualizar
+
+  // --- atualizar dados do usuário
   async atualizar(req, res) {
     try {
       const { id } = req.params;
-      const { nomeCompleto, email, senha } = req.body;
 
-      // Validação de ID
       if (!id || isNaN(id)) {
         return res.status(400).json({ erro: 'ID inválido' });
       }
 
-      // Validação de campos obrigatórios
+      const { nomeCompleto, email, senha } = req.body;
+
       if (!nomeCompleto || !email || !senha) {
-        return res.status(400).json({
-          erro: 'Nome completo, email e senha são obrigatórios',
-        });
+        return res.status(400).json({ erro: 'Nome completo, email e senha são obrigatórios' });
       }
 
-      // Validação de senha mínima
       if (senha.length < 6) {
-        return res
-          .status(400)
-          .json({ erro: 'Senha deve ter pelo menos 6 caracteres' });
+        return res.status(400).json({ erro: 'Senha deve ter pelo menos 6 caracteres' });
       }
 
-      // Validação de formato de email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         return res.status(400).json({ erro: 'Formato de email inválido' });
       }
 
-      // Sanitiza dados
       const dadosLimpos = {
         nomeCompleto: nomeCompleto.trim(),
-        email: email.trim().toLowerCase(),
+        email:        email.trim().toLowerCase(),
         senha,
       };
 
@@ -172,13 +160,12 @@ class UsuarioController {
     }
   }
 
-  // Soft delete do usuário
-  // Valida ID antes de processar
+
+  // --- soft delete
   async deletar(req, res) {
     try {
       const { id } = req.params;
 
-      // Validação de ID
       if (!id || isNaN(id)) {
         return res.status(400).json({ erro: 'ID inválido' });
       }
@@ -195,6 +182,14 @@ class UsuarioController {
       res.status(500).json({ erro: 'Erro interno do servidor' });
     }
   }
+
 }
 
+// #endregion
+
+
+// #region EXPORTS | rev.01 | 25/03/2026
+
 module.exports = new UsuarioController();
+
+// #endregion

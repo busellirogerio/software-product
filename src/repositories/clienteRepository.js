@@ -1,48 +1,59 @@
-// clienteRepository.js | última revisão data: 22/03/2026
-
+// -----------------------------------------------
+// clienteRepository.js
+// Tema: Repositório — queries SQL para dbo.Clientes
+// Última rev: 01 | Data: 25/03/2026
+// -----------------------------------------------
 // Regras de status:
 //   Ativo=1, Bloqueado=0 → ATIVO    (aparece na lista, recebe comunicação)
 //   Ativo=1, Bloqueado=1 → BLOQUEADO (aparece na lista, sem comunicação/eventos)
 //   Ativo=0              → INATIVO  (não aparece em nada, só busca direta por CPF)
+// -----------------------------------------------
+
+// #region IMPORTS | rev.01 | 25/03/2026
 
 const { getPool, sql } = require('../config/database');
 
+// #endregion
+
+
+// #region REPOSITORY | rev.01 | 25/03/2026
+
 class ClienteRepository {
 
-  // LISTAR TODOS — retorna ATIVO e BLOQUEADO (Ativo=1), ordenados por nome
+  // --- listar todos ATIVO e BLOQUEADO (Ativo=1), ordenados por nome
   async listarTodos() {
-    const pool = await getPool();
+    const pool   = await getPool();
     const result = await pool.request().query(`
-        SELECT
-          ClienteId, Tipo, CpfCnpj, NomeCompleto, DataNascimento,
-          Genero, Telefone, TelefoneWhatsApp, Email,
-          Cep, Logradouro, Numero, Complemento, Bairro, Cidade, Estado,
-          Ativo, Bloqueado, DataCriacao
-        FROM dbo.Clientes
-        WHERE Ativo = 1
-        ORDER BY NomeCompleto
-      `);
+      SELECT
+        ClienteId, Tipo, CpfCnpj, NomeCompleto, DataNascimento,
+        Genero, Telefone, TelefoneWhatsApp, Email,
+        Cep, Logradouro, Numero, Complemento, Bairro, Cidade, Estado,
+        Ativo, Bloqueado, DataCriacao
+      FROM dbo.Clientes
+      WHERE Ativo = 1
+      ORDER BY NomeCompleto
+    `);
     return result.recordset;
   }
 
-  // BUSCAR POR ID — retorna qualquer status
+
+  // --- buscar por ID — retorna qualquer status
   async buscarPorId(id) {
-    const pool = await getPool();
-    const result = await pool.request().input('id', sql.Int, id).query(`
-        SELECT *
-        FROM dbo.Clientes
-        WHERE ClienteId = @id
-      `);
+    const pool   = await getPool();
+    const result = await pool.request()
+      .input('id', sql.Int, id)
+      .query(`SELECT * FROM dbo.Clientes WHERE ClienteId = @id`);
     return result.recordset[0] || null;
   }
 
-  // BUSCAR POR CPF/CNPJ — retorna qualquer status (ATIVO, BLOQUEADO, INATIVO)
+
+  // --- buscar por CPF/CNPJ — retorna qualquer status (ATIVO, BLOQUEADO, INATIVO)
   async buscarPorCpfCnpj(cpfCnpj) {
-    const pool = await getPool();
+    const pool          = await getPool();
     const apenasNumeros = cpfCnpj.replace(/[.\-\/]/g, '');
-    const result = await pool
-      .request()
-      .input('cpfCnpj', sql.NVarChar, apenasNumeros).query(`
+    const result        = await pool.request()
+      .input('cpfCnpj', sql.NVarChar, apenasNumeros)
+      .query(`
         SELECT ClienteId, Tipo, CpfCnpj, NomeCompleto, Genero, Telefone, DataNascimento, Ativo, Bloqueado
         FROM dbo.Clientes
         WHERE CpfCnpj = @cpfCnpj
@@ -50,39 +61,39 @@ class ClienteRepository {
     return result.recordset;
   }
 
-  // CRIAR — se CPF/CNPJ já existe inativo (Ativo=0) reativa, senão INSERT normal
+
+  // --- criar — se CPF/CNPJ já existe inativo (Ativo=0) reativa, senão INSERT normal
   async criar(dados) {
     const pool = await getPool();
 
-    // Verifica se já existe inativo com esse CPF/CNPJ
-    const existente = await pool
-      .request()
-      .input('cpfCnpj', sql.NVarChar, dados.cpfCnpj).query(`
-        SELECT ClienteId
-        FROM dbo.Clientes
+    // --- verifica se já existe inativo com esse CPF/CNPJ
+    const existente = await pool.request()
+      .input('cpfCnpj', sql.NVarChar, dados.cpfCnpj)
+      .query(`
+        SELECT ClienteId FROM dbo.Clientes
         WHERE CpfCnpj = @cpfCnpj AND Ativo = 0
       `);
 
     if (existente.recordset[0]) {
       const id = existente.recordset[0].ClienteId;
-      await pool
-        .request()
-        .input('id', sql.Int, id)
-        .input('nomeCompleto', sql.NVarChar, dados.nomeCompleto)
-        .input('dataNascimento', sql.Date, dados.dataNascimento || null)
-        .input('genero', sql.Char, dados.genero || null)
-        .input('telefone', sql.NVarChar, dados.telefone || null)
-        .input('telefoneWhatsApp', sql.Bit, dados.telefoneWhatsApp ? 1 : 0)
-        .input('email', sql.NVarChar, dados.email || null)
-        .input('cep', sql.Char, dados.cep || null)
-        .input('logradouro', sql.NVarChar, dados.logradouro || null)
-        .input('numero', sql.NVarChar, dados.numero || null)
-        .input('complemento', sql.NVarChar, dados.complemento || null)
-        .input('bairro', sql.NVarChar, dados.bairro || null)
-        .input('cidade', sql.NVarChar, dados.cidade || null)
-        .input('estado', sql.Char, dados.estado || null).query(`
-          UPDATE dbo.Clientes
-          SET
+
+      await pool.request()
+        .input('id',              sql.Int,      id)
+        .input('nomeCompleto',    sql.NVarChar, dados.nomeCompleto)
+        .input('dataNascimento',  sql.Date,     dados.dataNascimento || null)
+        .input('genero',          sql.Char,     dados.genero || null)
+        .input('telefone',        sql.NVarChar, dados.telefone || null)
+        .input('telefoneWhatsApp',sql.Bit,      dados.telefoneWhatsApp ? 1 : 0)
+        .input('email',           sql.NVarChar, dados.email || null)
+        .input('cep',             sql.Char,     dados.cep || null)
+        .input('logradouro',      sql.NVarChar, dados.logradouro || null)
+        .input('numero',          sql.NVarChar, dados.numero || null)
+        .input('complemento',     sql.NVarChar, dados.complemento || null)
+        .input('bairro',          sql.NVarChar, dados.bairro || null)
+        .input('cidade',          sql.NVarChar, dados.cidade || null)
+        .input('estado',          sql.Char,     dados.estado || null)
+        .query(`
+          UPDATE dbo.Clientes SET
             Ativo            = 1,
             Bloqueado        = 0,
             NomeCompleto     = @nomeCompleto,
@@ -101,35 +112,34 @@ class ClienteRepository {
           WHERE ClienteId = @id
         `);
 
-      const reativado = await pool
-        .request()
+      const reativado = await pool.request()
         .input('id', sql.Int, id)
         .query(`SELECT * FROM dbo.Clientes WHERE ClienteId = @id`);
       return reativado.recordset[0];
     }
 
-    // INSERT NORMAL — CPF/CNPJ novo
-    const result = await pool
-      .request()
-      .input('tipo', sql.Char, dados.tipo)
-      .input('cpfCnpj', sql.NVarChar, dados.cpfCnpj)
-      .input('nomeCompleto', sql.NVarChar, dados.nomeCompleto)
-      .input('dataNascimento', sql.Date, dados.dataNascimento || null)
-      .input('genero', sql.Char, dados.genero || null)
-      .input('telefone', sql.NVarChar, dados.telefone || null)
-      .input('telefoneWhatsApp', sql.Bit, dados.telefoneWhatsApp ? 1 : 0)
-      .input('email', sql.NVarChar, dados.email || null)
-      .input('cep', sql.Char, dados.cep || null)
-      .input('logradouro', sql.NVarChar, dados.logradouro || null)
-      .input('numero', sql.NVarChar, dados.numero || null)
-      .input('complemento', sql.NVarChar, dados.complemento || null)
-      .input('bairro', sql.NVarChar, dados.bairro || null)
-      .input('cidade', sql.NVarChar, dados.cidade || null)
-      .input('estado', sql.Char, dados.estado || null).query(`
+    // --- INSERT NORMAL — CPF/CNPJ novo
+    const result = await pool.request()
+      .input('tipo',            sql.Char,     dados.tipo)
+      .input('cpfCnpj',         sql.NVarChar, dados.cpfCnpj)
+      .input('nomeCompleto',    sql.NVarChar, dados.nomeCompleto)
+      .input('dataNascimento',  sql.Date,     dados.dataNascimento || null)
+      .input('genero',          sql.Char,     dados.genero || null)
+      .input('telefone',        sql.NVarChar, dados.telefone || null)
+      .input('telefoneWhatsApp',sql.Bit,      dados.telefoneWhatsApp ? 1 : 0)
+      .input('email',           sql.NVarChar, dados.email || null)
+      .input('cep',             sql.Char,     dados.cep || null)
+      .input('logradouro',      sql.NVarChar, dados.logradouro || null)
+      .input('numero',          sql.NVarChar, dados.numero || null)
+      .input('complemento',     sql.NVarChar, dados.complemento || null)
+      .input('bairro',          sql.NVarChar, dados.bairro || null)
+      .input('cidade',          sql.NVarChar, dados.cidade || null)
+      .input('estado',          sql.Char,     dados.estado || null)
+      .query(`
         INSERT INTO dbo.Clientes
           (Tipo, CpfCnpj, NomeCompleto, DataNascimento, Genero,
-          Telefone, TelefoneWhatsApp, Email,
-          Cep, Logradouro, Numero, Complemento, Bairro, Cidade, Estado)
+           Telefone, TelefoneWhatsApp, Email,
+           Cep, Logradouro, Numero, Complemento, Bairro, Cidade, Estado)
         OUTPUT
           INSERTED.ClienteId, INSERTED.Tipo, INSERTED.CpfCnpj,
           INSERTED.NomeCompleto, INSERTED.DataNascimento, INSERTED.Genero,
@@ -139,33 +149,33 @@ class ClienteRepository {
           INSERTED.Estado, INSERTED.Ativo, INSERTED.Bloqueado, INSERTED.DataCriacao
         VALUES
           (@tipo, @cpfCnpj, @nomeCompleto, @dataNascimento, @genero,
-          @telefone, @telefoneWhatsApp, @email,
-          @cep, @logradouro, @numero, @complemento, @bairro, @cidade, @estado)
+           @telefone, @telefoneWhatsApp, @email,
+           @cep, @logradouro, @numero, @complemento, @bairro, @cidade, @estado)
       `);
     return result.recordset[0];
   }
 
-  // ATUALIZAR — não altera Ativo nem Bloqueado
+
+  // --- atualizar — não altera Ativo nem Bloqueado
   async atualizar(id, dados) {
-    const pool = await getPool();
-    const result = await pool
-      .request()
-      .input('id', sql.Int, id)
-      .input('nomeCompleto', sql.NVarChar, dados.nomeCompleto)
-      .input('dataNascimento', sql.Date, dados.dataNascimento || null)
-      .input('genero', sql.Char, dados.genero || null)
-      .input('telefone', sql.NVarChar, dados.telefone || null)
-      .input('telefoneWhatsApp', sql.Bit, dados.telefoneWhatsApp ? 1 : 0)
-      .input('email', sql.NVarChar, dados.email || null)
-      .input('cep', sql.Char, dados.cep || null)
-      .input('logradouro', sql.NVarChar, dados.logradouro || null)
-      .input('numero', sql.NVarChar, dados.numero || null)
-      .input('complemento', sql.NVarChar, dados.complemento || null)
-      .input('bairro', sql.NVarChar, dados.bairro || null)
-      .input('cidade', sql.NVarChar, dados.cidade || null)
-      .input('estado', sql.Char, dados.estado || null).query(`
-        UPDATE dbo.Clientes
-        SET
+    const pool   = await getPool();
+    const result = await pool.request()
+      .input('id',              sql.Int,      id)
+      .input('nomeCompleto',    sql.NVarChar, dados.nomeCompleto)
+      .input('dataNascimento',  sql.Date,     dados.dataNascimento || null)
+      .input('genero',          sql.Char,     dados.genero || null)
+      .input('telefone',        sql.NVarChar, dados.telefone || null)
+      .input('telefoneWhatsApp',sql.Bit,      dados.telefoneWhatsApp ? 1 : 0)
+      .input('email',           sql.NVarChar, dados.email || null)
+      .input('cep',             sql.Char,     dados.cep || null)
+      .input('logradouro',      sql.NVarChar, dados.logradouro || null)
+      .input('numero',          sql.NVarChar, dados.numero || null)
+      .input('complemento',     sql.NVarChar, dados.complemento || null)
+      .input('bairro',          sql.NVarChar, dados.bairro || null)
+      .input('cidade',          sql.NVarChar, dados.cidade || null)
+      .input('estado',          sql.Char,     dados.estado || null)
+      .query(`
+        UPDATE dbo.Clientes SET
           NomeCompleto     = @nomeCompleto,
           DataNascimento   = @dataNascimento,
           Genero           = @genero,
@@ -184,61 +194,58 @@ class ClienteRepository {
     return result.rowsAffected[0];
   }
 
-  // INATIVAR (soft delete) — Ativo = 0
+
+  // --- inativar (soft delete) — Ativo = 0
   async inativar(id) {
-    const pool = await getPool();
-    const result = await pool.request().input('id', sql.Int, id).query(`
-        UPDATE dbo.Clientes
-        SET Ativo = 0
-        WHERE ClienteId = @id
-      `);
+    const pool   = await getPool();
+    const result = await pool.request()
+      .input('id', sql.Int, id)
+      .query(`UPDATE dbo.Clientes SET Ativo = 0 WHERE ClienteId = @id`);
     return result.rowsAffected[0];
   }
 
-  // BLOQUEAR — Bloqueado = 1
+
+  // --- bloquear — Bloqueado = 1
   async bloquear(id) {
-    const pool = await getPool();
-    const result = await pool.request().input('id', sql.Int, id).query(`
-        UPDATE dbo.Clientes
-        SET Bloqueado = 1
-        WHERE ClienteId = @id
-      `);
+    const pool   = await getPool();
+    const result = await pool.request()
+      .input('id', sql.Int, id)
+      .query(`UPDATE dbo.Clientes SET Bloqueado = 1 WHERE ClienteId = @id`);
     return result.rowsAffected[0];
   }
 
-  // DESBLOQUEAR — Bloqueado = 0
+
+  // --- desbloquear — Bloqueado = 0
   async desbloquear(id) {
-    const pool = await getPool();
-    const result = await pool.request().input('id', sql.Int, id).query(`
-        UPDATE dbo.Clientes
-        SET Bloqueado = 0
-        WHERE ClienteId = @id
-      `);
+    const pool   = await getPool();
+    const result = await pool.request()
+      .input('id', sql.Int, id)
+      .query(`UPDATE dbo.Clientes SET Bloqueado = 0 WHERE ClienteId = @id`);
     return result.rowsAffected[0];
   }
 
-  // REATIVAR — Ativo = 1, Bloqueado = 0 + atualiza dados
+
+  // --- reativar — Ativo = 1, Bloqueado = 0 + atualiza dados
   async reativar(id, dados) {
     const pool = await getPool();
 
-    await pool
-      .request()
-      .input('id', sql.Int, id)
-      .input('nomeCompleto', sql.NVarChar, dados.nomeCompleto)
-      .input('dataNascimento', sql.Date, dados.dataNascimento || null)
-      .input('genero', sql.Char, dados.genero || null)
-      .input('telefone', sql.NVarChar, dados.telefone || null)
-      .input('telefoneWhatsApp', sql.Bit, dados.telefoneWhatsApp ? 1 : 0)
-      .input('email', sql.NVarChar, dados.email || null)
-      .input('cep', sql.Char, dados.cep || null)
-      .input('logradouro', sql.NVarChar, dados.logradouro || null)
-      .input('numero', sql.NVarChar, dados.numero || null)
-      .input('complemento', sql.NVarChar, dados.complemento || null)
-      .input('bairro', sql.NVarChar, dados.bairro || null)
-      .input('cidade', sql.NVarChar, dados.cidade || null)
-      .input('estado', sql.Char, dados.estado || null).query(`
-        UPDATE dbo.Clientes
-        SET
+    await pool.request()
+      .input('id',              sql.Int,      id)
+      .input('nomeCompleto',    sql.NVarChar, dados.nomeCompleto)
+      .input('dataNascimento',  sql.Date,     dados.dataNascimento || null)
+      .input('genero',          sql.Char,     dados.genero || null)
+      .input('telefone',        sql.NVarChar, dados.telefone || null)
+      .input('telefoneWhatsApp',sql.Bit,      dados.telefoneWhatsApp ? 1 : 0)
+      .input('email',           sql.NVarChar, dados.email || null)
+      .input('cep',             sql.Char,     dados.cep || null)
+      .input('logradouro',      sql.NVarChar, dados.logradouro || null)
+      .input('numero',          sql.NVarChar, dados.numero || null)
+      .input('complemento',     sql.NVarChar, dados.complemento || null)
+      .input('bairro',          sql.NVarChar, dados.bairro || null)
+      .input('cidade',          sql.NVarChar, dados.cidade || null)
+      .input('estado',          sql.Char,     dados.estado || null)
+      .query(`
+        UPDATE dbo.Clientes SET
           Ativo            = 1,
           Bloqueado        = 0,
           NomeCompleto     = @nomeCompleto,
@@ -257,13 +264,19 @@ class ClienteRepository {
         WHERE ClienteId = @id
       `);
 
-    const reativado = await pool
-      .request()
+    const reativado = await pool.request()
       .input('id', sql.Int, id)
       .query(`SELECT * FROM dbo.Clientes WHERE ClienteId = @id`);
-
     return reativado.recordset[0];
   }
+
 }
 
+// #endregion
+
+
+// #region EXPORTS | rev.01 | 25/03/2026
+
 module.exports = new ClienteRepository();
+
+// #endregion

@@ -1,34 +1,37 @@
-/* veiculos.css | data: 03/03/2026 */
+/* -----------------------------------------------
+   veiculos.css
+   Tema: Estilos exclusivos da seção de Veículos
+   Última rev: 02 | Data: 25/03/2026
+   Depende de: style.css + clientes.css (base)
+   ----------------------------------------------- */
 
-/* =========================================
-  veiculos.css
-  Estilos exclusivos da seção de Veículos
-  Depende de: style.css + clientes.css (base)
-   ========================================= */
 
-/* ===========================
-  INPUT READONLY
-  Campo nome do proprietário
-=========================== */
+/* #region INPUT READONLY | rev.02 | 25/03/2026 */
+
+/* --- campo nome do proprietário */
 .input-readonly {
   background: #0f1827 !important;
   color: #718096 !important;
   cursor: not-allowed;
 }
 
-/* ===========================
-  BOTÃO BUSCAR PROPRIETÁRIO
-  Alinha verticalmente com inputs
-=========================== */
+/* #endregion */
+
+
+/* #region BOTÃO BUSCAR PROPRIETÁRIO | rev.02 | 25/03/2026 */
+
+/* --- alinha verticalmente com inputs */
 .vei-btn-buscar-prop {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
 }
 
-/* ===========================
-  BOTÃO DANGER — Inativar
-=========================== */
+/* #endregion */
+
+
+/* #region BOTÕES DANGER E SUCCESS | rev.02 | 25/03/2026 */
+
 .btn-danger {
   background: rgba(231, 76, 60, 0.2);
   color: #e74c3c;
@@ -63,9 +66,11 @@
   transform: translateY(-1px);
 }
 
-/* ===========================
-  BOTÃO INATIVAR NA TABELA
-=========================== */
+/* #endregion */
+
+
+/* #region BOTÃO INATIVAR NA TABELA | rev.02 | 25/03/2026 */
+
 .btn-inativar {
   background: rgba(231, 76, 60, 0.2);
   color: #e74c3c;
@@ -75,10 +80,12 @@
   background: rgba(231, 76, 60, 0.4);
 }
 
-/* ===========================
-  CARD DE RESULTADO
-  Veículo encontrado (ativo)
-=========================== */
+/* #endregion */
+
+
+/* #region CARD DE RESULTADO | rev.02 | 25/03/2026 */
+
+/* --- veículo encontrado (ativo) */
 .vei-resultado-card {
   background: #0f1827;
   border: 1px solid #2d3748;
@@ -90,10 +97,12 @@
   line-height: 1.6;
 }
 
-/* ===========================
-  AVISOS DE RESULTADO
-  Inativo e não encontrado
-=========================== */
+/* #endregion */
+
+
+/* #region AVISOS DE RESULTADO | rev.02 | 25/03/2026 */
+
+/* --- inativo e não encontrado */
 .vei-aviso {
   border-radius: 8px;
   padding: 16px 18px;
@@ -102,23 +111,25 @@
   line-height: 1.7;
 }
 
-/* Alerta — veículo inativo (amarelo) */
+/* --- alerta: veículo inativo (amarelo) */
 .vei-aviso-alerta {
   background: rgba(243, 156, 18, 0.1);
   border: 1px solid rgba(243, 156, 18, 0.3);
   color: #f6c26b;
 }
 
-/* Info — veículo não encontrado (azul) */
+/* --- info: veículo não encontrado (azul) */
 .vei-aviso-info {
   background: rgba(52, 152, 219, 0.1);
   border: 1px solid rgba(52, 152, 219, 0.3);
   color: #63b3ed;
 }
 
-/* ===========================
-  TABELA DE VEÍCULOS
-=========================== */
+/* #endregion */
+
+
+/* #region TABELA DE VEÍCULOS | rev.02 | 25/03/2026 */
+
 .tabela-veiculos {
   width: 100%;
   border-collapse: collapse;
@@ -149,18 +160,19 @@
   background: #1a2a42;
 }
 
-/* ===========================
-  RESPONSIVO
-=========================== */
+/* #endregion */
 
-/* Tablet */
+
+/* #region RESPONSIVO | rev.02 | 25/03/2026 */
+
+/* --- tablet */
 @media (max-width: 768px) {
   .vei-btn-buscar-prop {
     justify-content: flex-start;
   }
 }
 
-/* Mobile */
+/* --- mobile */
 @media (max-width: 480px) {
   .tabela-veiculos th,
   .tabela-veiculos td {
@@ -169,17 +181,22 @@
   }
 }
 
-/* ===========================
-  MAIÚSCULAS AUTOMÁTICAS
-  Campos de texto do módulo veículos
-=========================== */
+/* #endregion */
+
+
+/* #region MAIÚSCULAS AUTOMÁTICAS | rev.02 | 25/03/2026 */
+
+/* --- campos de texto do módulo veículos */
 #sec-veiculos input[type='text'] {
   text-transform: uppercase;
 }
 
-/* ===========================
-  HEADER DA LISTA — botões e filtros
-=========================== */
+/* #endregion */
+
+
+/* #region HEADER DA LISTA | rev.02 | 25/03/2026 */
+
+/* --- botões e filtros no cabeçalho do painel Lista */
 .acc-header-actions {
   display: flex;
   align-items: center;
@@ -231,12 +248,17 @@
   color: #ffffff;
 }
 
-/* ===========================
-  LINHA DE FROTA (busca proprietário)
-=========================== */
+/* #endregion */
+
+
+/* #region LINHA DE FROTA | rev.02 | 25/03/2026 */
+
+/* --- resultado da busca por proprietário */
 .vei-frota-linha {
   padding: 10px 0;
   font-size: 0.88rem;
   color: #a0aec0;
   line-height: 1.6;
 }
+
+/* #endregion */

@@ -1,34 +1,40 @@
--- BANCO: SoftwareProduct
--- TABELA: dbo.Clientes
--- VERSÃO: 2.0 - AC1
--- DATA: 2026-03-22
--- REGRAS:
---   Ativo    = 1 → cliente existe | 0 → inativo (soft delete, não aparece em nada)
---   Bloqueado= 0 → normal         | 1 → bloqueado (aparece na lista, não recebe comunicação)
+-- -----------------------------------------------
+-- Clientes.sql
+-- Tema: Criar tabela dbo.Clientes + índices + trigger
+-- Última rev: 02 | Data: 25/03/2026
+-- Banco: SoftwareProduct
+-- Regras:
+--   Ativo=1, Bloqueado=0 → ATIVO    (aparece na lista, recebe comunicação)
+--   Ativo=1, Bloqueado=1 → BLOQUEADO (aparece na lista, sem comunicação/eventos)
+--   Ativo=0              → INATIVO  (não aparece em nada, só busca direta por CPF)
+-- -----------------------------------------------
+
 
 USE SoftwareProduct;
 GO
 
--- ============================================================
--- LIMPEZA — remove trigger e tabela se existirem
--- ============================================================
 
--- Remove FK de Veiculos que referencia Clientes
+-- #region LIMPEZA | rev.02 | 25/03/2026
+
+-- --- remove FK de Veiculos que referencia Clientes
 IF OBJECT_ID('dbo.FK_Veiculos_ClienteId', 'F') IS NOT NULL
     ALTER TABLE dbo.Veiculos DROP CONSTRAINT FK_Veiculos_ClienteId;
 GO
 
+-- --- remove trigger se existir
 IF OBJECT_ID('dbo.TR_Clientes_SetDataAtualizacao', 'TR') IS NOT NULL
     DROP TRIGGER dbo.TR_Clientes_SetDataAtualizacao;
 GO
 
+-- --- remove tabela se existir
 IF OBJECT_ID('dbo.Clientes', 'U') IS NOT NULL
     DROP TABLE dbo.Clientes;
 GO
 
--- ============================================================
--- CRIAÇÃO DA TABELA
--- ============================================================
+-- #endregion
+
+
+-- #region CRIAÇÃO DA TABELA | rev.02 | 25/03/2026
 
 CREATE TABLE dbo.Clientes
 (
@@ -121,20 +127,23 @@ CREATE TABLE dbo.Clientes
 );
 GO
 
--- ============================================================
--- ÍNDICES — otimizam as buscas mais frequentes
--- ============================================================
+-- #endregion
 
--- Filtro por Ativo — usado na listagem geral
+
+-- #region ÍNDICES | rev.02 | 25/03/2026
+
+-- --- filtro por Ativo: usado na listagem geral
 CREATE NONCLUSTERED INDEX IX_Clientes_Ativo
     ON dbo.Clientes (Ativo)
     INCLUDE (ClienteId, NomeCompleto, CpfCnpj, Telefone, Bloqueado);
 GO
 
--- ============================================================
--- TRIGGER — atualiza DataAtualizacao a cada UPDATE
--- ============================================================
+-- #endregion
 
+
+-- #region TRIGGER | rev.02 | 25/03/2026
+
+-- --- atualiza DataAtualizacao automaticamente a cada UPDATE
 CREATE TRIGGER dbo.TR_Clientes_SetDataAtualizacao
 ON dbo.Clientes
 AFTER UPDATE
@@ -148,10 +157,12 @@ BEGIN
 END;
 GO
 
--- ============================================================
--- RECRIAR FK de Veiculos → Clientes (se tabela Veiculos existir)
--- ============================================================
+-- #endregion
 
+
+-- #region FK VEÍCULOS | rev.02 | 25/03/2026
+
+-- --- recria FK de Veiculos → Clientes (se tabela Veiculos já existir)
 IF OBJECT_ID('dbo.Veiculos', 'U') IS NOT NULL
 BEGIN
     ALTER TABLE dbo.Veiculos
@@ -162,6 +173,9 @@ BEGIN
             ON UPDATE CASCADE;
 END;
 GO
+
+-- #endregion
+
 
 PRINT '✅ Tabela dbo.Clientes v2.0 criada com sucesso!';
 GO

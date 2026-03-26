@@ -1,4 +1,8 @@
-<!-- login.html | última versão data: 13/03/2026 -->
+<!-- -----------------------------------------------
+     login.html
+     Tema: Tela de login e recuperação de senha
+     Última rev: 02 | Data: 25/03/2026
+     ----------------------------------------------- -->
 
 <!doctype html>
 <html lang="pt-BR">
@@ -9,7 +13,11 @@
     <link rel="stylesheet" href="../assets/css/style.css" />
     <link rel="stylesheet" href="../assets/css/login.css" />
   </head>
+
   <body>
+
+    <!-- #region LOGIN FORM -->
+
     <div class="login-container">
       <div class="login-box">
         <div class="login-header">
@@ -66,7 +74,11 @@
       </div>
     </div>
 
-    <!-- Modal Esqueci Senha -->
+    <!-- #endregion -->
+
+
+    <!-- #region MODAL ESQUECI SENHA -->
+
     <div id="modalEsqueciSenha" class="modal">
       <div class="modal-content">
         <div class="modal-header">
@@ -110,6 +122,16 @@
         </div>
       </div>
     </div>
+
+    <!-- #endregion -->
+
+
+    <!-- #region SCRIPTS
+         Ordem obrigatória:
+         1. config.js  → API_BASE_URL e apiRequest()
+         2. login.js   → autenticação
+         3. inline     → lógica do modal de recuperação de senha
+    -->
 
     <script src="../assets/js/config.js"></script>
     <script src="../assets/js/login.js"></script>
@@ -175,5 +197,8 @@
         });
       });
     </script>
+
+    <!-- #endregion -->
+
   </body>
 </html>

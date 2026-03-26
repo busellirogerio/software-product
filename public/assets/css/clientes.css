@@ -1,14 +1,13 @@
-/* clientes.css | data: 03/03/2026 */
+/* -----------------------------------------------
+   clientes.css
+   Tema: Estilos exclusivos da seção de Clientes
+   Última rev: 02 | Data: 25/03/2026
+   Depende de: style.css (variáveis globais)
+   ----------------------------------------------- */
 
-/* 
-clientes.css
-Estilos exclusivos da seção de Clientes
-Depende de: style.css (variáveis globais)
-*/
 
-/*
-ACCORDION
-*/
+/* #region ACCORDION | rev.02 | 25/03/2026 */
+
 .accordion {
   display: flex;
   flex-direction: column;
@@ -21,9 +20,11 @@ ACCORDION
   overflow: hidden;
 }
 
-/* ===========================
-  CABEÇALHO DO PAINEL
-=========================== */
+/* #endregion */
+
+
+/* #region CABEÇALHO DO PAINEL | rev.02 | 25/03/2026 */
+
 .acc-header {
   display: flex;
   align-items: center;
@@ -57,16 +58,17 @@ ACCORDION
   transition: transform var(--transition-normal);
 }
 
-/* Rotaciona seta quando aberto */
+/* --- rotaciona seta quando aberto */
 .acc-item.open .acc-arrow {
   transform: rotate(180deg);
 }
 
-/* ===========================
-  CORPO DO PAINEL
-  Oculto por padrão
-  Visível quando .open
-=========================== */
+/* #endregion */
+
+
+/* #region CORPO DO PAINEL | rev.02 | 25/03/2026 */
+
+/* --- oculto por padrão, visível quando .open */
 .acc-body {
   display: none;
   padding: 20px;
@@ -77,9 +79,11 @@ ACCORDION
   display: block;
 }
 
-/* ===========================
-  GRID DO FORMULÁRIO
-=========================== */
+/* #endregion */
+
+
+/* #region GRID DO FORMULÁRIO | rev.02 | 25/03/2026 */
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -87,12 +91,12 @@ ACCORDION
   margin-bottom: 16px;
 }
 
-/* Campo largo — ocupa 2 colunas quando possível */
+/* --- campo largo: ocupa 2 colunas quando possível */
 .form-group-wide {
   grid-column: span 2;
 }
 
-/* Campo checkbox */
+/* --- campo checkbox */
 .form-group-check {
   display: flex;
   align-items: flex-end;
@@ -115,9 +119,11 @@ ACCORDION
   accent-color: var(--primary-color);
 }
 
-/* ===========================
-  BOTÕES DO FORMULÁRIO
-=========================== */
+/* #endregion */
+
+
+/* #region BOTÕES DO FORMULÁRIO | rev.02 | 25/03/2026 */
+
 .form-actions {
   display: flex;
   gap: 10px;
@@ -160,10 +166,11 @@ ACCORDION
   color: #ffffff;
 }
 
-/* ===========================
-  MENSAGEM DE FEEDBACK
-  do formulário
-=========================== */
+/* #endregion */
+
+
+/* #region MENSAGEM DE FEEDBACK | rev.02 | 25/03/2026 */
+
 .form-mensagem {
   padding: 12px 16px;
   border-radius: 6px;
@@ -184,9 +191,11 @@ ACCORDION
   border: 1px solid rgba(231, 76, 60, 0.3);
 }
 
-/* ===========================
-  BARRA DE BUSCA
-=========================== */
+/* #endregion */
+
+
+/* #region BARRA DE BUSCA | rev.02 | 25/03/2026 */
+
 .busca-row {
   display: flex;
   gap: 10px;
@@ -222,9 +231,11 @@ ACCORDION
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
 }
 
-/* ===========================
-  TABELA DE CLIENTES
-=========================== */
+/* #endregion */
+
+
+/* #region TABELA DE CLIENTES | rev.02 | 25/03/2026 */
+
 .tabela-wrapper {
   overflow-x: auto;
   border-radius: 8px;
@@ -260,7 +271,7 @@ ACCORDION
   background: #1a2a42;
 }
 
-/* Célula quando tabela vazia */
+/* --- célula quando tabela vazia */
 .tabela-vazia {
   text-align: center;
   color: #4a5568;
@@ -268,9 +279,11 @@ ACCORDION
   font-size: 0.9rem;
 }
 
-/* ===========================
-  BADGES DE GÊNERO
-=========================== */
+/* #endregion */
+
+
+/* #region BADGES DE GÊNERO | rev.02 | 25/03/2026 */
+
 .badge {
   padding: 3px 10px;
   border-radius: 20px;
@@ -291,9 +304,11 @@ ACCORDION
   color: #aab7b8;
 }
 
-/* ===========================
-  BOTÕES DE AÇÃO NA TABELA
-=========================== */
+/* #endregion */
+
+
+/* #region BOTÕES DE AÇÃO NA TABELA | rev.02 | 25/03/2026 */
+
 .acoes {
   display: flex;
   gap: 6px;
@@ -328,11 +343,12 @@ ACCORDION
   background: rgba(231, 76, 60, 0.4);
 }
 
-/* ===========================
-  RESPONSIVO
-=========================== */
+/* #endregion */
 
-/* Tablet */
+
+/* #region RESPONSIVO | rev.02 | 25/03/2026 */
+
+/* --- tablet */
 @media (max-width: 768px) {
   .form-group-wide {
     grid-column: span 1;
@@ -352,7 +368,7 @@ ACCORDION
   }
 }
 
-/* Mobile */
+/* --- mobile */
 @media (max-width: 480px) {
   .acc-header {
     padding: 14px 16px;
@@ -367,10 +383,12 @@ ACCORDION
   }
 }
 
-/* ===========================
-  HEADER ORDENÁVEL
-  Coluna Nome clicável
-=========================== */
+/* #endregion */
+
+
+/* #region HEADER ORDENÁVEL | rev.02 | 25/03/2026 */
+
+/* --- coluna Nome clicável */
 .th-ordenavel {
   cursor: pointer;
   user-select: none;
@@ -381,12 +399,15 @@ ACCORDION
   color: var(--primary-color);
 }
 
-/* ===========================
-  PAINEL BLOQUEADO
-  Cadastro travado até pesquisa
-  data: 03/03/2026
-=========================== */
+/* #endregion */
+
+
+/* #region PAINEL BLOQUEADO | rev.02 | 25/03/2026 */
+
+/* --- cadastro travado até pesquisa */
 .acc-item.bloqueado .acc-header {
   cursor: not-allowed;
   opacity: 0.6;
 }
+
+/* #endregion */

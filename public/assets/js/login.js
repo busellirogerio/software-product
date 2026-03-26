@@ -1,17 +1,34 @@
-// login.js | data: 03/03/2026
+// -----------------------------------------------
+// login.js
+// Tema: Autenticação — formulário de login
+// Última rev: 01 | Data: 25/03/2026
+// -----------------------------------------------
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  // #region GUARD — redireciona se já logado | rev.01 | 25/03/2026
+
   const usuarioLogado = sessionStorage.getItem('usuario');
   if (usuarioLogado) {
     window.location.href = 'http://127.0.0.1:3000/pages/dashboard.html';
     return;
   }
 
-  const form = document.getElementById('formLogin');
-  const inputEmail = document.getElementById('email');
-  const inputSenha = document.getElementById('senha');
+  // #endregion
+
+
+  // #region ELEMENTOS | rev.01 | 25/03/2026
+
+  const form        = document.getElementById('formLogin');
+  const inputEmail  = document.getElementById('email');
+  const inputSenha  = document.getElementById('senha');
   const toggleSenha = document.getElementById('toggleSenha');
-  const btnLogin = form.querySelector('button[type="submit"]');
+  const btnLogin    = form.querySelector('button[type="submit"]');
+
+  // #endregion
+
+
+  // #region TOGGLE SENHA | rev.01 | 25/03/2026
 
   const eyeOpen = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -24,42 +41,61 @@ document.addEventListener('DOMContentLoaded', () => {
     <path d="M4 4L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
   </svg>`;
 
-  inputSenha.type = 'password';
+  inputSenha.type       = 'password';
   toggleSenha.innerHTML = eyeClosed;
 
   toggleSenha.addEventListener('click', () => {
-    const isPassword = inputSenha.type === 'password';
-    inputSenha.type = isPassword ? 'text' : 'password';
+    const isPassword      = inputSenha.type === 'password';
+    inputSenha.type       = isPassword ? 'text' : 'password';
     toggleSenha.innerHTML = isPassword ? eyeOpen : eyeClosed;
   });
 
+  // #endregion
+
+
+  // #region UI | rev.01 | 25/03/2026
+
+  // --- mensagem de feedback
   const showMessage = (message, type = 'error') => {
     const existingMessage = document.querySelector('.login-message');
     if (existingMessage) existingMessage.remove();
 
     const messageEl = document.createElement('div');
-    messageEl.className = `login-message ${type}`;
+    messageEl.className   = `login-message ${type}`;
     messageEl.textContent = message;
     form.insertBefore(messageEl, btnLogin);
     setTimeout(() => messageEl.remove(), 5000);
   };
 
+
+  // --- estado de carregamento
   const setLoadingState = (loading) => {
-    btnLogin.disabled = loading;
+    btnLogin.disabled      = loading;
     btnLogin.style.opacity = loading ? '0.6' : '1';
-    btnLogin.textContent = loading ? 'Entrando...' : 'Entrar';
-    inputEmail.disabled = loading;
-    inputSenha.disabled = loading;
+    btnLogin.textContent   = loading ? 'Entrando...' : 'Entrar';
+    inputEmail.disabled    = loading;
+    inputSenha.disabled    = loading;
   };
 
+  // #endregion
+
+
+  // #region SESSÃO | rev.01 | 25/03/2026
+
+  // --- salva dados do usuário no sessionStorage
   const saveUserSession = (usuario) => {
     const sessionData = {
-      usuario: usuario,
-      loginTime: Date.now(),
+      usuario,
+      loginTime:    Date.now(),
       lastActivity: Date.now(),
     };
     sessionStorage.setItem('usuario', JSON.stringify(sessionData));
   };
+
+  // #endregion
+
+
+  // #region SUBMIT | rev.01 | 25/03/2026
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -82,21 +118,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       showMessage('Login realizado com sucesso!', 'success');
       saveUserSession(usuario);
+
       setTimeout(() => {
         window.location.href = 'http://127.0.0.1:3000/pages/dashboard.html';
       }, 1000);
     } catch (error) {
-      if (
-        error.message.includes('401') ||
-        error.message.includes('inválidos')
-      ) {
+      if (error.message.includes('401') || error.message.includes('inválidos')) {
         showMessage('Usuário ou senha incorretos', 'error');
       } else if (error.message.includes('429')) {
         showMessage('Muitas tentativas. Aguarde alguns minutos.', 'error');
-      } else if (
-        error.message.includes('rede') ||
-        error.message.includes('conexão')
-      ) {
+      } else if (error.message.includes('rede') || error.message.includes('conexão')) {
         showMessage('Erro de conexão. Verifique sua internet.', 'error');
       } else {
         showMessage('Erro interno. Tente novamente.', 'error');
@@ -106,5 +137,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // #endregion
+
+
+  // #region INICIALIZAÇÃO | rev.01 | 25/03/2026
+
   setTimeout(() => inputEmail.focus(), 300);
+
+  // #endregion
+
 });
