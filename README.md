@@ -52,7 +52,8 @@
 
 <br>
 
-🔜 AC2 — Cadastro de Veículos [EM DESENVOLVIMENTO]
+✅ AC2 — Cadastro de Veículos
+✅ Video AC2 - https://youtu.be/ov0JmQE_wUk?si=MhmcV9LbXhkgKNho
 - Módulo Veículos:
     - 🔍 Buscar (placa)
     - ➕ Cadastrar (vinculado a proprietário)
